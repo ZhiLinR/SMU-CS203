@@ -1,11 +1,13 @@
 from flask import Flask, jsonify, request
 import bcrypt
+from sqlalchemy import create_engine, text
 
 app = Flask(__name__)
 
 ## Login into DB Server as profile User
 # Permissions allowed: SELECT, INSERT, UPDATE on UserMSVC Tables
-
+DATABASE_URI = 'mysql+mysqlconnector://your_db_user:your_db_password@your_db_host/your_db_name'
+engine = create_engine(DATABASE_URI)
 
 
 # @app.route('/api/hello', methods=['GET'])
@@ -37,38 +39,29 @@ def createProfile():
     # Convert isAdmin to integer
     is_admin = int(is_admin)
 
-    
     try:
-        ## Insert code to insert into database
-            ## Insert email, pwd into User
-            ## Get UUID, insert UUID and isAdmin into Role
-            ## Will return 1 or 0 if successful
-            ### USE STORED PROC
+        with engine.connect() as conn:
+            # Call the stored procedure to insert user and role
+            result = conn.execute(
+                text('CALL InsertUserAndRole(:email, :password, :is_admin, @status)'),
+                {"email": email, "password": password, "is_admin": is_admin}
+            )
 
-        # # Establish a database connection
-        # conn = mysql.connector.connect(**db_config)
-        # cursor = conn.cursor()
+            # Fetch the output parameter to check if insertion was successful
+            result = conn.execute(text('SELECT @status'))
+            status = result.scalar()
 
-        # # Prepare to call the stored procedure
-        # cursor.callproc('InsertUserAndRole', [email, password, is_admin, 0])
+            if status == 1:
+                return jsonify({"message": "User registered successfully"}), 200
+            else:
+                return jsonify({"message": "Failed to register user"}), 500
 
-        # # Get the status from the output parameter
-        # for result in cursor.stored_results():
-        #     status = result.fetchall()[0][0]
-
-        status = 1
-        
-        if status == 1:
-            return jsonify({"message": "User registered successfully"}), 200
-        else:
-            return jsonify({"message": "Failed to register user"}), 500
-    
     except Exception as e:
         return jsonify({"message": f"Error: {str(e)}"}), 500
 
 
 
-@app.route('/profile', methods=['POST'])
+@app.route('/login', methods=['POST'])
 # Sample Request Body
 # {
 #     "email": "user@example.com",
@@ -76,35 +69,45 @@ def createProfile():
 # }
 def userAuthentication():
     data = request.json
-    
+
+    email = data.get('email')
+    password = data.get('password')
+
     # Validate the request data
-    if 'email' in data and 'password' in data:
-        email = data['email']
-        password = data['password']
+    if not email or not password:
+        return jsonify({"message": "Email and password are required"}), 400
 
-        ## Insert code to insert into database
-            ## Get hashed Password from User
+    try:
+        with engine.connect() as conn:
+            # Call the stored procedure to get the hashed password
+            result = conn.execute(
+                text('CALL GetHashedPassword(:email, @hashed_password)'),
+                {"email": email}
+            )
 
-        ##
+            # Fetch the output parameter
+            result = conn.execute(text('SELECT @hashed_password'))
+            hashed_password = result.scalar()
 
-        # converting password to array of bytes 
-        bytes = password.encode('utf-8') 
-        
-        # check if password is correct
-        isValid = bcrypt.checkpw(bytes, hash)
+            # Email doesn't exist
+            if not hashed_password:
+                return jsonify({"message": "Failed", "error": "Invalid email or password"}), 401
 
-        ## Insert code to insert into database
-            ## If successful login, add lastLogin to Role
-            ## Use STORED PROC to update lastLogin to current time
+            # Check if the provided password matches the stored hashed password
+            is_valid = bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
-        ##
-        
-        # Here you would normally save the data to a database or perform other actions
-        # For demonstration, we just return a success message
-        return jsonify({"message": "Success", "email": email}), 201
-    else:
-        # If email or password is missing, return a failure message
-        return jsonify({"message": "Failed", "error": "Missing email or password"}), 400
+            if is_valid:
+                # Call the stored procedure to update the last login time
+                conn.execute(
+                    text('CALL UpdateLastLogin(:email)')
+                )
+                return jsonify({"message": "Success", "email": email}), 200
+
+            # Password incorrect
+            return jsonify({"message": "Failed", "error": "Invalid email or password"}), 401
+
+    except Exception as e:
+        return jsonify({"message": f"Error: {str(e)}"}), 500
 
 
 

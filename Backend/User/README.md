@@ -51,6 +51,26 @@ Sample Request Body:
 }
 ```
 
+Sample Success 200 Response:
+
+```json
+{"message": "Success", "email": "user@example.com"}
+```
+
+Sample Failed 400 Response:
+
+```json
+{"message": "Email and password are required"}
+```
+
+Sample Failed 401 Response:
+
+```json
+{"message": "Failed", "error": "Invalid email or password"}
+```
+
+Failed 500 Response: DB Connection Error
+
 ### GET /profile/:uid
 
 ---
