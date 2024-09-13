@@ -31,7 +31,7 @@ Sample Failed 400 Response:
 {"message": "Email and password are required"}
 ```
 
-Sample Failed 500 Response:
+Sample Failed 500 Response [DB Connection Error]:
 
 ```json
 {"message": "Failed to register user"}
