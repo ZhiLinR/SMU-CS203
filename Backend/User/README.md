@@ -1,24 +1,69 @@
 # SMU-CS203
+
 ## Workspace for User Management Microservice
 
 ### Quick Reference API Endpoints
-#### POST /profile
+
+### POST /profile
+
 ---
-Registers a new user minimally using an email and a hashed password, defined in request body.
+Registers a new user minimally using an email, a hashed password and if user is an admin, defined in request body. When isAdmin == 1, user is an admin while when isAdmin == 0, user is a normal user.
 
 Sample Request Body:
 
+```json
+{
+    "email": "user@example.com",
+    "password": "hashed_password_here",
+    "isAdmin": 1
+}
+```
+
+Sample Success 200 Response:
+
+```json
+{"message": "User registered successfully"}
+```
+
+Sample Failed 400 Response:
+
+```json
+{"message": "Email and password are required"}
+```
+
+Sample Failed 500 Response:
+
+```json
+{"message": "Failed to register user"}
+```
+
+### POST /login
+
+---
+Validates existing user using their email and a hashed password, defined in request body.
+
+Sample Request Body:
+
+```json
+{
+    "email": "user@example.com",
+    "password": "hashed_password_here"
+}
+```
+
 ### GET /profile/:uid
+
 ---
 Retrieves a profile by a UUID provided in params.
 
 Sample Success 200 Response:
 
 ### PUT /profile/:uid
+
 ---
 Updates user profile data. Request body takes in a JSON definition of the changes provided following the format of:
 
 ### GET /:tournament/namelist
----
-Retrieves the namelist of all users in a tournament using a tournament ID. 
 
+---
+Retrieves the namelist of all users in a tournament using a tournament ID.
