@@ -1,4 +1,4 @@
-package com.example.profileapi.model;
+package user;
 
 public class ProfileRequest {
     private String email;

@@ -1,6 +1,8 @@
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+package user;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.Date;
 
 @Entity

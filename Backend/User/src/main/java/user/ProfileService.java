@@ -1,6 +1,8 @@
-package com.example.profileapi.service;
+package user;
 
-import com.example.profileapi.model.ProfileRequest;
+import user.ProfileRequest;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +15,9 @@ public class ProfileService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public ResponseEntity<?> createProfile(ProfileRequest profileRequest) {
         String email = profileRequest.getEmail();

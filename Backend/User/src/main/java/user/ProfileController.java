@@ -1,7 +1,7 @@
-package com.example.profileapi.controller;
+package user;
 
-import com.example.profileapi.model.ProfileRequest;
-import com.example.profileapi.service.ProfileService;
+import user.ProfileRequest;
+import user.ProfileService;
 
 import java.util.Map;
 

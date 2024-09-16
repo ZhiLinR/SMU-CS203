@@ -1,11 +1,14 @@
+package user;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 public class ProfileResponse {
 
     private String UUID;
     private String email;
     private String name;
-    private LocalDate dob;
+    private LocalDate dob; // Use LocalDate for date of birth
     private String elo;
 
     // Constructor to initialize ProfileResponse from a User entity
@@ -13,13 +16,20 @@ public class ProfileResponse {
         this.UUID = user.getUUID();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.dob = user.getDob();
+        this.dob = convertToLocalDate(user.getDob()); // Conversion from Date to LocalDate
         this.elo = user.getElo();
     }
 
-    // Default constructor
-    public ProfileResponse() {
+    // Method to convert java.util.Date to java.time.LocalDate
+    private LocalDate convertToLocalDate(Date dateToConvert) {
+        if (dateToConvert == null) {
+            return null;
+        }
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
+
 
     // Getters and Setters
     public String getUUID() {
