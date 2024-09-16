@@ -66,7 +66,7 @@ Sample Failed 400 Response:
 Sample Failed 401 Response:
 
 ```json
-{"message": "Failed", "error": "Invalid email or password"}
+{"message": "Invalid email or password"}
 ```
 
 Failed 500 Response: DB Connection Error
@@ -77,6 +77,22 @@ Failed 500 Response: DB Connection Error
 Retrieves a profile by a UUID provided in params.
 
 Sample Success 200 Response:
+
+```json
+{
+    "UUID": "aab5d5fd-70c1-11e5-a4fb-b026b977eb28",
+    "email": "user@example.com",
+    "name": "John Doe",
+    "dob": "1990-01-01",
+    "elo": "2000"
+}
+```
+
+Sample Failed 404 Response:
+
+```json
+{"message": "Profile not found"}
+```
 
 ### PUT /profile/:uid
 
