@@ -15,6 +15,7 @@ Sample Request Body:
 {
     "email": "user@example.com",
     "password": "hashed_password_here",
+    "name": "John Doe",
     "isAdmin": 1
 }
 ```
@@ -54,13 +55,13 @@ Sample Request Body:
 Sample Success 200 Response:
 
 ```json
-{"message": "Success", "email": "user@example.com"}
-```
-
-Sample Failed 400 Response:
-
-```json
-{"message": "Email and password are required"}
+{
+    "message": "Success",
+    "data": {
+        "email": "user@example.com",
+        "jwt": "JWT_TOKEN_VALUE"
+    }
+}
 ```
 
 Sample Failed 401 Response:
@@ -69,7 +70,13 @@ Sample Failed 401 Response:
 {"message": "Invalid email or password"}
 ```
 
-Failed 500 Response: DB Connection Error
+Failed 500 Response:
+
+```json
+{
+    "message": "Error: Authentication failed"
+}
+```
 
 ### GET /profile/:uid
 
@@ -80,11 +87,15 @@ Sample Success 200 Response:
 
 ```json
 {
-    "UUID": "aab5d5fd-70c1-11e5-a4fb-b026b977eb28",
-    "email": "user@example.com",
-    "name": "John Doe",
-    "dob": "1990-01-01",
-    "elo": "2000"
+    "message": "Profile found",
+    "data": {
+        "uuid": "user-uuid",
+        "email": "user@example.com",
+        "name": "User Name",
+        "dob": "YYYY-MM-DD",
+        "elo": "User Elo Rating",
+        "isAdmin": 1
+    }
 }
 ```
 
@@ -94,12 +105,81 @@ Sample Failed 404 Response:
 {"message": "Profile not found"}
 ```
 
-### PUT /profile/:uid
+Sample Failed 500 Response:
+
+```json
+{
+    "message": "Error: Unable to retrieve profile"
+}
+```
+
+### PUT /profile/update
 
 ---
 Updates user profile data. Request body takes in a JSON definition of the changes provided following the format of:
 
-### GET /:tournament/namelist
+```json
+{
+    "uuid": "user-uuid",
+    "email": "user@example.com",
+    "password": "hashed_password_here",
+    "name": "New Name",
+    "isAdmin": 1,
+    "dob": "2000-01-01",
+    "elo": "1500"
+}
+
+```
+
+Sample Success 200 Response:
+
+```json
+{
+    "message": "User updated successfully"
+}
+
+```
+
+Sample Success 400 Response:
+
+```json
+{
+    "message": "Invalid input data"
+}
+
+```
+
+Sample Success 500 Response:
+
+```json
+{
+    "message": "Failed to update user"
+}
+
+```
+
+### POST /namelist
 
 ---
-Retrieves the namelist of all users in a tournament using a tournament ID.
+Retrieves the namelist of all users in a list given an array of UUIDs. Returns a dictionary where the key is UUID and value is name.
+
+Sample Success 200 Response:
+
+```json
+{
+    "message": "Names retrieved successfully",
+    "data": {
+        "uuid1": "Name1",
+        "uuid2": "Name2",
+        "uuid3": "Name3"
+    }
+}
+```
+
+Sample Success 500 Response:
+
+```json
+{
+    "message": "Error: Unable to retrieve names"
+}
+```

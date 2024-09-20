@@ -1,0 +1,8 @@
+user\ProfileService.class
+user\ProfileController.class
+user\UserRepository.class
+user\ProfileRequest.class
+user\ProfileResponse.class
+user\UserApplication.class
+user\ResponseManager.class
+user\User.class

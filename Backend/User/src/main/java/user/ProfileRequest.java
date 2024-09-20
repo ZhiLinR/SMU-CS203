@@ -3,7 +3,8 @@ package user;
 public class ProfileRequest {
     private String email;
     private String password;
-    private Integer isAdmin;
+    private String name;
+    private Byte isAdmin;
 
     // Getters and setters
     public String getEmail() {
@@ -22,12 +23,22 @@ public class ProfileRequest {
         this.password = password;
     }
 
-    public Integer getIsAdmin() {
+    public Byte getIsAdmin() {
         return isAdmin;
     }
 
-    public void setIsAdmin(Integer isAdmin) {
+    public void setIsAdmin(Byte isAdmin) {
         this.isAdmin = isAdmin;
     }
+
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
 

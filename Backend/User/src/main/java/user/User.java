@@ -8,20 +8,19 @@ import java.util.Date;
 @Entity
 @Table(name = "User")
 public class User {
-    
     @Id
-    private String UUID; // UUID as primary key
-    
+    private String UUID;
     private String email;
-    private String password; // bcrypt hashed password
+    private String password;
     private String name;
+    private Byte isAdmin;
     private Date dob;
     private String elo;
 
     // Getters and setters
 
     public String getUUID() {
-        return UUID;
+        return this.UUID;
     }
 
     public void setUUID(String UUID) {
@@ -29,7 +28,7 @@ public class User {
     }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     public void setEmail(String email) {
@@ -37,7 +36,7 @@ public class User {
     }
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -45,15 +44,23 @@ public class User {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public Byte getIsAdmin() {
+        return this.isAdmin;
+    }
+
+    public void setIsAdmin(Byte isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
     public Date getDob() {
-        return dob;
+        return this.dob;
     }
 
     public void setDob(Date dob) {
@@ -61,11 +68,12 @@ public class User {
     }
 
     public String getElo() {
-        return elo;
+        return this.elo;
     }
 
     public void setElo(String elo) {
         this.elo = elo;
     }
+
 }
 
