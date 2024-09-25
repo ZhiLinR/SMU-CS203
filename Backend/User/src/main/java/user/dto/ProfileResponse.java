@@ -4,16 +4,32 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+import lombok.Data;
 import user.model.User;
 
+/**
+ * Data Transfer Object (DTO) for sending user profile information in responses.
+ * 
+ * <p>This class encapsulates the user's profile data, including email, name, 
+ * date of birth (as {@link LocalDate}), and ELO rating.
+ * 
+ * <p>It provides a constructor to initialize the profile response using a {@link User} entity
+ * and includes getter and setter methods for each field.
+ */
+@Data
 public class ProfileResponse {
 
     private String email;
     private String name;
-    private LocalDate dob; // Use LocalDate for date of birth
+    private LocalDate dob;
     private String elo;
 
-    // Constructor to initialize ProfileResponse from a User entity
+    
+    /**
+     * Constructor to initialize ProfileResponse from a User entity.
+     * 
+     * @param user the {@link User} entity from which the profile data is extracted
+     */
     public ProfileResponse(User user) {
         this.email = user.getEmail();
         this.name = user.getName();
@@ -21,7 +37,12 @@ public class ProfileResponse {
         this.elo = user.getElo();
     }
 
-    // Method to convert java.util.Date to java.time.LocalDate
+    /**
+     * Converts a {@link java.util.Date} to {@link java.time.LocalDate}.
+     * 
+     * @param dateToConvert the {@link Date} object to be converted
+     * @return the equivalent {@link LocalDate} object, or null if the input date is null
+     */
     private LocalDate convertToLocalDate(Date dateToConvert) {
         if (dateToConvert == null) {
             return null;
@@ -29,50 +50,6 @@ public class ProfileResponse {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
-    }
-
-
-    // Getters and Setters
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
-    public String getElo() {
-        return elo;
-    }
-
-    public void setElo(String elo) {
-        this.elo = elo;
-    }
-
-    @Override
-    public String toString() {
-        return "ProfileResponse{" +
-                "email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", dob=" + dob +
-                ", elo='" + elo + '\'' +
-                '}';
     }
 }
 

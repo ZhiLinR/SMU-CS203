@@ -6,20 +6,41 @@ import org.springframework.http.ResponseEntity;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class for managing responses in a RESTful API.
+ * Provides static methods to create standardized success and error responses.
+ */
 public class ResponseManager {
 
+    /**
+     * Creates a success response with a message and additional data.
+     *
+     * @param message       the success message to be included in the response
+     * @param additionalData optional additional data to be included in the response
+     * @return a {@link ResponseEntity} containing a success response with the specified message and additional data
+     */
     public static ResponseEntity<Map<String, Object>> success(String message, Object... additionalData) {
         return ResponseEntity.ok(createResponse(message, additionalData));
     }
 
-    public static ResponseEntity<Map<String, Object>> successWithData(String message, Map<String, Object> data) {
-        return ResponseEntity.ok(createResponse(message, data));
-    }
-
+    /**
+     * Creates an error response with a specified HTTP status and message.
+     *
+     * @param status  the HTTP status to be set for the response
+     * @param message the error message to be included in the response
+     * @return a {@link ResponseEntity} containing an error response with the specified status and message
+     */
     public static ResponseEntity<Map<String, Object>> error(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(createResponse(message));
     }
 
+    /**
+     * Creates a response map with a message and optional additional data.
+     *
+     * @param message       the message to be included in the response
+     * @param additionalData optional additional data to be included in the response
+     * @return a map containing the response data
+     */
     private static Map<String, Object> createResponse(String message, Object... additionalData) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
@@ -38,7 +59,6 @@ public class ResponseManager {
     
         return response;
     }
-    
 }
 
 

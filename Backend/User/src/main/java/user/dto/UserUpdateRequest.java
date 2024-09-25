@@ -1,8 +1,22 @@
 package user.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Data;
+
 import java.time.LocalDate;
 
+/**
+ * Data Transfer Object (DTO) for updating user information.
+ *
+ * <p>This class encapsulates the data required to update user details such as 
+ * UUID, email, password, name, admin status, and date of birth (DOB).
+ * 
+ * <p>It includes getter and setter methods to access and modify these fields. 
+ * The `dob` field uses the `LocalDate` class for representing the user's 
+ * date of birth in ISO format.
+ */
+@Data
 public class UserUpdateRequest {
 
     private String uuid;
@@ -13,56 +27,5 @@ public class UserUpdateRequest {
     
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dob;
-
-    // Getters and Setters
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Byte getIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(Byte isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
 }
 

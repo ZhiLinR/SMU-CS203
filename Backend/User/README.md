@@ -130,7 +130,7 @@ Sample Failed 404 Response:
 }
 ```
 
-### POST /profile/update
+### PUT /profile/update
 
 ---
 Updates user profile data. Request body takes in a JSON definition of the changes provided
@@ -174,7 +174,7 @@ Sample Success 404 Response:
 }
 ```
 
-### POST /profile/update/elo
+### PUT /profile/update/elo
 
 ---
 Updates user ELO. Request body takes in a JSON definition of uuid and new ELO
@@ -204,7 +204,7 @@ Sample Failed 404 Response:
 }
 ```
 
-### POST /namelist
+### POST /profile/all/names-only
 
 ---
 Retrieves the namelist of all users in a list given an array of UUIDs. Returns a dictionary where the key is UUID and value is name.
@@ -241,5 +241,3 @@ Sample Success 500 Response:
     "message": "Error: Unable to retrieve names"
 }
 ```
-
-

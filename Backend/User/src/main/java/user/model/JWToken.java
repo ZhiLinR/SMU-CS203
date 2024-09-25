@@ -1,14 +1,21 @@
 package user.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity class representing a JSON Web Token (JWT) in the database.
+ *
+ * <p>This class maps to the "JWToken" table and encapsulates the details of a 
+ * JWT, including the token itself, associated user UUID, last login time, 
+ * and logout time. It serves as a model for managing JWT information 
+ * within the application.
+ */
 @Entity
 @Table(name = "JWToken")
+@Data
 public class JWToken {
     @Id
     @Column(name = "jwt")
@@ -22,39 +29,4 @@ public class JWToken {
 
     @Column(name = "logout")
     private LocalDateTime logout;
-    // Getters and Setters
-
-
-    public String getJwt() {
-        return this.jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public String getUuid() {
-        return this.uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public LocalDateTime getLastLogin() {
-        return this.lastLogin;
-    }
-
-    public void setLastLogin(LocalDateTime lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public LocalDateTime getLogout() {
-        return this.logout;
-    }
-
-    public void setLogout(LocalDateTime logout) {
-        this.logout = logout;
-    }
-    
 }
