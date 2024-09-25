@@ -278,6 +278,9 @@ public class ProfileService {
         if (loginRequest.getEmail() == null || loginRequest.getPassword() == null) {
             throw new IllegalArgumentException("Email and password are required");
         }
+        if (!isValidEmail(loginRequest.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format.");
+        }
     }
 
     /**
