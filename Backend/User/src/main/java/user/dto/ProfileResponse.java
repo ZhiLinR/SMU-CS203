@@ -1,8 +1,10 @@
-package user;
+package user.dto;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+
+import user.model.User;
 
 public class ProfileResponse {
 

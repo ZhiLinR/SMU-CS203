@@ -1,5 +1,6 @@
-package user;
+package user.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -9,22 +10,35 @@ import java.util.Date;
 @Table(name = "User")
 public class User {
     @Id
-    private String UUID;
+    @Column(name = "UUID")
+    private String uuid;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "isAdmin")  // Ensure this matches your database column name
     private Byte isAdmin;
+
+    @Column(name = "dob")
     private Date dob;
+
+    @Column(name = "elo")
     private String elo;
 
     // Getters and setters
 
     public String getUUID() {
-        return this.UUID;
+        return this.uuid;
     }
 
-    public void setUUID(String UUID) {
-        this.UUID = UUID;
+    public void setUUID(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getEmail() {

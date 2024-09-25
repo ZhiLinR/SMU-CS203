@@ -1,4 +1,4 @@
-package user;
+package user.dto;
 
 public class ProfileRequest {
     private String email;

@@ -1,13 +1,22 @@
-package user;
+package user.controller;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import user.dto.EloUpdateRequest;
+import user.dto.LogoutRequest;
+import user.dto.NamelistRequest;
+import user.dto.ProfileRequest;
+import user.dto.ProfileResponse;
+import user.model.User;
+import user.model.UserUpdateRequest;
+import user.service.ProfileService;
+import user.util.ResponseManager;
+
 import org.springframework.http.HttpStatus;
 
 
@@ -53,7 +62,16 @@ public class ProfileController {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
     }
-    
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout(@RequestBody LogoutRequest logoutRequest) {
+        try {
+            profileService.logoutUser(logoutRequest.getUuid());
+            return ResponseManager.success("User logged out successfully.");
+        } catch (Exception e) {
+            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
+        }
+    }
 
     @GetMapping("/profile/{uuid}")
     public ResponseEntity<Map<String, Object>> getProfileByUUID(@PathVariable String uuid) {
@@ -71,27 +89,29 @@ public class ProfileController {
     }
 
     @PostMapping("/namelist")
-    public ResponseEntity<Map<String, Object>> getNamesByUUIDList(@RequestBody List<String> uuids) {
+    public ResponseEntity<Map<String, Object>> getNamesByUUIDList(@RequestBody NamelistRequest request) {
         try {
+            List<String> uuids = request.getData();
             Map<String, String> result = profileService.getNamesByUUIDList(uuids);
             return ResponseManager.success("Names retrieved successfully", result);
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
     }
+    
 
     @PutMapping("/profile/update")
-    public ResponseEntity<Map<String, Object>> updateUser(
-            @RequestParam("uuid") String uuid,
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
-            @RequestParam("name") String name,
-            @RequestParam("isAdmin") Byte isAdmin,
-            @RequestParam("dob") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob,
-            @RequestParam("elo") String elo
-    ) {
+    public ResponseEntity<Map<String, Object>> updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
         try {
-            boolean isUpdated = profileService.updateUser(uuid, email, password, name, isAdmin, dob, elo);
+            boolean isUpdated = profileService.updateUser(
+                userUpdateRequest.getUuid(),
+                userUpdateRequest.getEmail(),
+                userUpdateRequest.getPassword(),
+                userUpdateRequest.getName(),
+                userUpdateRequest.getIsAdmin(),
+                userUpdateRequest.getDob()
+            );
+
             if (isUpdated) {
                 return ResponseManager.success("User updated successfully");
             } else {
@@ -103,5 +123,22 @@ public class ProfileController {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
     }
+
+    @PutMapping("/profile/update/elo")
+    public ResponseEntity<Map<String, Object>> updateElo(@RequestBody EloUpdateRequest eloUpdateRequest) {
+        try {
+            profileService.updateElo(
+                eloUpdateRequest.getUuid(),
+                eloUpdateRequest.getElo()
+            );
+
+            return ResponseManager.success("User ELO updated successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
+        }
+    }
+
 }
 

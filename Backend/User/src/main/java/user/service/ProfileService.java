@@ -1,8 +1,15 @@
-package user;
+package user.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import user.dto.ProfileRequest;
+import user.model.User;
+import user.repository.JWTokenRepository;
+import user.repository.UserRepository;
+import user.util.JwtUtil;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -25,6 +32,7 @@ public class ProfileService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Transactional
     public boolean createProfile(ProfileRequest profileRequest) {
         String email = profileRequest.getEmail();
         String password = profileRequest.getPassword();
@@ -36,18 +44,35 @@ public class ProfileService {
             throw new IllegalArgumentException("Email and password are required");
         }
 
+        if (name == null) {
+            throw new IllegalArgumentException("Name is required");
+        }
+
+        if (isAdmin == null) {
+            throw new IllegalArgumentException("Role is required");
+        }
+
         // Validate isAdmin
         if (isAdmin != 0 && isAdmin != 1) {
             throw new IllegalArgumentException("Invalid value for isAdmin. It must be 0 or 1.");
         }
 
+        // Check if the email already exists
+        String existingUUID = userRepository.checkEmail(email);
+        if (existingUUID != null) {
+            throw new IllegalArgumentException("A user with this email already exists.");
+        }
+
+        String encrypted = passwordEncoder.encode(password);
+
         // Call stored procedure to insert user
-        Integer status = userRepository.insertUser(email, password, name, isAdmin);
+        Integer status = userRepository.insertUser(email, encrypted, name, isAdmin);
 
         // Return true if the user was created successfully, false otherwise
         return status == 1;
     }
 
+    @Transactional
     public String authenticateUser(ProfileRequest loginRequest) {
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
@@ -68,19 +93,57 @@ public class ProfileService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        // Generate JWT token
-        String jwt = jwtUtil.generateToken(email);
+        // If successful login, check if JWT already exists. If yes, logout prev first
+        String uuid = userRepository.checkEmail(email);
+        jwTokenRepository.checkJWT(uuid);
 
-        // Update last login time
+        // Generate new token with Username:Email, uuid:uuid, isAdmin: isAdmin
+        Byte isAdmin = userRepository.getRoleByUUID(uuid);
+
+        // Generate JWT token
+        String jwt = jwtUtil.generateToken(email, uuid, isAdmin);
+
         jwTokenRepository.updateJWTLastLogin(email, jwt);
 
         return jwt;
     }
 
-    public User getProfileByUUID(String uuid) {
-        return userRepository.getProfile(uuid);
+    @Transactional
+    public void logoutUser(String uuid) {
+        try {
+            // Step 1: Get user profile and check for errors (handled in getProfileByUUID)
+            User user = getProfileByUUID(uuid);
+    
+            // Step 2: Check if JWT token exists and update the logout
+            Integer rowsAffected = jwTokenRepository.updateLogout(uuid);
+    
+            // Step 3: Handle cases where the update fails (e.g., no token found or already logged out)
+            if (rowsAffected == 0) {
+                throw new IllegalStateException("Logout failed. Either no JWT token exists for this user or the user is already logged out.");
+            }
+        } catch (Exception e) {
+            // Re-throw the exception to be handled by the controller or other layers
+            throw e;
+        } 
     }
 
+    @Transactional
+    public User getProfileByUUID(String uuid) {
+        if (uuid == null || uuid.isEmpty()) {
+            throw new IllegalArgumentException("Invalid UUID: UUID cannot be null or empty.");
+        }
+    
+        User user = userRepository.getProfile(uuid);
+    
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+    
+        return user; // Return the user profile if everything is valid
+    }
+    
+
+    @Transactional
     public Map<String, String> getNamesByUUIDList(List<String> uuids) {
         Map<String, String> nameMap = new HashMap<>();
         
@@ -117,8 +180,31 @@ public class ProfileService {
     //     return uuid.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
     // }
     
+    @Transactional
+    public void updateElo(String uuid, Integer elo) {
+        if (uuid == null || uuid.isEmpty()) {
+            throw new IllegalArgumentException("UUID is required");
+        }
+        if (elo == null) {
+            throw new IllegalArgumentException("ELO is required");
+        }
 
-    public boolean updateUser(String uuid, String email, String password, String name, Byte isAdmin, LocalDate dob, String elo) {
+        try {
+            // Call the stored procedure to update user
+
+            // Check if user exists
+            User user = getProfileByUUID(uuid);
+
+            userRepository.updateElo(uuid, elo);
+        } catch (Exception e) {
+            // Log the exception and return false for failure
+            // You may want to log the exception here
+            throw e;
+        }
+    }
+
+    @Transactional
+    public boolean updateUser(String uuid, String email, String password, String name, Byte isAdmin, LocalDate dob) {
         // Validate input parameters
         if (uuid == null || uuid.isEmpty()) {
             throw new IllegalArgumentException("UUID is required");
@@ -133,22 +219,30 @@ public class ProfileService {
             throw new IllegalArgumentException("Name is required");
         }
         if (isAdmin == null || (isAdmin != 0 && isAdmin != 1)) {
-            throw new IllegalArgumentException("Invalid value for isAdmin. It must be 0 or 1.");
+            throw new IllegalArgumentException("Invalid value for Role.");
         }
-        
+
         // Convert LocalDate to java.sql.Date
         java.sql.Date sqlDate = dob != null ? java.sql.Date.valueOf(dob) : null;
 
         try {
             // Call the stored procedure to update user
-            userRepository.updateUser(uuid, email, password, name, isAdmin, sqlDate, elo);
+
+            // Check if user exists
+            User user = getProfileByUUID(uuid);
+
+            String encrypted = passwordEncoder.encode(password);
+
+            userRepository.updateUser(uuid, email, encrypted, name, isAdmin, sqlDate);
             return true; // Assume procedure succeeds if no exception is thrown
         } catch (Exception e) {
             // Log the exception and return false for failure
             // You may want to log the exception here
-            return false;
+            throw e;
         }
     }
+
+
 }
 
 

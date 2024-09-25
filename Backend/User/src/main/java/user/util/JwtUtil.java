@@ -1,4 +1,4 @@
-package user;
+package user.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -16,11 +16,13 @@ public class JwtUtil {
     private String secretKey;
 
 
-    public String generateToken(String username) {
+    public String generateToken(String username, String uuid, Byte isAdmin) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("uuid", uuid)
+                .claim("isAdmin", isAdmin)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Token valid for 10 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Token valid for 24 hours
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

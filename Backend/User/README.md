@@ -7,7 +7,7 @@
 ### POST /profile
 
 ---
-Registers a new user minimally using an email, a hashed password and if user is an admin, defined in request body. When isAdmin == 1, user is an admin while when isAdmin == 0, user is a normal user.
+Registers a new user minimally using an email, a hashed password and if user is an admin, defined in request body. When isAdmin == 1, user is an admin while when isAdmin == 0, user is a normal user. ***WORKS***
 
 Sample Request Body:
 
@@ -41,7 +41,7 @@ Sample Failed 500 Response [DB Connection Error]:
 ### POST /login
 
 ---
-Validates existing user using their email and a hashed password, defined in request body.
+Validates existing user using their email and a hashed password, defined in request body. ***WORKS***
 
 Sample Request Body:
 
@@ -78,10 +78,27 @@ Failed 500 Response:
 }
 ```
 
+### POST /logout
+
+---
+Logout user using UUID provided in request body ***WORKS***
+
+Sample Request Body:
+
+```json
+{"uuid": "sample-user-uuid"}
+```
+
+Sample Success 200 Response:
+
+```json
+{"message": "User logged out successfully."}
+```
+
 ### GET /profile/:uid
 
 ---
-Retrieves a profile by a UUID provided in params.
+Retrieves a profile by a UUID provided in params. ***WORKS***
 
 Sample Success 200 Response:
 
@@ -89,7 +106,6 @@ Sample Success 200 Response:
 {
     "message": "Profile found",
     "data": {
-        "uuid": "user-uuid",
         "email": "user@example.com",
         "name": "User Name",
         "dob": "YYYY-MM-DD",
@@ -99,24 +115,18 @@ Sample Success 200 Response:
 }
 ```
 
-Sample Failed 404 Response:
-
-```json
-{"message": "Profile not found"}
-```
-
 Sample Failed 500 Response:
 
 ```json
 {
-    "message": "Error: Unable to retrieve profile"
+    "message": "Error: User not found"
 }
 ```
 
-### PUT /profile/update
+### POST /profile/update
 
 ---
-Updates user profile data. Request body takes in a JSON definition of the changes provided following the format of:
+Updates user profile data. Request body takes in a JSON definition of the changes provided following the format of: ***WORKS***
 
 ```json
 {

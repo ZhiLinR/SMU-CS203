@@ -1,4 +1,4 @@
-package user;
+package user.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,23 +23,22 @@ public class ResponseManager {
     private static Map<String, Object> createResponse(String message, Object... additionalData) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
-
+    
+        // Check if there are additional data to include
         if (additionalData.length > 0) {
             Object firstData = additionalData[0];
+    
+            // Always wrap the first data in "data" key
             if (firstData instanceof Map) {
-                Map<?, ?> additionalMap = (Map<?, ?>) firstData;
-                for (Map.Entry<?, ?> entry : additionalMap.entrySet()) {
-                    // Type safety: Ensure key and value are both String and Object, respectively
-                    if (entry.getKey() instanceof String) {
-                        response.put((String) entry.getKey(), entry.getValue());
-                    }
-                }
-            } else {
                 response.put("data", firstData);
+            } else {
+                response.put("data", firstData); // Ensure all types of additional data are wrapped in "data"
             }
         }
+    
         return response;
     }
+    
 }
 
 
