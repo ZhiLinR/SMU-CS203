@@ -105,6 +105,7 @@ public class ProfileService {
     public void logoutUser(String uuid) {
         try {
             // Get user profile and check for errors (handled in getProfileByUUID)
+            @SuppressWarnings("unused")
             User user = getProfileByUUID(uuid);
     
             // Check if JWT token exists and update the logout
@@ -192,6 +193,7 @@ public class ProfileService {
 
         try {
             // Check if user exists
+            @SuppressWarnings("unused")
             User user = getProfileByUUID(uuid);
 
             userRepository.updateElo(uuid, elo);
@@ -223,6 +225,7 @@ public class ProfileService {
 
         try {
             // Check if user exists
+            @SuppressWarnings("unused")
             User user = getProfileByUUID(uuid);
 
             String encrypted = passwordEncoder.encode(password);
