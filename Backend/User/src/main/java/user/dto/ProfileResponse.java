@@ -8,7 +8,6 @@ import user.model.User;
 
 public class ProfileResponse {
 
-    private String UUID;
     private String email;
     private String name;
     private LocalDate dob; // Use LocalDate for date of birth
@@ -16,7 +15,6 @@ public class ProfileResponse {
 
     // Constructor to initialize ProfileResponse from a User entity
     public ProfileResponse(User user) {
-        this.UUID = user.getUUID();
         this.email = user.getEmail();
         this.name = user.getName();
         this.dob = convertToLocalDate(user.getDob()); // Conversion from Date to LocalDate
@@ -35,14 +33,6 @@ public class ProfileResponse {
 
 
     // Getters and Setters
-    public String getUUID() {
-        return UUID;
-    }
-
-    public void setUUID(String UUID) {
-        this.UUID = UUID;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -78,8 +68,7 @@ public class ProfileResponse {
     @Override
     public String toString() {
         return "ProfileResponse{" +
-                "UUID='" + UUID + '\'' +
-                ", email='" + email + '\'' +
+                "email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", dob=" + dob +
                 ", elo='" + elo + '\'' +

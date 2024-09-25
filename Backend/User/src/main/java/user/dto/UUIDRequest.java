@@ -1,6 +1,6 @@
 package user.dto;
 
-public class LogoutRequest {
+public class UUIDRequest {
     private String uuid;
 
     // Getters and Setters

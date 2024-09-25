@@ -8,14 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import user.dto.EloUpdateRequest;
-import user.dto.LogoutRequest;
+import user.dto.UUIDRequest;
 import user.dto.NamelistRequest;
 import user.dto.ProfileRequest;
 import user.dto.ProfileResponse;
+import user.dto.UserUpdateRequest;
 import user.model.User;
-import user.model.UserUpdateRequest;
 import user.service.ProfileService;
 import user.util.ResponseManager;
+import user.util.UserNotFoundException;
 
 import org.springframework.http.HttpStatus;
 
@@ -27,7 +28,7 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    @PostMapping("/profile")
+    @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> createProfile(@RequestBody ProfileRequest profileRequest) {
         try {
             boolean isCreated = profileService.createProfile(profileRequest);
@@ -64,25 +65,25 @@ public class ProfileController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, Object>> logout(@RequestBody LogoutRequest logoutRequest) {
+    public ResponseEntity<Map<String, Object>> logout(@RequestBody UUIDRequest uuidRequest) {
         try {
-            profileService.logoutUser(logoutRequest.getUuid());
+            profileService.logoutUser(uuidRequest.getUuid());
             return ResponseManager.success("User logged out successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseManager.error(HttpStatus.NOT_FOUND, "Error: " + e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
-        }
+        } 
     }
 
-    @GetMapping("/profile/{uuid}")
-    public ResponseEntity<Map<String, Object>> getProfileByUUID(@PathVariable String uuid) {
+    @PostMapping("/profile")
+    public ResponseEntity<Map<String, Object>> getProfileByUUID(@RequestBody UUIDRequest uuidRequest) {
         try {
-            User user = profileService.getProfileByUUID(uuid);
-            if (user != null) {
-                ProfileResponse profileResponse = new ProfileResponse(user);
-                return ResponseManager.success("Profile found", profileResponse);
-            } else {
-                return ResponseManager.error(HttpStatus.NOT_FOUND, "Profile not found");
-            }
+            User user = profileService.getProfileByUUID(uuidRequest.getUuid());
+            ProfileResponse profileResponse = new ProfileResponse(user);
+            return ResponseManager.success("Profile found", profileResponse);
+        } catch (UserNotFoundException e) {
+            return ResponseManager.error(HttpStatus.NOT_FOUND, "Error: " + e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
@@ -119,6 +120,8 @@ public class ProfileController {
             }
         } catch (IllegalArgumentException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (UserNotFoundException e) {
+            return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
@@ -135,6 +138,8 @@ public class ProfileController {
             return ResponseManager.success("User ELO updated successfully");
         } catch (IllegalArgumentException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (UserNotFoundException e) {
+            return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }

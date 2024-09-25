@@ -10,6 +10,7 @@ import user.model.User;
 import user.repository.JWTokenRepository;
 import user.repository.UserRepository;
 import user.util.JwtUtil;
+import user.util.UserNotFoundException;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -136,7 +137,7 @@ public class ProfileService {
         User user = userRepository.getProfile(uuid);
     
         if (user == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new UserNotFoundException("User not found");
         }
     
         return user; // Return the user profile if everything is valid
@@ -170,16 +171,6 @@ public class ProfileService {
         return nameMap;
     }
 
-    // private boolean isValidUUID(String uuid) {
-    //     // Check if the UUID is null or has the wrong length
-    //     if (uuid == null || uuid.length() != 36) {
-    //         return false;
-    //     }
-    
-    //     // Check if the UUID has the correct format with hyphens
-    //     return uuid.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-    // }
-    
     @Transactional
     public void updateElo(String uuid, Integer elo) {
         if (uuid == null || uuid.isEmpty()) {

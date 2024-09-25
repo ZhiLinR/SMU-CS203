@@ -4,10 +4,10 @@
 
 ### Quick Reference API Endpoints
 
-### POST /profile
+### POST /register
 
 ---
-Registers a new user minimally using an email, a hashed password and if user is an admin, defined in request body. When isAdmin == 1, user is an admin while when isAdmin == 0, user is a normal user. ***WORKS***
+Registers a new user minimally using an email, a hashed password and if user is an admin, defined in request body. When isAdmin == 1, user is an admin while when isAdmin == 0, user is a normal user.
 
 Sample Request Body:
 
@@ -32,16 +32,10 @@ Sample Failed 400 Response:
 {"message": "Email and password are required"}
 ```
 
-Sample Failed 500 Response [DB Connection Error]:
-
-```json
-{"message": "Failed to register user"}
-```
-
 ### POST /login
 
 ---
-Validates existing user using their email and a hashed password, defined in request body. ***WORKS***
+Validates existing user using their email and a hashed password, defined in request body.
 
 Sample Request Body:
 
@@ -70,18 +64,10 @@ Sample Failed 401 Response:
 {"message": "Invalid email or password"}
 ```
 
-Failed 500 Response:
-
-```json
-{
-    "message": "Error: Authentication failed"
-}
-```
-
 ### POST /logout
 
 ---
-Logout user using UUID provided in request body ***WORKS***
+Logout user using UUID provided in request body
 
 Sample Request Body:
 
@@ -95,10 +81,32 @@ Sample Success 200 Response:
 {"message": "User logged out successfully."}
 ```
 
-### GET /profile/:uid
+Sample Failed 404 Response:
+
+```json
+{
+    "message": "Error: User not found"
+}
+```
+
+Sample Failed 500 Response:
+
+```json
+{
+    "message": "Error: Logout failed. Either no JWT token exists for this user or the user is already logged out."
+}
+```
+
+### POST /profile
 
 ---
-Retrieves a profile by a UUID provided in params. ***WORKS***
+Retrieves a profile by a UUID provided in params.
+
+Sample Request Body:
+
+```json
+{"uuid": "sample-user-uuid"}
+```
 
 Sample Success 200 Response:
 
@@ -109,13 +117,12 @@ Sample Success 200 Response:
         "email": "user@example.com",
         "name": "User Name",
         "dob": "YYYY-MM-DD",
-        "elo": "User Elo Rating",
-        "isAdmin": 1
+        "elo": "User Elo Rating"
     }
 }
 ```
 
-Sample Failed 500 Response:
+Sample Failed 404 Response:
 
 ```json
 {
@@ -126,7 +133,9 @@ Sample Failed 500 Response:
 ### POST /profile/update
 
 ---
-Updates user profile data. Request body takes in a JSON definition of the changes provided following the format of: ***WORKS***
+Updates user profile data. Request body takes in a JSON definition of the changes provided
+
+Sample Request Body:
 
 ```json
 {
@@ -135,8 +144,7 @@ Updates user profile data. Request body takes in a JSON definition of the change
     "password": "hashed_password_here",
     "name": "New Name",
     "isAdmin": 1,
-    "dob": "2000-01-01",
-    "elo": "1500"
+    "dob": "2000-01-01"
 }
 
 ```
@@ -154,24 +162,64 @@ Sample Success 400 Response:
 
 ```json
 {
-    "message": "Invalid input data"
+    "message": "Email is required"
 }
-
 ```
 
-Sample Success 500 Response:
+Sample Success 404 Response:
 
 ```json
 {
-    "message": "Failed to update user"
+    "message": "User not found"
 }
+```
 
+### POST /profile/update/elo
+
+---
+Updates user ELO. Request body takes in a JSON definition of uuid and new ELO
+
+Sample Request Body:
+
+```json
+{
+    "uuid": "user-uuid",
+    "elo": 200,
+}
+```
+
+Sample Success 200 Response:
+
+```json
+{
+    "message": "User ELO updated successfully"
+}
+```
+
+Sample Failed 404 Response:
+
+```json
+{
+    "message": "User not found"
+}
 ```
 
 ### POST /namelist
 
 ---
 Retrieves the namelist of all users in a list given an array of UUIDs. Returns a dictionary where the key is UUID and value is name.
+
+Sample Request Body:
+
+```json
+{
+    "data": [
+        "uuid_1",
+        "uuid_2",
+        "uuid_3"    
+    ]
+}
+```
 
 Sample Success 200 Response:
 
@@ -193,3 +241,5 @@ Sample Success 500 Response:
     "message": "Error: Unable to retrieve names"
 }
 ```
+
+

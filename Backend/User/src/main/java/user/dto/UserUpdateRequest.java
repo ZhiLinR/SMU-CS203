@@ -1,4 +1,4 @@
-package user.model;
+package user.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
