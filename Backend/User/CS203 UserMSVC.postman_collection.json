@@ -1382,6 +1382,70 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"message\": \"Role is required\"\n}"
+				},
+				{
+					"name": "Invalid Email Format",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"iwantdie\",\r\n    \"password\": \"234567\",\r\n    \"name\": \"iwantdie\",\r\n    \"isAdmin\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/api/register"
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Sep 2024 11:30:56 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Invalid email format.\"\n}"
 				}
 			]
 		},
@@ -1416,7 +1480,7 @@
 								}
 							}
 						},
-						"url": "http://localhost:8080/api/namelist"
+						"url": "http://localhost:8080/api/profile/all/names-only"
 					},
 					"status": "OK",
 					"code": 200,
