@@ -6,12 +6,14 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * Entity class representing a JSON Web Token (JWT) in the database.
- *
- * <p>This class maps to the "JWToken" table and encapsulates the details of a 
- * JWT, including the token itself, associated user UUID, last login time, 
- * and logout time. It serves as a model for managing JWT information 
- * within the application.
+ * Represents a user entity in the system.
+ * This entity is mapped to the "User" table in the database.
+ * 
+ * <p>
+ * The class contains fields corresponding to user-specific data
+ * such as email, password, name, etc., which are persisted in
+ * the database.
+ * </p>
  */
 @Entity
 @Table(name = "User")

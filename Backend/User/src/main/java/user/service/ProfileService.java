@@ -11,12 +11,12 @@ import user.repository.JWTokenRepository;
 import user.repository.UserRepository;
 import user.util.JwtUtil;
 import user.util.UserNotFoundException;
+import user.util.ValidationUtil;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Service class for managing user profiles, including creating, authenticating,
@@ -186,7 +186,7 @@ public class ProfileService {
      */
     @Transactional
     public void updateElo(String uuid, Integer elo) {
-        validateUUID(uuid);
+        ValidationUtil.validateUUID(uuid);
         if (elo == null) {
             throw new IllegalArgumentException("ELO is required");
         }
@@ -238,20 +238,18 @@ public class ProfileService {
     }
 
     /**
-     * Validates the provided profile request for missing fields.
+     * Validates the provided profile request for missing fields and invalid data.
      *
      * @param profileRequest the profile request to validate
-     * @throws IllegalArgumentException if the profile request is missing required fields or has invalid data
+     * @throws IllegalArgumentException if any required fields are missing or contain invalid data
      */
     private void validateProfileRequest(ProfileRequest profileRequest) {
-        if (profileRequest.getEmail() == null || profileRequest.getPassword() == null ||
-            profileRequest.getName() == null || profileRequest.getIsAdmin() == null) {
-            throw new IllegalArgumentException("Missing value (Email, password, name, and/or role).");
-        }
-        if (profileRequest.getIsAdmin() != 0 && profileRequest.getIsAdmin() != 1) {
-            throw new IllegalArgumentException("Invalid value for Role.");
-        }
-        if (!isValidEmail(profileRequest.getEmail())) {
+        ValidationUtil.validateRequiredFields(profileRequest.getEmail(), "Email is required");
+        ValidationUtil.validateRequiredFields(profileRequest.getPassword(), "Password is required");
+        ValidationUtil.validateRequiredFields(profileRequest.getName(), "Name is required");
+        ValidationUtil.validateRole(profileRequest.getIsAdmin());
+
+        if (!ValidationUtil.isValidEmail(profileRequest.getEmail())) {
             throw new IllegalArgumentException("Invalid email format.");
         }
         if (userRepository.checkEmail(profileRequest.getEmail()) != null) {
@@ -260,72 +258,35 @@ public class ProfileService {
     }
 
     /**
-     * Validates the provided email format.
-     *
-     * @param email the email to validate
-     * @return {@code true} if the email format is valid; {@code false} otherwise
-     */
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        return pattern.matcher(email).matches();
-    }
-
-    /**
-     * Validates the provided login request for missing fields.
+     * Validates the provided login request for missing fields and invalid data.
      *
      * @param loginRequest the login request to validate
-     * @throws IllegalArgumentException if the login request is missing required fields
+     * @throws IllegalArgumentException if the email or password is missing or invalid
      */
     private void validateLoginRequest(ProfileRequest loginRequest) {
-        if (loginRequest.getEmail() == null || loginRequest.getPassword() == null) {
-            throw new IllegalArgumentException("Email and password are required");
-        }
-        if (!isValidEmail(loginRequest.getEmail())) {
+        ValidationUtil.validateRequiredFields(loginRequest.getEmail(), "Email is required");
+        ValidationUtil.validateRequiredFields(loginRequest.getPassword(), "Password is required");
+
+        if (!ValidationUtil.isValidEmail(loginRequest.getEmail())) {
             throw new IllegalArgumentException("Invalid email format.");
         }
     }
 
     /**
-     * Validates the user update parameters for any invalid inputs.
+     * Validates the provided user update parameters for missing or invalid data.
      *
      * @param uuid the UUID of the user
-     * @param email the new email
-     * @param password the new password
-     * @param name the new name
-     * @param isAdmin the new admin status
-     * @throws IllegalArgumentException if any provided parameters are invalid
+     * @param email the new email to update
+     * @param password the new password to update
+     * @param name the new name to update
+     * @param isAdmin the new admin status (0 or 1)
+     * @throws IllegalArgumentException if any provided parameters are invalid or missing
      */
     private void validateUserUpdate(String uuid, String email, String password, String name, Byte isAdmin) {
-        if (uuid == null || uuid.isEmpty()) {
-            throw new IllegalArgumentException("UUID is required");
-        }
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Name is required");
-        }
-        if (isAdmin == null || (isAdmin != 0 && isAdmin != 1)) {
-            throw new IllegalArgumentException("Invalid value for Role.");
-        }
-    }
-
-    /**
-     * Validates the UUID for any null or empty values.
-     *
-     * @param uuid the UUID to validate
-     * @throws IllegalArgumentException if the UUID is null or empty
-     */
-    private void validateUUID(String uuid) {
-        if (uuid == null || uuid.isEmpty()) {
-            throw new IllegalArgumentException("UUID is required");
-        }
+        ValidationUtil.validateUUID(uuid);
+        ValidationUtil.validateRequiredFields(email, "Email is required");
+        ValidationUtil.validateRequiredFields(password, "Password is required");
+        ValidationUtil.validateRequiredFields(name, "Name is required");
+        ValidationUtil.validateRole(isAdmin);
     }
 }
-
-
-
