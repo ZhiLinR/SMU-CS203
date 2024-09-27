@@ -69,8 +69,8 @@ Sample Success 200 Response:
     "success": true,
     "message": "Successful Login",
     "content": {
-        "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWluc0BleGFtcGxlLmNvbSIsInV1aWQiOiIzZWU5YjU3Mi03OWIwLTExZWYtYjRiYy0wMjQyYWMxMTAwMDIiLCJpc0FkbWluIjoxLCJpYXQiOjE3Mjc0Mzg0NDEsImV4cCI6MTcyNzUyNDg0MX0.BZOciW3qU1TOljhdc2XG2MB__i0FyeyGWHcvWpBLI5U",
-        "email": "pains@example.com"
+        "token": "JWT_VALUE",
+        "email": "user@example.com"
     }
 }
 ```
@@ -153,10 +153,10 @@ Sample Success 200 Response:
     "success": true,
     "message": "Profile found",
     "content": {
-        "email": "pains@example.com",
-        "name": "Taint123",
-        "dob": "2003-01-01",
-        "elo": "200"
+        "email": "user@example.com",
+        "name": "Name_1",
+        "dob": "2000-01-01",
+        "elo": "1000"
     }
 }
 ```
