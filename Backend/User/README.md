@@ -92,7 +92,8 @@ Sample Failed 401 Response:
     "success": false,
     "message": "Invalid email or password",
     "content": null
-}```
+}
+```
 
 ### POST /logout
 
