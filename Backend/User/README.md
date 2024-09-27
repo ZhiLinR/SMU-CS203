@@ -2,6 +2,15 @@
 
 ## Workspace for User Management Microservice
 
+---
+To start the microservice, run the commands below in order
+
+```console
+cd Backend\User
+mvn clean install
+mvn spring-boot:run
+```
+
 ### Quick Reference API Endpoints
 
 ### POST /register
