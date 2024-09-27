@@ -75,6 +75,7 @@ public class ProfileService {
      * @return the generated JWT token
      * @throws IllegalArgumentException if the login request is invalid or authentication fails
      */
+    @Transactional
     public String authenticateUser(ProfileRequest loginRequest) {
         validateLoginRequest(loginRequest);
 
