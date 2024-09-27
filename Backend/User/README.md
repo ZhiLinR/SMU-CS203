@@ -2,7 +2,6 @@
 
 ## Workspace for User Management Microservice
 
----
 To start the microservice, run the commands below in order
 
 ```console
@@ -32,13 +31,21 @@ Sample Request Body:
 Sample Success 200 Response:
 
 ```json
-{"message": "User registered successfully"}
+{
+    "success": true,
+    "message": "User registered successfully",
+    "content": null
+}
 ```
 
 Sample Failed 400 Response:
 
 ```json
-{"message": "Email and password are required"}
+{
+    "success": false,
+    "message": "A user with this email already exists.",
+    "content": null
+}
 ```
 
 ### POST /login
@@ -59,18 +66,33 @@ Sample Success 200 Response:
 
 ```json
 {
-    "message": "Success",
-    "data": {
-        "email": "user@example.com",
-        "jwt": "JWT_TOKEN_VALUE"
+    "success": true,
+    "message": "Successful Login",
+    "content": {
+        "token": "JWT_VALUE",
+        "email": "user@example.com"
     }
+}
+```
+
+Sample Failed 400 Response:
+
+```json
+{
+    "success": false,
+    "message": "Password is required",
+    "content": null
 }
 ```
 
 Sample Failed 401 Response:
 
 ```json
-{"message": "Invalid email or password"}
+{
+    "success": false,
+    "message": "Invalid email or password",
+    "content": null
+}
 ```
 
 ### POST /logout
@@ -87,14 +109,20 @@ Sample Request Body:
 Sample Success 200 Response:
 
 ```json
-{"message": "User logged out successfully."}
+{
+    "success": true,
+    "message": "User logged out successfully.",
+    "content": null
+}
 ```
 
 Sample Failed 404 Response:
 
 ```json
 {
-    "message": "Error: User not found"
+    "success": false,
+    "message": "Error: User not found",
+    "content": null
 }
 ```
 
@@ -102,7 +130,9 @@ Sample Failed 500 Response:
 
 ```json
 {
-    "message": "Error: Logout failed. Either no JWT token exists for this user or the user is already logged out."
+    "success": false,
+    "message": "Error: Logout failed. Either no JWT token exists for this user or the user is already logged out.",
+    "content": null
 }
 ```
 
@@ -121,12 +151,13 @@ Sample Success 200 Response:
 
 ```json
 {
+    "success": true,
     "message": "Profile found",
-    "data": {
+    "content": {
         "email": "user@example.com",
-        "name": "User Name",
-        "dob": "YYYY-MM-DD",
-        "elo": "User Elo Rating"
+        "name": "Name_1",
+        "dob": "2000-01-01",
+        "elo": "1000"
     }
 }
 ```
@@ -135,7 +166,9 @@ Sample Failed 404 Response:
 
 ```json
 {
-    "message": "Error: User not found"
+    "success": false,
+    "message": "Error: User not found",
+    "content": null
 }
 ```
 
@@ -162,16 +195,19 @@ Sample Success 200 Response:
 
 ```json
 {
-    "message": "User updated successfully"
+    "success": true,
+    "message": "User updated successfully",
+    "content": null
 }
-
 ```
 
 Sample Success 400 Response:
 
 ```json
 {
-    "message": "Email is required"
+    "success": false,
+    "message": "Email is required",
+    "content": null
 }
 ```
 
@@ -179,7 +215,9 @@ Sample Success 404 Response:
 
 ```json
 {
-    "message": "User not found"
+    "success": false,
+    "message": "User not found",
+    "content": null
 }
 ```
 
@@ -201,7 +239,9 @@ Sample Success 200 Response:
 
 ```json
 {
-    "message": "User ELO updated successfully"
+    "success": true,
+    "message": "User ELO updated successfully",
+    "content": null
 }
 ```
 
@@ -209,7 +249,9 @@ Sample Failed 404 Response:
 
 ```json
 {
-    "message": "User not found"
+    "success": false,
+    "message": "User not found",
+    "content": null
 }
 ```
 
@@ -234,11 +276,12 @@ Sample Success 200 Response:
 
 ```json
 {
+    "success": true,
     "message": "Names retrieved successfully",
-    "data": {
-        "uuid1": "Name1",
-        "uuid2": "Name2",
-        "uuid3": "Name3"
+    "content": {
+        "uuid_1": "name_1",
+        "uuid_2": "name_2",
+        "uuid_3": "name_3"
     }
 }
 ```
@@ -247,6 +290,8 @@ Sample Success 500 Response:
 
 ```json
 {
-    "message": "Error: Unable to retrieve names"
+    "success": false,
+    "message": "Error: Unable to retrieve names",
+    "content": null
 }
 ```
