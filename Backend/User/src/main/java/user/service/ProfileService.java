@@ -10,6 +10,7 @@ import user.model.User;
 import user.repository.JWTokenRepository;
 import user.repository.UserRepository;
 import user.util.JwtUtil;
+import user.util.UnauthorizedException;
 import user.util.UserNotFoundException;
 import user.util.ValidationUtil;
 
@@ -81,7 +82,7 @@ public class ProfileService {
 
         String hashedPassword = userRepository.getHashedPassword(loginRequest.getEmail());
         if (hashedPassword == null || !passwordEncoder.matches(loginRequest.getPassword(), hashedPassword)) {
-            throw new IllegalArgumentException("Invalid email or password");
+            throw new UnauthorizedException("Invalid email or password");
         }
 
         String uuid = userRepository.checkEmail(loginRequest.getEmail());

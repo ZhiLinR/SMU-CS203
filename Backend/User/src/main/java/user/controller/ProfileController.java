@@ -79,11 +79,14 @@ public class ProfileController {
             String jwtToken = profileService.authenticateUser(loginRequest);
             
             // Return a successful response with the JWT token
-            return ResponseManager.success("Success", Map.of(
+            return ResponseManager.success("Successful Login", Map.of(
                 "email", loginRequest.getEmail(),
                 "token", jwtToken
             ));
         } catch (IllegalArgumentException e) {
+            // Handle unauthorized errors
+            return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (UnauthorizedException e) {
             // Handle unauthorized errors
             return ResponseManager.error(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {

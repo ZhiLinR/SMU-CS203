@@ -20,7 +20,7 @@ public class ResponseManager {
      * @return a {@link ResponseEntity} containing a success response with the specified message and additional data
      */
     public static ResponseEntity<Map<String, Object>> success(String message, Object... additionalData) {
-        return ResponseEntity.ok(createResponse(message, additionalData));
+        return ResponseEntity.ok(createResponse(message, true, additionalData));
     }
 
     /**
@@ -31,34 +31,29 @@ public class ResponseManager {
      * @return a {@link ResponseEntity} containing an error response with the specified status and message
      */
     public static ResponseEntity<Map<String, Object>> error(HttpStatus status, String message) {
-        return ResponseEntity.status(status).body(createResponse(message));
+        return ResponseEntity.status(status).body(createResponse(message, false));
     }
 
     /**
-     * Creates a response map with a message and optional additional data.
+     * Creates a response map with a message, success flag, and optional additional data.
      *
      * @param message       the message to be included in the response
+     * @param success       whether the response is successful or not
      * @param additionalData optional additional data to be included in the response
      * @return a map containing the response data
      */
-    private static Map<String, Object> createResponse(String message, Object... additionalData) {
+    private static Map<String, Object> createResponse(String message, boolean success, Object... additionalData) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
-    
-        // Check if there are additional data to include
+        response.put("success", success);
+
+        // Check if there is additional data to include in the response
         if (additionalData.length > 0) {
-            Object firstData = additionalData[0];
-    
-            // Always wrap the first data in "data" key
-            if (firstData instanceof Map) {
-                response.put("data", firstData);
-            } else {
-                response.put("data", firstData); // Ensure all types of additional data are wrapped in "data"
-            }
+            response.put("content", additionalData[0]);  // Directly put additional data into the "content" key
+        } else {
+            // Set "content" to null when there's no additional data
+            response.put("content", null);
         }
-    
         return response;
     }
 }
-
-

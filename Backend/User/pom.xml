@@ -8,10 +8,10 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
-    <groupId>user</groupId> <!-- Updated groupId -->
+    <groupId>user</groupId>
     <artifactId>user-msvc</artifactId>
     <version>1.0.0</version>
 
@@ -84,7 +84,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>user.UserApplication</mainClass> <!-- Update with your actual main class path -->
+                    <mainClass>user.UserApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
