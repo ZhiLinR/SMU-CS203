@@ -43,7 +43,10 @@ class ProfileServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    // Testing successful case for creating a profile
+    /**
+     * Tests the successful creation of a profile.
+     * Verifies that the user is inserted into the repository with the correct parameters.
+     */
     @Test
     void testCreateProfile_Success() {
         ProfileRequest profileRequest = new ProfileRequest();
@@ -61,7 +64,10 @@ class ProfileServiceTest {
         verify(userRepository).insertUser("test@example.com", "encryptedPassword", "Test User", (byte) 0);
     }
 
-    // Testing boundary values and invalid inputs
+    /**
+     * Tests creating a profile with an empty email.
+     * Expects an IllegalArgumentException to be thrown.
+     */
     @Test
     void testCreateProfile_EmptyEmail() {
         ProfileRequest profileRequest = new ProfileRequest();
@@ -73,6 +79,10 @@ class ProfileServiceTest {
         assertThrows(IllegalArgumentException.class, () -> profileService.createProfile(profileRequest));
     }
 
+    /**
+     * Tests creating a profile with a null password.
+     * Expects an IllegalArgumentException to be thrown.
+     */
     @Test
     void testCreateProfile_NullPassword() {
         ProfileRequest profileRequest = new ProfileRequest();
@@ -84,6 +94,10 @@ class ProfileServiceTest {
         assertThrows(IllegalArgumentException.class, () -> profileService.createProfile(profileRequest));
     }
 
+    /**
+     * Tests creating a profile with an email that exceeds the typical length limit.
+     * Expects an IllegalArgumentException to be thrown.
+     */
     @Test
     void testCreateProfile_TooLongEmail() {
         ProfileRequest profileRequest = new ProfileRequest();
@@ -95,6 +109,10 @@ class ProfileServiceTest {
         assertThrows(IllegalArgumentException.class, () -> profileService.createProfile(profileRequest));
     }
 
+    /**
+     * Tests authenticating a user with an empty email.
+     * Expects an IllegalArgumentException to be thrown.
+     */
     @Test
     void testAuthenticateUser_EmptyEmail() {
         ProfileRequest loginRequest = new ProfileRequest();
@@ -104,6 +122,10 @@ class ProfileServiceTest {
         assertThrows(IllegalArgumentException.class, () -> profileService.authenticateUser(loginRequest));
     }
 
+    /**
+     * Tests authenticating a user when the user is not found.
+     * Expects an UnauthorizedException to be thrown.
+     */
     @Test
     void testAuthenticateUser_UserNotFound() {
         ProfileRequest loginRequest = new ProfileRequest();
@@ -115,6 +137,10 @@ class ProfileServiceTest {
         assertThrows(UnauthorizedException.class, () -> profileService.authenticateUser(loginRequest));
     }
 
+    /**
+     * Tests logging out a user when the user is not found.
+     * Expects a UserNotFoundException to be thrown.
+     */
     @Test
     void testLogoutUser_UserNotFound() {
         String uuid = "uuid-1234";
@@ -123,13 +149,21 @@ class ProfileServiceTest {
         assertThrows(UserNotFoundException.class, () -> profileService.logoutUser(uuid));
     }
 
+    /**
+     * Tests retrieving a user profile by an empty UUID.
+     * Expects an IllegalArgumentException to be thrown.
+     */
     @Test
     void testGetProfileByUUID_EmptyUUID() {
         String uuid = "";
-        
+
         assertThrows(IllegalArgumentException.class, () -> profileService.getProfileByUUID(uuid));
     }
 
+    /**
+     * Tests retrieving a user profile by UUID when the user is not found.
+     * Expects a UserNotFoundException to be thrown.
+     */
     @Test
     void testGetProfileByUUID_UserNotFound() {
         String uuid = "uuid-1234";
@@ -138,6 +172,10 @@ class ProfileServiceTest {
         assertThrows(UserNotFoundException.class, () -> profileService.getProfileByUUID(uuid));
     }
 
+    /**
+     * Tests retrieving names by a null list of UUIDs.
+     * Expects an empty map to be returned.
+     */
     @Test
     void testGetNamesByUUIDList_NullList() {
         List<String> uuids = null;
@@ -147,6 +185,10 @@ class ProfileServiceTest {
         assertTrue(result.isEmpty());
     }
 
+    /**
+     * Tests retrieving names by a list of UUIDs where an error occurs during the fetch.
+     * Expects the returned map to contain appropriate error messages.
+     */
     @Test
     void testGetNamesByUUIDList_ErrorDuringFetch() {
         List<String> uuids = Arrays.asList("uuid-1234", "uuid-5678");
@@ -159,6 +201,10 @@ class ProfileServiceTest {
         assertEquals("Not Found", result.get("uuid-5678")); // should still handle this case
     }
 
+    /**
+     * Tests updating the Elo rating for a user successfully.
+     * Verifies that the user repository's update method is called with the correct parameters.
+     */
     @Test
     void testUpdateElo_Success() {
         String uuid = "uuid-1234";
@@ -170,6 +216,10 @@ class ProfileServiceTest {
         verify(userRepository).updateElo(uuid, elo);
     }
 
+    /**
+     * Tests updating the Elo rating with a null UUID.
+     * Expects an IllegalArgumentException to be thrown.
+     */
     @Test
     void testUpdateElo_InvalidUUID() {
         String uuid = null; // null UUID
@@ -178,6 +228,10 @@ class ProfileServiceTest {
         assertThrows(IllegalArgumentException.class, () -> profileService.updateElo(uuid, elo));
     }
 
+    /**
+     * Tests updating a user's information successfully.
+     * Verifies that the user repository's update method is called with the correct parameters.
+     */
     @Test
     void testUpdateUser_Success() {
         String uuid = "uuid-1234";
@@ -196,6 +250,10 @@ class ProfileServiceTest {
         verify(userRepository).updateUser(uuid, email, "encryptedPassword", name, isAdmin, java.sql.Date.valueOf(dob));
     }
 
+    /**
+     * Tests updating a user's information with an invalid email.
+     * Expects an IllegalArgumentException to be thrown.
+     */
     @Test
     void testUpdateUser_InvalidEmail() {
         String uuid = "uuid-1234";
@@ -208,6 +266,10 @@ class ProfileServiceTest {
         assertThrows(IllegalArgumentException.class, () -> profileService.updateUser(uuid, email, password, name, isAdmin, dob));
     }
 
+    /**
+     * Tests updating a user's information when the user is not found.
+     * Expects a UserNotFoundException to be thrown.
+     */
     @Test
     void testUpdateUser_UserNotFound() {
         String uuid = "uuid-1234";
@@ -222,4 +284,3 @@ class ProfileServiceTest {
         assertThrows(UserNotFoundException.class, () -> profileService.updateUser(uuid, email, password, name, isAdmin, dob));
     }
 }
-
