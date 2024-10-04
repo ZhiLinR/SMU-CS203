@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
  */
 public class ValidationUtil {
 
+    // Maximum length for an email address
+    private static final int MAX_EMAIL_LENGTH = 254;
+
     /**
      * Validates if the provided string is not null or empty.
      *
@@ -40,6 +43,10 @@ public class ValidationUtil {
      * @return {@code true} if the email is valid, {@code false} otherwise
      */
     public static boolean isValidEmail(String email) {
+        if (email.length() > MAX_EMAIL_LENGTH) {
+            return false;
+        }
+
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return Pattern.compile(emailRegex).matcher(email).matches();
     }

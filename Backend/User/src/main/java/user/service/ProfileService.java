@@ -185,8 +185,13 @@ public class ProfileService {
     @Transactional
     public void updateElo(String uuid, Integer elo) {
         ValidationUtil.validateUUID(uuid);
+
         if (elo == null) {
             throw new IllegalArgumentException("ELO is required");
+        }
+
+        if (elo < 0) {
+            throw new IllegalArgumentException("Invalid ELO");
         }
 
         try {
