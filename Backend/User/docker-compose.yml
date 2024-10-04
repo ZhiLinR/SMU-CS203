@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   spring-app:
-    image: userMSVC  # The image name from the Dockerfile
+    image: user-msvc  # The image name from the Dockerfile
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: user.Dockerfile
     ports:
       - "8080:8080"  # Expose the application on port 8080
     volumes:
