@@ -186,12 +186,8 @@ public class ProfileService {
     public void updateElo(String uuid, Integer elo) {
         ValidationUtil.validateUUID(uuid);
 
-        if (elo == null) {
-            throw new IllegalArgumentException("ELO is required");
-        }
-
-        if (elo < 0) {
-            throw new IllegalArgumentException("Invalid ELO");
+        if (elo == null || elo < 0) {
+            throw new IllegalArgumentException("Invalid or missing ELO");
         }
 
         try {
