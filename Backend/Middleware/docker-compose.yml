@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   spring-app:
-    image: user-msvc  # The image name from the Dockerfile
+    image: middleware-msvc  # The image name from the Dockerfile
     build:
       context: .
       dockerfile: Dockerfile
