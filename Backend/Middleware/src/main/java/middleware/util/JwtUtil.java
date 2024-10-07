@@ -1,16 +1,14 @@
 package middleware.util;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException; // Import for JwtException
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 /**
  * Utility class for handling JSON Web Tokens (JWT).
@@ -25,7 +23,7 @@ import java.util.Date;
 public class JwtUtil {
 
     @Value("${security.jwt.secret-key}")
-    private String secretKey;
+    private String secretKey; // Default for testing
 
         /**
      * Decrypts and validates a JWT token and extracts the claims.
@@ -38,12 +36,17 @@ public class JwtUtil {
         try {
             // Use the parser to validate and parse the JWT
             return Jwts.parser()
-                    .setSigningKey(secretKey.getBytes()) // Use the secret key to validate the signature
+                    .setSigningKey(secretKey) // Use the secret key to validate the signature
                     .parseClaimsJws(token)
                     .getBody(); // Return the claims (UUID, username, isAdmin, etc.)
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("JWT token has expired", e);
+        } catch (UnsupportedJwtException e) {
+            throw new RuntimeException("JWT token is unsupported", e);
         } catch (SignatureException e) {
-            // Throw an exception if the JWT is invalid, expired, or can't be decrypted
-            throw new RuntimeException("Invalid or expired JWT token", e);
+            throw new RuntimeException("Invalid JWT signature", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid JWT token", e);
         }
     }
 }

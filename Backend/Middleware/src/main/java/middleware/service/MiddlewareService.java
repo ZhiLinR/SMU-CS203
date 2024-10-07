@@ -31,14 +31,10 @@ public class MiddlewareService {
         Claims claims;
 
         // Decrypt JWT and extract claims
-        try {
-            claims = jwtUtil.decryptToken(jwt);
-        } catch (RuntimeException e) {
-            throw new UnauthorizedException("Invalid JWT or session expired.", e);
-        }
+        claims = jwtUtil.decryptToken(jwt);
 
         String extractedUuid = claims.get("uuid", String.class);
-        Boolean isAdmin = claims.get("isAdmin", Boolean.class);
+        Byte isAdmin = claims.get("isAdmin", Byte.class);
 
         // Validate JWT session data
         JWToken dbJwt = jwTokenRepository.checkValidity(jwt);

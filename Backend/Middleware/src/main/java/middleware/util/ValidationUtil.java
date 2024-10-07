@@ -17,11 +17,11 @@ public class ValidationUtil {
         }
     }
 
-    public static void validateUserRole(Byte dbIsAdmin, Boolean isAdmin) {
+    public static void validateUserRole(Byte dbIsAdmin, Byte isAdmin) {
         if (dbIsAdmin == null) {
             throw new UserNotFoundException("User not found for the provided UUID.");
         }
-        if ((isAdmin && dbIsAdmin != 1) || (!isAdmin && dbIsAdmin != 0)) {
+        if (!dbIsAdmin.equals(isAdmin)) {
             throw new UnauthorizedException("Role does not match admin status.");
         }
     }

@@ -35,7 +35,7 @@ public class MiddlewareController {
             return ResponseManager.error(HttpStatus.UNAUTHORIZED, e.getMessage());
         } catch (Exception e) {
             // Return 500 for any other unexpected errors
-            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred.");
+            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }
