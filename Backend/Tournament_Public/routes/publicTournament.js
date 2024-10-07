@@ -4,7 +4,7 @@ const router = express.Router();
 // const Tournament = require('../models/tournament');
 // const User = require('../models/User');
 const auth = require('../middlewares/auth');
-const connection = require('../middlewares/db');
+const connection = require('../models/config/db');
 
 /**
  * Public Routes

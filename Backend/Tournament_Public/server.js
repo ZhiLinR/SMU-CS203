@@ -1,7 +1,10 @@
+require('dotenv').config({ path: ['.env.local', '.env'] });
+
+
 const express = require('express');
 const app = express();
-const publicTournamentRoutes = require('./Tournament_Public/routes/publicTournament');
-const db = require('./Tournament_Public/middlewares/db');  // Adjusted to use the db connection
+const publicTournamentRoutes = require('./routes/publicTournament');
+const db = require('./models/config/db');  // Adjusted to use the db connection
 
 app.use(express.json());  // Middleware to parse JSON request body
 

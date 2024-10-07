@@ -1,4 +1,3 @@
-require('dotenv').config({ path: '../../.env' });  // Load .env file into process.env
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
@@ -8,6 +7,7 @@ const connection = mysql.createConnection({
     database: process.env.DB_NAME,
     port: process.env.DB_PORT
 });
+
 
 connection.connect((err) => {
     if (err) {
