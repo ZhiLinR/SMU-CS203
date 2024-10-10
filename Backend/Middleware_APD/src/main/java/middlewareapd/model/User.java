@@ -1,4 +1,4 @@
-package middleware.model;
+package middlewareapd.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

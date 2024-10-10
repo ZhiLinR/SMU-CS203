@@ -1,4 +1,4 @@
-package middleware.controller;
+package middlewareapd.controller;
 
 import java.util.Map;
 
@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import middleware.dto.*;
-import middleware.service.MiddlewareService;
-import middleware.util.*;
+import middlewareapd.dto.*;
+import middlewareapd.service.MiddlewareService;
+import middlewareapd.util.*;
 
 import org.springframework.http.HttpStatus;
 
@@ -39,22 +39,27 @@ public class MiddlewareController {
      * @throws Exception for any other unexpected errors.
      */
     @PostMapping("/middleware/checkjwt")
-    public ResponseEntity<Map<String, Object>> checkJwt(@RequestBody JWTRequest jwtRequest) {
-        try {
-            // Call the service function to check the JWT
-            Map<String, String> result = middlewareService.checkJwt(jwtRequest);
-            // If successful, return a success response
-            return ResponseManager.success("JWT validation successful.", result);
-        } catch (UserNotFoundException e) {
-            // Return 404 if the user is not found
-            return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedException e) {
-            // Return 401 for unauthorized access
-            return ResponseManager.error(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (Exception e) {
-            // Return 500 for any other unexpected errors
-            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+    public CompletableFuture<ResponseEntity<Map<String, Object>>> checkJwt(@RequestBody JWTRequest jwtRequest) {
+
+        return middlewareService.checkJwt(jwtRequest)
+            // Set a timeout for the JWT check operation (e.g., 5 seconds)
+            .orTimeout(5, TimeUnit.SECONDS)
+            .thenApply(result -> {
+                // If successful, return a success response
+                return ResponseManager.success("JWT validation successful.", result);
+            })
+            .exceptionally(ex -> {
+                // Handle exceptions based on their type
+                if (ex.getCause() instanceof UserNotFoundException) {
+                    return ResponseManager.error(HttpStatus.NOT_FOUND, ex.getCause().getMessage());
+                } else if (ex.getCause() instanceof UnauthorizedException) {
+                    return ResponseManager.error(HttpStatus.UNAUTHORIZED, ex.getCause().getMessage());
+                } else if (ex.getCause() instanceof TimeoutException) {
+                    return ResponseManager.error(HttpStatus.REQUEST_TIMEOUT, "Request timed out after 5 seconds.");
+                } else {
+                    return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+                }
+            });
     }
 }
 

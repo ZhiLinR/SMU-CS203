@@ -1,6 +1,6 @@
-package middleware.util;
+package middlewareapd.util;
 
-import middleware.model.JWToken;
+import middlewareapd.model.JWToken;
 
 /**
  * ValidationUtil provides utility methods for validating JWT session data, UUIDs, and user roles.

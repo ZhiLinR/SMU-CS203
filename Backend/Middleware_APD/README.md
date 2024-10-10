@@ -58,6 +58,16 @@ Sample Failed 404 Response:
 }
 ```
 
+Sample Failed 408 Response:
+
+```json
+{
+    "success": false,
+    "message": "Request timed out after 5 seconds.",
+    "content": null
+}
+```
+
 Sample Failed 500 Response:
 
 ```json

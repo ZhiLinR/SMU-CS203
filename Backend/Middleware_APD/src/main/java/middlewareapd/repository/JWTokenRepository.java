@@ -1,11 +1,11 @@
-package middleware.repository;
+package middlewareapd.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import middleware.model.JWToken;
+import middlewareapd.model.JWToken;
 
 /**
  * Repository interface for performing CRUD operations on {@link JWToken} entities.

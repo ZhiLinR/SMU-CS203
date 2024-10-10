@@ -1,4 +1,4 @@
-package middleware.service;
+package middlewareapd.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.jsonwebtoken.Claims;
 
-import middleware.dto.JWTRequest;
-import middleware.model.JWToken;
-import middleware.repository.*;
-import middleware.util.*;
+import middlewareapd.dto.JWTRequest;
+import middlewareapd.model.JWToken;
+import middlewareapd.repository.*;
+import middlewareapd.util.*;
 
 import java.util.Map;
 
@@ -29,6 +29,9 @@ public class MiddlewareService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    private final ReentrantReadWriteLock mReadWriteLock = new ReentrantReadWriteLock();
+    private final Lock mReadLock = readWriteLock.readLock();
+
     /**
      * Validates the provided JWT by extracting claims, checking its validity in the database, 
      * and comparing user role information.
@@ -42,8 +45,9 @@ public class MiddlewareService {
      * @throws UnauthorizedException if the JWT is invalid or session validation fails.
      * @throws UserNotFoundException if the user UUID associated with the JWT is not found.
      */
+    @Async
     @Transactional
-    public Map<String, String> checkJwt(JWTRequest jwtRequest) {
+    public CompletableFuture<Map<String, String>> checkJwt(JWTRequest jwtRequest) {
         String jwt = jwtRequest.getJwt();
         Claims claims;
 
@@ -53,18 +57,24 @@ public class MiddlewareService {
         String extractedUuid = claims.get("uuid", String.class);
         Byte isAdmin = claims.get("isAdmin", Byte.class);
 
-        // Validate JWT session data
-        JWToken dbJwt = jwTokenRepository.checkValidity(jwt);
-        ValidationUtil.validateJwtSession(dbJwt); // Moved validation logic
+                readLock.lock();
+        try {
+            // Critical section: reading from the database and performing validations
+            JWToken dbJwt = jwTokenRepository.checkValidity(jwt);
+            ValidationUtil.validateJwtSession(dbJwt);
 
-        String dbUuid = dbJwt.getUuid();
-        ValidationUtil.validateUuid(dbUuid, extractedUuid); // Moved validation logic
+            String dbUuid = dbJwt.getUuid();
+            ValidationUtil.validateUuid(dbUuid, extractedUuid);
 
-        // Retrieve and check role for the user
-        Byte dbIsAdmin = userRepository.getRoleByUUID(dbUuid);
-        ValidationUtil.validateUserRole(dbIsAdmin, isAdmin); // Moved validation logic
+            Byte dbIsAdmin = userRepository.getRoleByUUID(dbUuid);
+            ValidationUtil.validateUserRole(dbIsAdmin, isAdmin);
 
-        // Prepare and return the result as a map
-        return Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString());
+            // Prepare and return the result as a map
+            return CompletableFuture.completedFuture(Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString()));
+
+        } finally {
+            // Release the read lock to allow other threads to proceed
+            readLock.unlock();
+        }
     }
 }

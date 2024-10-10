@@ -1,4 +1,4 @@
-package middleware.config;
+package middlewareapd.config;
 
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;

@@ -1,4 +1,4 @@
-package middleware.util;
+package middlewareapd.util;
 
 /**
  * Exception thrown when User inputs the wrong email or password.

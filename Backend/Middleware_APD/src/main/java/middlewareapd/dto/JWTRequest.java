@@ -1,4 +1,4 @@
-package middleware.dto;
+package middlewareapd.dto;
 
 import lombok.Data;
 
