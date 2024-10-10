@@ -3,6 +3,7 @@ package middlewareapd.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.scheduling.annotation.Async;
 
 import io.jsonwebtoken.Claims;
 
@@ -12,6 +13,9 @@ import middlewareapd.repository.*;
 import middlewareapd.util.*;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.Lock;
 
 /**
  * MiddlewareService handles the business logic for validating JWT tokens and checking user roles.
@@ -30,7 +34,7 @@ public class MiddlewareService {
     private JwtUtil jwtUtil;
 
     private final ReentrantReadWriteLock mReadWriteLock = new ReentrantReadWriteLock();
-    private final Lock mReadLock = readWriteLock.readLock();
+    private final Lock mReadLock = mReadWriteLock.readLock();
 
     /**
      * Validates the provided JWT by extracting claims, checking its validity in the database, 
@@ -57,7 +61,7 @@ public class MiddlewareService {
         String extractedUuid = claims.get("uuid", String.class);
         Byte isAdmin = claims.get("isAdmin", Byte.class);
 
-                readLock.lock();
+                mReadLock.lock();
         try {
             // Critical section: reading from the database and performing validations
             JWToken dbJwt = jwTokenRepository.checkValidity(jwt);
@@ -74,7 +78,7 @@ public class MiddlewareService {
 
         } finally {
             // Release the read lock to allow other threads to proceed
-            readLock.unlock();
+            mReadLock.unlock();
         }
     }
 }

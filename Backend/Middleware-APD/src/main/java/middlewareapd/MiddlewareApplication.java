@@ -3,6 +3,7 @@ package middlewareapd;
 import org.springframework.boot.SpringApplication;
 import io.github.cdimascio.dotenv.Dotenv; // For mvn run
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * The entry point for the Middleware application.

@@ -1,10 +1,10 @@
 package middleware.controller;
 
-import middleware.MiddlewareApplication;
-import middleware.dto.JWTRequest;
-import middleware.service.MiddlewareService;
-import middleware.util.UserNotFoundException;
-import middleware.util.UnauthorizedException;
+import middlewareapd.MiddlewareApplication;
+import middlewareapd.dto.JWTRequest;
+import middlewareapd.service.MiddlewareService;
+import middlewareapd.util.UserNotFoundException;
+import middlewareapd.util.UnauthorizedException;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -68,7 +69,7 @@ public class MiddlewareControllerTest {
     public void testCheckJwt_ValidToken() throws Exception {
         // Mock service to return valid result
         Mockito.when(middlewareService.checkJwt(any(JWTRequest.class)))
-               .thenReturn(Map.of("uuid", "12345", "isAdmin", "true"));
+        .thenReturn(CompletableFuture.completedFuture(Map.of("uuid", "12345", "isAdmin", "true")));
 
         // Perform POST request and expect success response
         mockMvc.perform(post("/api/middleware/checkjwt")
@@ -125,7 +126,5 @@ public class MiddlewareControllerTest {
                 .andExpect(jsonPath("$.message", is("Unexpected error")))
                 .andExpect(jsonPath("$.success", is(false)));
     }
-
-    
 }
 

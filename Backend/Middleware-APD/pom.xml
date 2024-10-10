@@ -11,8 +11,8 @@
         <relativePath/>
     </parent>
 
-    <groupId>middleware</groupId>
-    <artifactId>middleware-msvc</artifactId>
+    <groupId>middlewareapd</groupId>
+    <artifactId>middleware-msvc-apd</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -80,7 +80,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>middleware.MiddlewareApplication</mainClass>
+                    <mainClass>middlewareapd.MiddlewareApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
