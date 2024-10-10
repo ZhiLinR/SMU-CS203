@@ -13,6 +13,10 @@ import middleware.util.*;
 
 import java.util.Map;
 
+/**
+ * MiddlewareService handles the business logic for validating JWT tokens and checking user roles.
+ * It interacts with repositories to validate JWT sessions, user roles, and extract claims from the token.
+ */
 @Service
 public class MiddlewareService {
 

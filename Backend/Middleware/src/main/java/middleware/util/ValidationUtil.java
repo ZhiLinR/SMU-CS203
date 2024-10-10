@@ -1,6 +1,5 @@
 package middleware.util;
 
-
 import middleware.model.JWToken;
 
 public class ValidationUtil {
