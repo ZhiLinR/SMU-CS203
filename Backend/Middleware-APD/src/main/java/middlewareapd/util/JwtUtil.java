@@ -9,15 +9,26 @@ import middlewareapd.exception.UnauthorizedException;
 
 import java.util.Date;
 
+/**
+ * JwtUtil is a utility class that provides methods for creating and verifying JSON Web Tokens (JWTs).
+ * It handles the generation of tokens and their validation using a secret key.
+ */
 public class JwtUtil {
 
     // Secret key for signing the JWT
     private static final String SECRET_KEY = "your_secret_key_here";
-    
+
     // Expiration time for the token (e.g., 10 minutes in milliseconds)
     private static final long EXPIRATION_TIME = 600_000;
 
-    // Method to create a JWT token
+    /**
+     * Generates a JWT token for the given email, UUID, and admin status.
+     *
+     * @param email   the email address to be used as the subject of the token
+     * @param uuid    a unique identifier for the user
+     * @param isAdmin an integer indicating whether the user has admin privileges (0 or 1)
+     * @return the generated JWT token as a String
+     */
     public static String generateToken(String email, String uuid, int isAdmin) {
         // Define the signing algorithm using the secret key
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
@@ -34,10 +45,16 @@ public class JwtUtil {
         return token;
     }
 
-    // Method to verify and decode a JWT token
+    /**
+     * Verifies and decodes the given JWT token.
+     *
+     * @param token the JWT token to be verified
+     * @return a DecodedJWT instance containing the decoded token information
+     * @throws UnauthorizedException if the token is invalid or expired
+     */
     public static DecodedJWT verifyToken(String token) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-        
+
         try {
             // Verify the token
             return JWT.require(algorithm).build().verify(token);

@@ -1,16 +1,31 @@
 package middlewareapd.model; // Ensure this matches your directory structure
 
 import java.time.LocalDateTime;
+import lombok.Data;
 
+/**
+ * Represents a JWT (JSON Web Token) with associated metadata.
+ * This class contains information about the token, user session details, and access times.
+ */
+@Data
 public class JWToken {
-    private String jwt;
-    private String uuid;
-    private int isAdmin; // Use Byte for isAdmin as per your request
-    private LocalDateTime lastLogin;
-    private LocalDateTime logout;
-    private LocalDateTime lastAccess;
+    private String jwt;               // The JWT string
+    private String uuid;              // Unique identifier for the user
+    private int isAdmin;             // User's admin status (0 for false, 1 for true)
+    private LocalDateTime lastLogin;  // Timestamp of the last login
+    private LocalDateTime logout;     // Timestamp of the logout
+    private LocalDateTime lastAccess; // Timestamp of the last access
 
-    // Constructor to initialize all fields
+    /**
+     * Constructor to initialize a JWToken object with all fields.
+     *
+     * @param jwt        the JWT string.
+     * @param uuid       the unique identifier for the user.
+     * @param isAdmin    the user's admin status (0 for false, 1 for true).
+     * @param lastLogin  the timestamp of the last login.
+     * @param logout     the timestamp of the logout.
+     * @param lastAccess the timestamp of the last access.
+     */
     public JWToken(String jwt, String uuid, int isAdmin, LocalDateTime lastLogin, LocalDateTime logout, LocalDateTime lastAccess) {
         this.jwt = jwt;
         this.uuid = uuid;
@@ -18,66 +33,5 @@ public class JWToken {
         this.lastLogin = lastLogin;
         this.logout = logout;
         this.lastAccess = lastAccess;
-    }
-
-    // Getters and Setters for all fields
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public int getIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(int isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
-    public LocalDateTime getLastLogin() {
-        return lastLogin;
-    }
-
-    public void setLastLogin(LocalDateTime lastLogin) {
-        this.lastLogin = lastLogin;
-    }
-
-    public LocalDateTime getLogout() {
-        return logout;
-    }
-
-    public void setLogout(LocalDateTime logout) {
-        this.logout = logout;
-    }
-
-    public LocalDateTime getLastAccess() {
-        return lastAccess;
-    }
-
-    public void setLastAccess(LocalDateTime lastAccess) {
-        this.lastAccess = lastAccess;
-    }
-
-    @Override
-    public String toString() {
-        return "JWToken{" +
-                "jwt='" + jwt + '\'' +
-                ", uuid='" + uuid + '\'' +
-                ", isAdmin=" + isAdmin +
-                ", lastLogin=" + lastLogin +
-                ", logout=" + logout +
-                ", lastAccess=" + lastAccess +
-                '}';
     }
 }

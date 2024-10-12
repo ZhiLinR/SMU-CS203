@@ -2,6 +2,7 @@ package middlewareapd.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 
@@ -28,7 +29,6 @@ public class ValidationUtil {
             throw new UnauthorizedException("Invalid JWT or session expired.");
         }
 
-        // Check if the user has logged out
         if (dbJwt.getLogout() != null) {
             throw new UnauthorizedException("User has logged out.");
         }
@@ -56,12 +56,10 @@ public class ValidationUtil {
      * @throws UnauthorizedException if the roles do not match.
      */
     public static void validateUserRole(Integer dbIsAdmin, int isAdmin) {
-        // Check if the dbIsAdmin is null, indicating the user is not found
         if (dbIsAdmin == null) {
             throw new UserNotFoundException("User not found for the provided UUID.");
         }
-        
-        // Check if the roles do not match
+
         if (!dbIsAdmin.equals(isAdmin)) {
             throw new UnauthorizedException("Role does not match admin status.");
         }
@@ -87,7 +85,7 @@ public class ValidationUtil {
      * @throws UnauthorizedException if the JWToken does not exist.
      */
     public static JWToken fetchDbJwt(String extractedUuid, MockJWTRepository jwtRepository) {
-        JWToken dbJwt = jwtRepository.getTokenByUuid(extractedUuid); // Assuming this method exists in MockJWTRepository
+        JWToken dbJwt = jwtRepository.getTokenByUuid(extractedUuid);
         validateJwtSession(dbJwt); // Validate that the session exists
         return dbJwt;
     }
@@ -101,26 +99,46 @@ public class ValidationUtil {
      * @throws UnauthorizedException if the JWT is invalid or does not match stored data.
      */
     public static Map<String, Object> validateJwt(String token, MockJWTRepository jwtRepository) {
-        // Step 1: Verify and decode the JWT
+        ReadWriteLock lock = LockFactory.getRWLock(token);
         DecodedJWT decodedJWT = decodeJwt(token);
+        String extractedUuid = getExtractedUuid(decodedJWT);
 
-        // Step 2: Retrieve UUID from the JWT
+        JWToken dbJwt = fetchDbJwtWithLock(extractedUuid, jwtRepository, lock);
+        validateUuid(dbJwt.getUuid(), extractedUuid);
+        validateUserRole(dbJwt.getIsAdmin(), decodedJWT.getClaim("isAdmin").asInt());
+
+        return createResponseMap(dbJwt);
+    }
+
+    /**
+     * Retrieves the UUID from the decoded JWT.
+     *
+     * @param decodedJWT the decoded JWT.
+     * @return the extracted UUID.
+     * @throws UnauthorizedException if the UUID is not found.
+     */
+    private static String getExtractedUuid(DecodedJWT decodedJWT) {
         String extractedUuid = decodedJWT.getClaim("uuid").asString();
         if (extractedUuid == null) {
             throw new UnauthorizedException("Invalid JWT: UUID not found.");
         }
+        return extractedUuid;
+    }
 
-        // Step 3: Fetch the corresponding JWToken entry from the repository
-        JWToken dbJwt = fetchDbJwt(extractedUuid, jwtRepository);
-
-        // Step 4: Validate the UUID matches
-        validateUuid(dbJwt.getUuid(), extractedUuid);
-
-        // Step 5: Validate user role
-        validateUserRole(dbJwt.getIsAdmin(), decodedJWT.getClaim("isAdmin").asInt());
-
-        // Step 6: Return the UUID and isAdmin as a Map
-        return createResponseMap(dbJwt);
+    /**
+     * Fetches the JWToken entry from the repository within a read lock.
+     *
+     * @param extractedUuid the UUID extracted from the JWT.
+     * @param jwtRepository the repository to fetch the JWToken entry.
+     * @return the JWToken corresponding to the extracted UUID.
+     */
+    private static JWToken fetchDbJwtWithLock(String extractedUuid, MockJWTRepository jwtRepository, ReadWriteLock lock) {
+        lock.readLock().lock();
+        try {
+            return fetchDbJwt(extractedUuid, jwtRepository);
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     /**
@@ -136,3 +154,4 @@ public class ValidationUtil {
         return response;
     }
 }
+

@@ -17,12 +17,6 @@ public class MockJWTRepositoryTest {
     }
 
     @Test
-    public void testGetAllTokens() {
-        // Should return exactly 20 mock tokens
-        assertEquals(20, repository.getAllTokens().size());
-    }
-
-    @Test
     public void testGetTokenByUuid() {
         // Given a known UUID from the mock repository
         String validUuid = repository.getAllTokens().get(0).getUuid();

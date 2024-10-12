@@ -16,7 +16,6 @@ import static org.mockito.Mockito.*;
 
 import middlewareapd.repository.MockJWTRepository;
 import middlewareapd.util.JwtUtil;
-import middlewareapd.util.ValidationUtil;
 import middlewareapd.model.JWToken;
 
 public class MiddlewareServiceTest {
