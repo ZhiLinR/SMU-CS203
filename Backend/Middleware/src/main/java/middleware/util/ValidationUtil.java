@@ -11,11 +11,11 @@ public class ValidationUtil {
     /**
      * Validates the JWT session by checking if the JWT exists in the database.
      *
-     * @param dbJwt the JWT object retrieved from the database.
+     * @param retrievedJWT the JWT object retrieved from the database.
      * @throws UnauthorizedException if the JWT is invalid or the session has expired.
      */
-    public static void validateJwtSession(JWToken dbJwt) {
-        if (dbJwt == null) {
+    public static void validateJwtSession(JWToken retrievedJWT) {
+        if (retrievedJWT == null) {
             throw new UnauthorizedException("Invalid JWT or session expired.");
         }
     }

@@ -48,8 +48,7 @@ public class MiddlewareService {
             uuid = (String) result.get("uuid");
 
             // Update last access time within a write lock
-            @SuppressWarnings("unused")
-            JWToken dbJwt = updateLastAccess(uuid, jwtLock);
+            updateLastAccess(uuid, jwtLock);
             logger.info("Successfully validated JWT for UUID: {}", uuid);
             return result;
         } catch (UnauthorizedException e) {
@@ -70,21 +69,20 @@ public class MiddlewareService {
      * @param uuid the UUID of the user whose access time is to be updated.
      * @return the updated JWToken, or null if the token was not found.
      */
-    private JWToken updateLastAccess(String uuid, ReadWriteLock jwtLock) {
-        JWToken dbJwt = jwtRepository.getTokenByUuid(uuid); // Read without locking
-        if (dbJwt != null) {
+    private void updateLastAccess(String uuid, ReadWriteLock jwtLock) {
+        JWToken retrievedToken = jwtRepository.getTokenByUuid(uuid); // Read without locking
+        if (retrievedToken != null) {
             LocalDateTime now = LocalDateTime.now();
-            dbJwt.setLastAccess(now);
+            retrievedToken.setLastAccess(now);
             logger.info("Updated lastAccess for UUID {} to {}", uuid, now);
     
             jwtLock.writeLock().lock(); // Acquire the write lock only when updating the repository
             try {
-                jwtRepository.updateToken(dbJwt); // Critical section
+                jwtRepository.updateToken(retrievedToken); // Critical section
             } finally {
                 jwtLock.writeLock().unlock();
             }
         }
-        return dbJwt;
     }
 
     /**

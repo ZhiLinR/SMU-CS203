@@ -18,8 +18,11 @@ public class JwtUtil {
     // Secret key for signing the JWT
     private static final String SECRET_KEY = "your_secret_key_here";
 
-    // Expiration time for the token (e.g., 10 minutes in milliseconds)
-    private static final long EXPIRATION_TIME = 600_000;
+    // Expiration time in minutes
+    private static final int EXPIRATION_MINUTES = 10;
+
+    // Expiration time for the token in milliseconds
+    private static final long EXPIRATION_TIME = EXPIRATION_MINUTES * 60 * 1000;
 
     /**
      * Generates a JWT token for the given email, UUID, and admin status.

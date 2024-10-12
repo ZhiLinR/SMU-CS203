@@ -6,13 +6,21 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * Represents a user entity in the system.
- * This entity is mapped to the "User" table in the database.
+ * Represents a user entity in the system, mapped to the "User" table in the database.
+ * 
+ * <h3>Jakarta Bean ORM Mapping:</h3>
+ * <ul>
+ *   <li><strong>@Entity</strong>: Marks this class as a JPA entity.</li>
+ *   <li><strong>@Table(name = "User")</strong>: Specifies the corresponding database table.</li>
+ *   <li><strong>@Id</strong>: Defines the primary key for this entity.</li>
+ *   <li><strong>@Column</strong>: Maps class fields to database columns.</li>
+ * </ul>
  * 
  * <p>
- * The class contains fields corresponding to user-specific data
- * such as email, password, name, etc., which are persisted in
- * the database.
+ * This entity stores user-specific data such as UUID, email, password, name, role, and 
+ * other relevant information. The {@code @Data} annotation from 
+ * <a href="https://projectlombok.org/features/Data" target="_blank">Lombok</a> generates 
+ * boilerplate code like getters, setters, and {@code toString()} methods.
  * </p>
  */
 @Entity

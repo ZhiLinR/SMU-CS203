@@ -27,33 +27,56 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * Integration tests for the {@link MiddlewareController}.
+ * <p>
+ * This class tests the various scenarios for the JWT validation endpoint, including valid, expired, 
+ * and unauthorized tokens. It uses {@link MockMvc} to perform HTTP requests and verify responses 
+ * from the controller layer. The service layer is mocked using {@link MockBean}.
+ * </p>
+ */
 @SpringBootTest(classes = MiddlewareApplication.class)
 @AutoConfigureMockMvc
 public class MiddlewareControllerTest {
 
+    /** MockMvc instance used to simulate HTTP requests and validate responses. */
     @Autowired
     private MockMvc mockMvc;
 
+    /** Mocked instance of {@link MiddlewareService} to isolate service logic. */
     @MockBean
     private MiddlewareService middlewareService;
 
+    /** JWT request with a valid token for testing successful validation. */
     private JWTRequest validJwtRequest;
+
+    /** JWT request with an expired token for testing expiration scenarios. */
     private JWTRequest expiredJwtRequest;
+
+    /** JWT request with an invalid signature for testing signature validation failure. */
     private JWTRequest invalidSignatureJwtRequest;
 
+    /**
+     * Sets up environment properties before any tests are executed.
+     * <p>
+     * Uses the <a href="https://github.com/cdimascio/dotenv-java">Dotenv</a> library 
+     * to load environment variables and sets system properties required for the middleware.
+     * </p>
+     */
     @BeforeAll
     public static void setUpEnvironment() {
-        Dotenv dotenv = Dotenv.configure()
-            .load();
+        Dotenv dotenv = Dotenv.configure().load();
         System.setProperty("DB_URL", dotenv.get("DB_URL"));
         System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
         System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
         System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
     }
 
+    /**
+     * Initializes mock JWT request objects before each test case.
+     */
     @BeforeEach
     public void setUp() {
-        // Mock JWT request objects for testing different scenarios
         validJwtRequest = new JWTRequest();
         validJwtRequest.setJwt("valid-jwt-token");
 
@@ -64,13 +87,17 @@ public class MiddlewareControllerTest {
         invalidSignatureJwtRequest.setJwt("invalid-signature-jwt-token");
     }
 
+    /**
+     * Tests the {@code /api/middleware/checkjwt} endpoint with a valid JWT token.
+     * <p>
+     * Verifies that the response contains valid user data and returns HTTP 200 status.
+     * </p>
+     */
     @Test
     public void testCheckJwt_ValidToken() throws Exception {
-        // Mock service to return valid result
         Mockito.when(middlewareService.checkJwt(any(JWTRequest.class)))
                .thenReturn(Map.of("uuid", "12345", "isAdmin", "true"));
 
-        // Perform POST request and expect success response
         mockMvc.perform(post("/api/middleware/checkjwt")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"jwt\": \"valid-jwt-token\" }"))
@@ -81,13 +108,17 @@ public class MiddlewareControllerTest {
                 .andExpect(jsonPath("$.content.isAdmin", is("true")));
     }
 
+    /**
+     * Tests the {@code /api/middleware/checkjwt} endpoint with a user not found scenario.
+     * <p>
+     * Verifies that the response returns HTTP 404 status with an appropriate error message.
+     * </p>
+     */
     @Test
     public void testCheckJwt_UserNotFound() throws Exception {
-        // Mock service to throw UserNotFoundException
         Mockito.when(middlewareService.checkJwt(any(JWTRequest.class)))
                .thenThrow(new UserNotFoundException("User not found"));
 
-        // Perform POST request and expect 404 response
         mockMvc.perform(post("/api/middleware/checkjwt")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"jwt\": \"valid-jwt-token\" }"))
@@ -96,13 +127,17 @@ public class MiddlewareControllerTest {
                 .andExpect(jsonPath("$.success", is(false)));
     }
 
+    /**
+     * Tests the {@code /api/middleware/checkjwt} endpoint with an unauthorized access scenario.
+     * <p>
+     * Verifies that the response returns HTTP 401 status with an appropriate error message.
+     * </p>
+     */
     @Test
     public void testCheckJwt_Unauthorized() throws Exception {
-        // Mock service to throw UnauthorizedException
         Mockito.when(middlewareService.checkJwt(any(JWTRequest.class)))
                .thenThrow(new UnauthorizedException("Unauthorized access"));
 
-        // Perform POST request and expect 401 response
         mockMvc.perform(post("/api/middleware/checkjwt")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"jwt\": \"valid-jwt-token\" }"))
@@ -111,13 +146,17 @@ public class MiddlewareControllerTest {
                 .andExpect(jsonPath("$.success", is(false)));
     }
 
+    /**
+     * Tests the {@code /api/middleware/checkjwt} endpoint with an internal server error scenario.
+     * <p>
+     * Verifies that the response returns HTTP 500 status with an appropriate error message.
+     * </p>
+     */
     @Test
     public void testCheckJwt_InternalServerError() throws Exception {
-        // Mock service to throw a generic Exception
         Mockito.when(middlewareService.checkJwt(any(JWTRequest.class)))
                .thenThrow(new RuntimeException("Unexpected error"));
 
-        // Perform POST request and expect 500 response
         mockMvc.perform(post("/api/middleware/checkjwt")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{ \"jwt\": \"valid-jwt-token\" }"))
@@ -125,7 +164,4 @@ public class MiddlewareControllerTest {
                 .andExpect(jsonPath("$.message", is("Unexpected error")))
                 .andExpect(jsonPath("$.success", is(false)));
     }
-
-    
 }
-

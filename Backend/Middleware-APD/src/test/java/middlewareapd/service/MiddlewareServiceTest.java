@@ -18,45 +18,74 @@ import middlewareapd.repository.MockJWTRepository;
 import middlewareapd.util.JwtUtil;
 import middlewareapd.model.JWToken;
 
+/**
+ * Unit tests for the {@link MiddlewareService} class.
+ * <p>
+ * This test class ensures that the JWT validation and token management logic within
+ * {@link MiddlewareService} works as expected. The {@link MockJWTRepository} is mocked to simulate
+ * the behavior of the repository without interacting with the actual data source.
+ * </p>
+ *
+ * <h3>Test Methods:</h3>
+ * <ul>
+ *     <li>{@link #testCheckJwt_ValidToken()} - Verifies the correct handling of a valid JWT token,
+ *     including the validation logic and updating the repository.</li>
+ * </ul>
+ */
 public class MiddlewareServiceTest {
 
+    /** Mocked instance of the JWT repository. */
     @Mock
-    private MockJWTRepository jwtRepository; // Mocking the JWT repository
+    private MockJWTRepository jwtRepository;
 
+    /** Service under test with dependencies injected. */
     @InjectMocks
-    private MiddlewareService middlewareService; // Injecting the service to be tested
+    private MiddlewareService middlewareService;
 
+    /** A valid JWT token string used for testing. */
     private String validToken;
+
+    /** Mock {@link JWToken} object representing a token retrieved from the repository. */
     private JWToken dbJwt;
 
+    /**
+     * Sets up the test environment before each test method.
+     * <p>
+     * Initializes mock objects using {@link MockitoAnnotations} and stubs the
+     * {@link MockJWTRepository#getTokenByUuid(String)} method to return a mock {@link JWToken}.
+     * Additionally, a valid JWT token is generated for testing.
+     * </p>
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        // Setup a valid token (we assume that JwtUtil generates this correctly)
         validToken = JwtUtil.generateToken("email@gmail.com", "uuid-1234", 1);
-
-        // Mocking a JWToken object retrieved from the repository
         dbJwt = new JWToken(validToken, "uuid-1234", 1, LocalDateTime.now(), null, LocalDateTime.now());
-
-        // Stubbing the repository call to return the mock JWToken
         when(jwtRepository.getTokenByUuid("uuid-1234")).thenReturn(dbJwt);
     }
 
+    /**
+     * Tests the {@link MiddlewareService#checkJwt(String)} method with a valid JWT token.
+     * <p>
+     * This test verifies that the middleware correctly validates the provided JWT token
+     * and updates the repository with the token details. It mocks the expected behavior
+     * of the validation logic and ensures that the returned data matches the validated JWT.
+     * </p>
+     * <ul>
+     *     <li>Given: A valid JWT token and a mocked repository.</li>
+     *     <li>When: {@link MiddlewareService#checkJwt(String)} is called with the valid token.</li>
+     *     <li>Then: The result should match the expected JWT data, and the token in the repository should be updated.</li>
+     * </ul>
+     */
     @Test
     public void testCheckJwt_ValidToken() {
-        // Mock the ValidationUtil static method to return a valid map of data
         Map<String, Object> validJwtMap = new HashMap<>();
         validJwtMap.put("uuid", "uuid-1234");
         validJwtMap.put("isAdmin", 1);
 
-        // Call the method under test
         Map<String, Object> result = middlewareService.checkJwt(validToken);
 
-        // Assertions
         assertEquals(validJwtMap, result, "The returned map should match the validated JWT data.");
-
-        // Verify that the token in the repo was updated
         verify(jwtRepository).updateToken(any(JWToken.class));
     }
 }

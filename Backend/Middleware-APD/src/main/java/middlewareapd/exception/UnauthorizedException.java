@@ -1,7 +1,7 @@
 package middlewareapd.exception;
 
 /**
- * Exception thrown when User inputs the wrong email or password.
+ * Exception thrown when User inputs the wrong credentials or has an expired/invalid JWT.
  * This is a runtime exception that extends {@link RuntimeException}.
  */
 public class UnauthorizedException extends RuntimeException {

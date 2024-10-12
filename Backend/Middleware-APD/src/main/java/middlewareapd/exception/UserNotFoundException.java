@@ -1,7 +1,7 @@
 package middlewareapd.exception;
 
 /**
- * Exception thrown when a user is not found in the system.
+ * Exception thrown when a user is not found in the database MockJWTRepository.
  * This is a runtime exception that extends {@link RuntimeException}.
  */
 public class UserNotFoundException extends RuntimeException {
