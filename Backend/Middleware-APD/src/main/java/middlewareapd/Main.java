@@ -44,7 +44,7 @@ public class Main {
         long startTime = System.currentTimeMillis();
 
         // Create a fixed thread pool to process tokens concurrently
-        ExecutorService executorService = Executors.newFixedThreadPool(10); // Adjust as needed
+        ExecutorService executorService = Executors.newFixedThreadPool(50); // Adjust as needed
 
         System.out.println("Validating Mock Tokens with Threads:");
 
