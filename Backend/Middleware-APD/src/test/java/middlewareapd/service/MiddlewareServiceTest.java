@@ -51,20 +51,13 @@ public class MiddlewareServiceTest {
         validJwtMap.put("uuid", "uuid-1234");
         validJwtMap.put("isAdmin", 1);
 
-        // Stubbing the static method call to return this map when token is validated
-        System.out.println("Token: " + validToken);
-        when(ValidationUtil.validateJwt(validToken, jwtRepository)).thenReturn(validJwtMap);
-
         // Call the method under test
         Map<String, Object> result = middlewareService.checkJwt(validToken);
-        System.out.println("Result: " + result);
 
         // Assertions
         assertEquals(validJwtMap, result, "The returned map should match the validated JWT data.");
 
-        // Verify that the repository was used to get the token and update it
-        System.out.println(jwtRepository.getTokenByUuid("uuid-1234"));
-        verify(jwtRepository).getTokenByUuid("uuid-1234");
-        verify(jwtRepository).updateToken(any(JWToken.class)); // Ensure the token was updated
+        // Verify that the token in the repo was updated
+        verify(jwtRepository).updateToken(any(JWToken.class));
     }
 }

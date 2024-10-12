@@ -16,7 +16,6 @@ public class MiddlewareService {
     }
 
     public Map<String, Object> checkJwt(String token) {
-        System.out.println("Token: " + token);
         try {
             // Step 1: Validate the JWT and retrieve the result
             Map<String, Object> result = ValidationUtil.validateJwt(token, jwtRepository);
