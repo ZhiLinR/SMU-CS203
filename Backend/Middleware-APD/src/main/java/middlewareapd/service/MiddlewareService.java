@@ -1,118 +1,42 @@
 package middlewareapd.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.scheduling.annotation.Async;
-
-import io.jsonwebtoken.Claims;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.StoredProcedureQuery;
-import middlewareapd.dto.JWTRequest;
-import middlewareapd.model.JWToken;
-import middlewareapd.util.*;
-
+import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
-/**
- * MiddlewareService handles the business logic for validating JWT tokens and checking user roles.
- * It interacts with repositories to validate JWT sessions, user roles, and extract claims from the token.
- */
+import middlewareapd.exception.UnauthorizedException;
+import middlewareapd.model.JWToken;
+import middlewareapd.repository.MockJWTRepository;
+import middlewareapd.util.ValidationUtil;
 
-@Service
 public class MiddlewareService {
+    private final MockJWTRepository jwtRepository;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private EntityManager entityManager;
-
-    /**
-     * Validates the provided JWT by extracting claims, checking its validity in the database,
-     * and comparing user role information.
-     *
-     * @param jwtRequest the request object containing the JWT to be validated.
-     * @return a CompletableFuture containing a Map with the user's UUID and admin status ("isAdmin").
-     * @throws UnauthorizedException if the JWT is invalid or session validation fails.
-     * @throws UserNotFoundException if the user UUID associated with the JWT is not found.
-     */
-    @Async
-    @Transactional
-    public CompletableFuture<Map<String, String>> checkJwt(JWTRequest jwtRequest) {
-        String jwt = jwtRequest.getJwt();
-        Claims claims;
-
-        // Decrypt JWT and extract claims
-        claims = jwtUtil.decryptToken(jwt);
-
-        String extractedUuid = claims.get("uuid", String.class);
-        Byte isAdmin = claims.get("isAdmin", Byte.class);
-
-        // Validate JWT session data using stored procedure
-        JWToken dbJwt = checkJwtValidity(jwt);
-        ValidationUtil.validateJwtSession(dbJwt);  // Validate JWT session
-
-        String dbUuid = dbJwt.getUuid();
-        ValidationUtil.validateUuid(dbUuid, extractedUuid);  // Validate UUID
-
-        // Retrieve and check role for the user using stored procedure
-        Byte dbIsAdmin = getUserRoleByUUID(dbUuid);
-        ValidationUtil.validateUserRole(dbIsAdmin, isAdmin);  // Validate user role
-
-        // Prepare and return the result as a map
-        return CompletableFuture.completedFuture(Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString()));
+    public MiddlewareService(MockJWTRepository jwtRepository) {
+        this.jwtRepository = jwtRepository; // Use the provided repository
     }
 
-    /**
-     * Calls the stored procedure to check the validity of the JWT using EntityManager.
-     *
-     * @param jwt the JWT token to validate.
-     * @return the JWToken entity from the database.
-     */
-    @Transactional
-    public JWToken checkJwtValidity(String jwt) {
-        // Create the stored procedure query
-        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("CheckValidity", JWToken.class);
-        
-        // Register the JWT parameter
-        query.registerStoredProcedureParameter("jwtValue", String.class, jakarta.persistence.ParameterMode.IN); // Use jakarta.persistence
-    
-        // Set the JWT parameter
-        query.setParameter("jwtValue", jwt); 
-    
-        // Execute the stored procedure
-        JWToken dbJwt = (JWToken) query.getSingleResult(); // Assuming it returns a single result
-        if (dbJwt == null) {
-            throw new UnauthorizedException("Invalid JWT or session expired.");
+    public Map<String, Object> checkJwt(String token) {
+        System.out.println("Token: " + token);
+        try {
+            // Step 1: Validate the JWT and retrieve the result
+            Map<String, Object> result = ValidationUtil.validateJwt(token, jwtRepository);
+            
+            // Step 2: Retrieve the UUID from the result
+            String uuid = (String) result.get("uuid");
+
+            // Step 3: Fetch the corresponding JWToken entry from the repository
+            JWToken dbJwt = jwtRepository.getTokenByUuid(uuid);
+            
+            // Step 4: Update lastAccess to the current time
+            dbJwt.setLastAccess(LocalDateTime.now());
+            
+            // Step 5: Save the updated JWToken back to the repository
+            jwtRepository.updateToken(dbJwt); // Assuming this method exists in MockJWTRepository
+
+            return result; // Return the validated result
+        } catch (UnauthorizedException e) {
+            // Handle UnauthorizedException as needed (logging, rethrowing, etc.)
+            throw e; // Or wrap and throw a custom exception
         }
-        return dbJwt;
     }
-
-    /**
-     * Calls the stored procedure to retrieve the user role by UUID using EntityManager.
-     *
-     * @param uuid the UUID of the user.
-     * @return the admin status of the user.
-     */
-    @Transactional
-    public Byte getUserRoleByUUID(String uuid) {
-        // Create the stored procedure query
-        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("getRoleByUUID");
-    
-        // Register the UUID parameter
-        query.registerStoredProcedureParameter("p_uuid", String.class, jakarta.persistence.ParameterMode.IN); // Use jakarta.persistence
-    
-        // Set the UUID parameter
-        query.setParameter("p_uuid", uuid); 
-    
-        // Execute the stored procedure
-        Byte dbIsAdmin = (Byte) query.getSingleResult(); // Assuming it returns a single result
-        if (dbIsAdmin == null) {
-            throw new UserNotFoundException("User not found for the provided UUID.");
-        }
-        return dbIsAdmin;
-    }
-    
 }

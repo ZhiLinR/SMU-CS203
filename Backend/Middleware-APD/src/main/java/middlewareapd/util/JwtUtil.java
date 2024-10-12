@@ -1,53 +1,49 @@
 package middlewareapd.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.JwtException; // Import for JwtException
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import middlewareapd.exception.UnauthorizedException;
 
-/**
- * Utility class for handling JSON Web Tokens (JWT).
- *
- * <p>This class provides methods for extracting claims, 
- * and validating JWTs. The tokens are signed using a secret key and 
- * contain information about the user, such as username, UUID, and admin status.</p>
- *
- * <p>Tokens are set to expire after a specified duration (24 hours in this case).</p>
- */
-@Component
+import java.util.Date;
+
 public class JwtUtil {
 
-    @Value("${security.jwt.secret-key}")
-    private String secretKey; // Default for testing
+    // Secret key for signing the JWT
+    private static final String SECRET_KEY = "your_secret_key_here";
+    
+    // Expiration time for the token (e.g., 10 minutes in milliseconds)
+    private static final long EXPIRATION_TIME = 600_000;
 
-        /**
-     * Decrypts and validates a JWT token and extracts the claims.
-     *
-     * @param token the JWT token to decrypt and validate
-     * @return the claims extracted from the JWT token
-     * @throws JwtException if the token is invalid or expired
-     */
-    public Claims decryptToken(String token) {
+    // Method to create a JWT token
+    public static String generateToken(String email, String uuid, int isAdmin) {
+        // Define the signing algorithm using the secret key
+        Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+
+        // Create the token
+        String token = JWT.create()
+                .withSubject(email) // Set the email as the subject (username)
+                .withClaim("uuid", uuid) // Add UUID to the token
+                .withClaim("isAdmin", isAdmin) // Add isAdmin to the token
+                .withIssuedAt(new Date()) // Set issued time (now)
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // Set expiration time
+                .sign(algorithm); // Sign the token with the secret key
+
+        return token;
+    }
+
+    // Method to verify and decode a JWT token
+    public static DecodedJWT verifyToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+        
         try {
-            // Use the parser to validate and parse the JWT
-            return Jwts.parser()
-                    .setSigningKey(secretKey) // Use the secret key to validate the signature
-                    .parseClaimsJws(token)
-                    .getBody(); // Return the claims (UUID, username, isAdmin, etc.)
-        } catch (ExpiredJwtException e) {
-            throw new RuntimeException("JWT token has expired", e);
-        } catch (UnsupportedJwtException e) {
-            throw new RuntimeException("JWT token is unsupported", e);
-        } catch (SignatureException e) {
-            throw new RuntimeException("Invalid JWT signature", e);
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid JWT token", e);
+            // Verify the token
+            return JWT.require(algorithm).build().verify(token);
+        } catch (JWTVerificationException e) {
+            // Handle signature verification failure, token expiration, etc.
+            throw new UnauthorizedException("Invalid JWT or session expired: " + e.getMessage());
         }
     }
 }
-

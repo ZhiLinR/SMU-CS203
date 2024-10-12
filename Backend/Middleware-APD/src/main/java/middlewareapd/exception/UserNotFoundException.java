@@ -1,4 +1,4 @@
-package middlewareapd.util;
+package middlewareapd.exception;
 
 /**
  * Exception thrown when a user is not found in the system.
