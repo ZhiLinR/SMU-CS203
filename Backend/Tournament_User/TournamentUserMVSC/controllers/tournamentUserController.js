@@ -1,14 +1,19 @@
 const TournamentUserService = require('../services/tournamentUserService');  // Import service
 
-// Get tournament history for a user
+// Get participated tournament history for a user
 exports.getTournaments = async (req, res, next) => {
+    const { UUID } = req.params;
+
     try {
-        const tournaments = await TournamentUserService.getTournaments();
-        if (!tournaments || tournaments.length === 0) {
+        const tournaments = await TournamentUserService.getTournaments(UUID);
+
+        // If no tournaments were found, return a 404 response
+        if (!tournaments) {
             const error = new Error('No tournaments found');
             error.statusCode = 404;
             return next(error);  // Pass error to middleware
         }
+
         res.status(200).json(tournaments);
     } catch (err) {
         console.error('Error retrieving tournaments:', err);
@@ -20,11 +25,12 @@ exports.getTournaments = async (req, res, next) => {
 // Get tournament matchups by tournament ID
 exports.getTournamentMatchups = async (req, res, next) => {
     const { tournamentId } = req.params;
+    const {UUID} = req.body;
 
     try {
-        const matchups = await TournamentUserService.getTournamentMatchups(tournamentId);
+        const matchups = await TournamentUserService.getTournamentMatchups(tournamentId,UUID);
         if (!matchups || matchups.length === 0) {
-            const error = new Error('No matchups found for the provided tournament ID');
+            const error = new Error('No matchups found for the provided tournament ID/UUID');
             error.statusCode = 404;
             return next(error);
         }
@@ -126,6 +132,41 @@ exports.getInProgressTournaments = async (req, res, next) => {
         });
     } catch (err) {
         console.error('Error retrieving in-progress tournaments:', err);
+        next(err);  // Pass the error to the middleware
+    }
+};
+
+// Get UserTournamentGameResult 
+exports.getUserTournamentGameRank = async (req, res, next) => {
+    const { UUID } = req.body;
+    const { tournamentId } = req.params;
+
+    try {
+        // Step 1: Check if tournament exists
+        const tournamentExists = await TournamentUserService.checkTournamentExists(tournamentId);
+        
+        if (!tournamentExists) {
+            const error = new Error('Tournament not found.');
+            error.statusCode = 404;  // Not Found
+            return next(error);  // Pass the error to middleware
+        }
+
+        // Step 2: Get user's tournament game rank if tournament exists
+        const getUserTournamentGameRank = await TournamentUserService.getUserTournamentGameRank(tournamentId, UUID);
+        
+        if (!getUserTournamentGameRank || getUserTournamentGameRank.length === 0) {
+            const error = new Error('No Game result found for the provided tournamentID.');
+            error.statusCode = 404;  // Not Found
+            return next(error);
+        }
+
+        // Respond with the ranking information
+        res.status(200).json({
+            message: 'Current Tournament Ranking:',
+            tournaments: getUserTournamentGameRank
+        });
+    } catch (err) {
+        console.error('Error retrieving current ranking in the tournament:', err);
         next(err);  // Pass the error to the middleware
     }
 };
