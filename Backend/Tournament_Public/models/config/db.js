@@ -16,14 +16,6 @@ connection.connect((err) => {
     }
     console.log('Connected to the MySQL server.');
 
-    // Perform a test query
-    connection.query('SELECT * FROM TournamentMSVC.public_tournaments', (error, results) => {
-        if (error) {
-            console.error('Error executing the query:', error);
-            return;
-        }
-        console.log('Query Results:', results);
-    });
 });
 
 module.exports = connection;
