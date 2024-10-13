@@ -60,6 +60,20 @@ public class MockJWTRepository {
     }
 
     /**
+     * Adds a new token to the repository.
+     *
+     * @param token the JWToken instance to add
+     * @return true if the token was added successfully, false if a token with the same UUID already exists
+     */
+    public boolean addToken(JWToken token) {
+        if (getTokenByUuid(token.getUuid()) != null) {
+            return false; // Token with the same UUID already exists
+        }
+        tokens.add(token);
+        return true;
+    }
+
+    /**
      * Retrieves all tokens in the repository.
      *
      * @return a list of all JWToken instances

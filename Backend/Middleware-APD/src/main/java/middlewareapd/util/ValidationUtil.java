@@ -21,15 +21,15 @@ public class ValidationUtil {
      * Validates the JWT session by checking if the JWT exists in the database
      * and ensuring that the user has not logged out.
      *
-     * @param dbJwt the JWT object retrieved from the database.
+     * @param retrievedJWT the JWT object retrieved from the database.
      * @throws UnauthorizedException if the JWT is invalid, the session has expired, or the user is logged out.
      */
-    public static void validateJwtSession(JWToken dbJwt) {
-        if (dbJwt == null) {
+    public static void validateJwtSession(JWToken retrievedJWT) {
+        if (retrievedJWT == null) {
             throw new UnauthorizedException("Invalid JWT or session expired.");
         }
 
-        if (dbJwt.getLogout() != null) {
+        if (retrievedJWT.getLogout() != null) {
             throw new UnauthorizedException("User has logged out.");
         }
     }
@@ -84,10 +84,10 @@ public class ValidationUtil {
      * @return the JWToken corresponding to the extracted UUID.
      * @throws UnauthorizedException if the JWToken does not exist.
      */
-    public static JWToken fetchDbJwt(String extractedUuid, MockJWTRepository jwtRepository) {
-        JWToken dbJwt = jwtRepository.getTokenByUuid(extractedUuid);
-        validateJwtSession(dbJwt); // Validate that the session exists
-        return dbJwt;
+    public static JWToken fetchDatabaseJWT(String extractedUuid, MockJWTRepository jwtRepository) {
+        JWToken retrievedJWT = jwtRepository.getTokenByUuid(extractedUuid);
+        validateJwtSession(retrievedJWT); // Validate that the session exists
+        return retrievedJWT;
     }
 
     /**
@@ -103,11 +103,11 @@ public class ValidationUtil {
         DecodedJWT decodedJWT = decodeJwt(token);
         String extractedUuid = getExtractedUuid(decodedJWT);
 
-        JWToken dbJwt = fetchDbJwtWithLock(extractedUuid, jwtRepository, lock);
-        validateUuid(dbJwt.getUuid(), extractedUuid);
-        validateUserRole(dbJwt.getIsAdmin(), decodedJWT.getClaim("isAdmin").asInt());
+        JWToken retrievedJWT = fetchDbJWTWithLock(extractedUuid, jwtRepository, lock);
+        validateUuid(retrievedJWT.getUuid(), extractedUuid);
+        validateUserRole(retrievedJWT.getIsAdmin(), decodedJWT.getClaim("isAdmin").asInt());
 
-        return createResponseMap(dbJwt);
+        return createResponseMap(retrievedJWT);
     }
 
     /**
@@ -132,10 +132,10 @@ public class ValidationUtil {
      * @param jwtRepository the repository to fetch the JWToken entry.
      * @return the JWToken corresponding to the extracted UUID.
      */
-    private static JWToken fetchDbJwtWithLock(String extractedUuid, MockJWTRepository jwtRepository, ReadWriteLock lock) {
+    private static JWToken fetchDbJWTWithLock(String extractedUuid, MockJWTRepository jwtRepository, ReadWriteLock lock) {
         lock.readLock().lock();
         try {
-            return fetchDbJwt(extractedUuid, jwtRepository);
+            return fetchDatabaseJWT(extractedUuid, jwtRepository);
         } finally {
             lock.readLock().unlock();
         }
@@ -144,13 +144,13 @@ public class ValidationUtil {
     /**
      * Creates a response map containing UUID and isAdmin status.
      *
-     * @param dbJwt the JWToken object.
+     * @param retrievedJWT the JWToken object.
      * @return a map containing UUID and isAdmin status.
      */
-    private static Map<String, Object> createResponseMap(JWToken dbJwt) {
+    private static Map<String, Object> createResponseMap(JWToken retrievedJWT) {
         Map<String, Object> response = new HashMap<>();
-        response.put("uuid", dbJwt.getUuid());
-        response.put("isAdmin", dbJwt.getIsAdmin());
+        response.put("uuid", retrievedJWT.getUuid());
+        response.put("isAdmin", retrievedJWT.getIsAdmin());
         return response;
     }
 }
