@@ -78,6 +78,16 @@
     
 
     <build>
+     <!-- To define the plugin version in your parent POM -->
+        <pluginManagement>
+        <plugins>
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>3.10.1</version>
+            </plugin>
+        </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -102,6 +112,10 @@
                 <configuration>
                     <mainClass>middlewareapd.Main</mainClass> <!-- Adjust according to your package structure -->
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
