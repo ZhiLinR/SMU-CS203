@@ -24,5 +24,9 @@ public class MatchupService {
     public List<Matchup> getGameResultsByTournamentId(String tournamentId) {
         return matchupRepository.getGameResultsByTournamentId(tournamentId);
     }
-}
 
+    @Transactional
+    public List<String> getParticipantsByTournamentId(String tournamentId) {
+        return matchupRepository.getParticipantsByTournamentId(tournamentId);
+    }
+}

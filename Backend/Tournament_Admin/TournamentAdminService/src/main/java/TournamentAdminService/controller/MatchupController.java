@@ -17,20 +17,26 @@ public class MatchupController {
     private MatchupService matchupService;
 
     @PostMapping("/update")
-    public ResponseEntity<Void> updateGameResult(@RequestBody GameResultRequest gameResultRequest) {
+    public ResponseEntity<String> updateGameResult(@RequestBody GameResultRequest gameResultRequest) {
         matchupService.updateGameResult(gameResultRequest.getPlayerWon(), gameResultRequest.getTournamentID(), gameResultRequest.getRoundNum());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Successfully updated tournament result.");
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteGameResult(@RequestBody GameResultRequest gameResultRequest) {
+    public ResponseEntity<String> deleteGameResult(@RequestBody GameResultRequest gameResultRequest) {
         matchupService.deleteGameResult(gameResultRequest.getPlayerWon(), gameResultRequest.getTournamentID(), gameResultRequest.getRoundNum());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Successfully deleted tournament result");
     }
 
     @GetMapping("/results/{tournamentId}")
     public ResponseEntity<List<Matchup>> getGameResultsByTournamentId(@PathVariable String tournamentId) {
         List<Matchup> results = matchupService.getGameResultsByTournamentId(tournamentId);
         return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/participants/{tournamentId}")
+    public ResponseEntity<List<String>> getParticipantsByTournamentId(@PathVariable String tournamentId) {
+        List<String> participants = matchupService.getParticipantsByTournamentId(tournamentId);
+        return ResponseEntity.ok(participants);
     }
 }

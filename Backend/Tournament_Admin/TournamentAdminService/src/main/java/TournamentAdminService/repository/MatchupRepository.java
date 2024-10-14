@@ -21,4 +21,7 @@ public interface MatchupRepository extends JpaRepository<Matchup, Long> {
 
     @Procedure(name="GetGameResultsByTournamentId")
     List<Matchup> getGameResultsByTournamentId(@Param("p_tournamentId") String tournamentId);
+
+    @Procedure(name="GetParticipantsByTournamentId")
+    List<String> getParticipantsByTournamentId(@Param("p_tournamentId") String tournamentId);
 }
