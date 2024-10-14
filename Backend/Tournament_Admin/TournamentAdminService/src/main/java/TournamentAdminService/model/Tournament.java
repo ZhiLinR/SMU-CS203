@@ -8,7 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Data
 @AllArgsConstructor
@@ -20,9 +21,9 @@ public class Tournament {
     @Column(name="tournamentID")
     private String tournamentID;
     @Column(name="startDate")
-    private Date startDate;
+    private LocalDate startDate;
     @Column(name="endDate")
-    private Date endDate;
+    private LocalDate endDate;
     @Column(name="location")
     private String location;
     @Column(name="playerLimit")
@@ -35,10 +36,10 @@ public class Tournament {
     private String name;
 
     public String getStatus() {
-        Date now = new Date();
-        if (now.before(startDate)) {
+            LocalDate now = LocalDate.now();
+        if (now.isBefore(startDate)) {
             return "Upcoming";
-        } else if (now.after(endDate)) {
+        } else if (now.isAfter(endDate)) {
             return "Completed";
         } else {
             return "Ongoing";

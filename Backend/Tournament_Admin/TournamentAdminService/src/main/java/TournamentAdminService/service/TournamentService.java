@@ -5,10 +5,12 @@ import TournamentAdminService.repository.TournamentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.List;
+
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
 public class TournamentService {
     @Autowired
@@ -16,14 +18,22 @@ public class TournamentService {
 
     @Transactional
     public void createTournament(Tournament tournament) {
+        LocalDate localStartDate = tournament.getStartDate();
+        java.sql.Date sqlStartDate = Date.valueOf(localStartDate);
+        LocalDate localEndDate = tournament.getEndDate();
+        java.sql.Date sqlEndDate = Date.valueOf(localEndDate);
         tournamentRepository.createTournament(
-                tournament.getStartDate(), tournament.getEndDate(), tournament.getLocation(),
-                tournament.getPlayerLimit(), tournament.getIsActive(), tournament.getDescOID(), tournament.getName());
+                tournament.getName(), sqlStartDate, sqlEndDate, tournament.getLocation(),
+                tournament.getPlayerLimit(), tournament.getIsActive(), tournament.getDescOID());
     }
     @Transactional
     public void updateTournament(Tournament tournament) {
+        LocalDate localStartDate = tournament.getStartDate();
+        java.sql.Date sqlStartDate = Date.valueOf(localStartDate);
+        LocalDate localEndDate = tournament.getEndDate();
+        java.sql.Date sqlEndDate = Date.valueOf(localEndDate);;
         tournamentRepository.updateTournament(tournament.getTournamentID(), tournament.getName(),
-                tournament.getStartDate(), tournament.getEndDate(), tournament.getLocation(),
+                sqlStartDate, sqlEndDate, tournament.getLocation(),
                 tournament.getPlayerLimit(), tournament.getIsActive(), tournament.getDescOID());
     }
     @Transactional
@@ -42,4 +52,3 @@ public class TournamentService {
     }
 
 }
-
