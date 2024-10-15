@@ -73,7 +73,7 @@ jobs:
       with:
         task-definition: ecs-demo:4
         container-name: user
-        image: ${{ steps.build-image.outputs.image }}
+        image: ${{ secrets.AWS_USER_ECR_TAG }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
