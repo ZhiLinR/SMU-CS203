@@ -46,7 +46,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
@@ -64,21 +64,21 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         docker build -t cs203/user .
-        docker tag cs203/user:latest 588738575184.dkr.ecr.ap-southeast-1.amazonaws.com/cs203/user:latest
+        docker tag ${{ secrets.AWS_USER_ECR_TAG }}
         docker push ${{ secrets.AWS_USER_REPO_NAME }}
 
     - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
+      id: user
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ env.CONTAINER_NAME }}
+        task-definition: ecs-demo:4
+        container-name: user
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ${{ env.ECS_SERVICE }}
-        cluster: ${{ env.ECS_CLUSTER }}
+        task-definition: ecs-demo:4
+        service: ${{ secrets.ECS_SERVICE }}
+        cluster: ${{ secrets.ECS_CLUSTER }}
         wait-for-service-stability: true
