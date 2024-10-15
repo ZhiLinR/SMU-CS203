@@ -1,0 +1,72 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:ap-southeast-1:588738575184:task-definition/ecs-demo:4",
+    "containerDefinitions": [
+        {
+            "name": "sample-deployment",
+            "image": "588738575184.dkr.ecr.ap-southeast-1.amazonaws.com/cs203/user:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "DB_USERNAME",
+                    "value": "UserMSVCAccess"
+                },
+                {
+                    "name": "JWT_SECRET",
+                    "value": "eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcyNjgwODU0NywiaWF0IjoxNzI2ODA4NTQ3fQ.V8ZPhGgacXxzpEIJeCwJLIWjD0Da-p9E2JT2ZEdko3"
+                },
+                {
+                    "name": "DB_URL",
+                    "value": "jdbc:mysql://121.6.18.162:32781/UserMSVC"
+                },
+                {
+                    "name": "DB_PASSWORD",
+                    "value": "7EGQu3GXvLiRVds4qZMt"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "systemControls": []
+        }
+    ],
+    "family": "ecs-demo",
+    "executionRoleArn": "arn:aws:iam::588738575184:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 4,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "registeredAt": "2024-10-10T18:08:20.359Z",
+    "registeredBy": "arn:aws:iam::588738575184:root",
+    "tags": []
+}

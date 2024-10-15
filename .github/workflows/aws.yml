@@ -71,14 +71,14 @@ jobs:
       id: user
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ecs-demo:4
-        container-name: user
-        image: ${{ secrets.AWS_USER_ECR_TAG }}
+        task-definition:  ecs-demo-revision4.json
+        container-name: user-container
+        image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.build-image.outputs.image }}
-        service: ${{ secrets.ECS_SERVICE }}
-        cluster: ${{ secrets.ECS_CLUSTER }}
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: user-task
+        cluster: cs203-user
         wait-for-service-stability: true
