@@ -2,7 +2,7 @@
     "taskDefinitionArn": "arn:aws:ecs:ap-southeast-1:588738575184:task-definition/ecs-demo:4",
     "containerDefinitions": [
         {
-            "name": "sample-deployment",
+            "name": "user-container",
             "image": "588738575184.dkr.ecr.ap-southeast-1.amazonaws.com/cs203/user:latest",
             "cpu": 0,
             "portMappings": [
