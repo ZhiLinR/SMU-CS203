@@ -1,6 +1,8 @@
 # Use a base image that includes Java
 FROM openjdk:17-jdk-slim
 
+RUN ["mvn clean install"]
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -12,3 +14,5 @@ EXPOSE 8080
 
 # Set the entry point to run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+RUN ["mvn spring-boot:run"]
