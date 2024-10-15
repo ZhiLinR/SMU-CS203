@@ -18,7 +18,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the built JAR file from the build stage
-COPY --from=build /app/target/user-msvc-1.0.0.jar app.jar
+COPY target/user-msvc-1.0.0.jar app.jar
 
 EXPOSE 8080
 
