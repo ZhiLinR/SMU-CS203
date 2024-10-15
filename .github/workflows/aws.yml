@@ -71,7 +71,7 @@ jobs:
       id: user
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition:  ecs-demo-revision4.json
+        task-definition:  ecs-demo:4
         container-name: user-container
         image: user-latest
 
