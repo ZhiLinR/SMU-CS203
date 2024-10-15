@@ -3,10 +3,27 @@ package user.util;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Unit tests for the {@link ValidationUtil} class, focusing on ensuring the proper
+ * validation of various fields, roles, email formats, and UUIDs.
+ * <p>
+ * This test class verifies that the validation methods in {@link ValidationUtil} function 
+ * correctly under different scenarios, including required field validation, role validation, 
+ * email format checks, and UUID format validation.
+ * </p>
+ */
 public class ValidationUtilTest {
 
     /**
-     * Tests that a required field validation succeeds for a non-empty string.
+     * Tests the {@link ValidationUtil#validateRequiredFields(String, String)} method with a valid input.
+     * <p>
+     * This test ensures that validating a required field with a non-empty string does not throw an exception.
+     * </p>
+     * <ul>
+     *     <li>Given: A non-empty string as input.</li>
+     *     <li>When: The method {@link ValidationUtil#validateRequiredFields(String, String)} is called.</li>
+     *     <li>Then: No exception should be thrown.</li>
+     * </ul>
      */
     @Test
     public void testValidateRequiredFields_Success() {
@@ -14,7 +31,16 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that a required field validation fails for an empty string.
+     * Tests the {@link ValidationUtil#validateRequiredFields(String, String)} method with an empty string.
+     * <p>
+     * This test ensures that validating a required field with an empty string throws an 
+     * {@link IllegalArgumentException} with the expected message.
+     * </p>
+     * <ul>
+     *     <li>Given: An empty string as input.</li>
+     *     <li>When: The method {@link ValidationUtil#validateRequiredFields(String, String)} is called.</li>
+     *     <li>Then: An {@link IllegalArgumentException} should be thrown with the message "Field is required."</li>
+     * </ul>
      */
     @Test
     public void testValidateRequiredFields_EmptyString() {
@@ -25,7 +51,16 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that a required field validation fails for a null string.
+     * Tests the {@link ValidationUtil#validateRequiredFields(String, String)} method with a null input.
+     * <p>
+     * This test ensures that validating a required field with a null input throws an 
+     * {@link IllegalArgumentException} with the expected message.
+     * </p>
+     * <ul>
+     *     <li>Given: A null input string.</li>
+     *     <li>When: The method {@link ValidationUtil#validateRequiredFields(String, String)} is called.</li>
+     *     <li>Then: An {@link IllegalArgumentException} should be thrown with the message "Field is required."</li>
+     * </ul>
      */
     @Test
     public void testValidateRequiredFields_NullString() {
@@ -36,7 +71,15 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests valid admin role value (0).
+     * Tests the {@link ValidationUtil#validateRole(Byte)} method with a valid admin role value (0).
+     * <p>
+     * This test ensures that validating a valid admin role does not throw an exception.
+     * </p>
+     * <ul>
+     *     <li>Given: A valid admin role value (0).</li>
+     *     <li>When: The method {@link ValidationUtil#validateRole(Byte)} is called.</li>
+     *     <li>Then: No exception should be thrown.</li>
+     * </ul>
      */
     @Test
     public void testValidateRole_ValidRole0() {
@@ -44,7 +87,15 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests valid admin role value (1).
+     * Tests the {@link ValidationUtil#validateRole(Byte)} method with a valid admin role value (1).
+     * <p>
+     * This test ensures that validating a valid admin role does not throw an exception.
+     * </p>
+     * <ul>
+     *     <li>Given: A valid admin role value (1).</li>
+     *     <li>When: The method {@link ValidationUtil#validateRole(Byte)} is called.</li>
+     *     <li>Then: No exception should be thrown.</li>
+     * </ul>
      */
     @Test
     public void testValidateRole_ValidRole1() {
@@ -52,7 +103,16 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests invalid admin role value (2).
+     * Tests the {@link ValidationUtil#validateRole(Byte)} method with an invalid role value (2).
+     * <p>
+     * This test ensures that validating an invalid role value throws an 
+     * {@link IllegalArgumentException} with the expected message.
+     * </p>
+     * <ul>
+     *     <li>Given: An invalid role value (2).</li>
+     *     <li>When: The method {@link ValidationUtil#validateRole(Byte)} is called.</li>
+     *     <li>Then: An {@link IllegalArgumentException} should be thrown with the message "Invalid value for Role."</li>
+     * </ul>
      */
     @Test
     public void testValidateRole_InvalidRole() {
@@ -63,7 +123,16 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that validation throws an exception for null admin role.
+     * Tests the {@link ValidationUtil#validateRole(Byte)} method with a null role.
+     * <p>
+     * This test ensures that validating a null role value throws an 
+     * {@link IllegalArgumentException} with the expected message.
+     * </p>
+     * <ul>
+     *     <li>Given: A null role value.</li>
+     *     <li>When: The method {@link ValidationUtil#validateRole(Byte)} is called.</li>
+     *     <li>Then: An {@link IllegalArgumentException} should be thrown with the message "Invalid value for Role."</li>
+     * </ul>
      */
     @Test
     public void testValidateRole_NullRole() {
@@ -74,7 +143,15 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests valid email format.
+     * Tests the {@link ValidationUtil#isValidEmail(String)} method with a valid email format.
+     * <p>
+     * This test ensures that validating a correctly formatted email returns {@code true}.
+     * </p>
+     * <ul>
+     *     <li>Given: A valid email address.</li>
+     *     <li>When: The method {@link ValidationUtil#isValidEmail(String)} is called.</li>
+     *     <li>Then: The result should be {@code true}.</li>
+     * </ul>
      */
     @Test
     public void testIsValidEmail_ValidEmail() {
@@ -82,7 +159,15 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that an email address longer than the maximum length is invalid.
+     * Tests the {@link ValidationUtil#isValidEmail(String)} method with a long email address.
+     * <p>
+     * This test ensures that validating an email address longer than the allowed length returns {@code false}.
+     * </p>
+     * <ul>
+     *     <li>Given: An email address that exceeds the maximum length.</li>
+     *     <li>When: The method {@link ValidationUtil#isValidEmail(String)} is called.</li>
+     *     <li>Then: The result should be {@code false}.</li>
+     * </ul>
      */
     @Test
     public void testIsValidEmail_LongEmail() {
@@ -91,7 +176,15 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests invalid email format.
+     * Tests the {@link ValidationUtil#isValidEmail(String)} method with an invalid email format.
+     * <p>
+     * This test ensures that validating an improperly formatted email returns {@code false}.
+     * </p>
+     * <ul>
+     *     <li>Given: An invalid email address format.</li>
+     *     <li>When: The method {@link ValidationUtil#isValidEmail(String)} is called.</li>
+     *     <li>Then: The result should be {@code false}.</li>
+     * </ul>
      */
     @Test
     public void testIsValidEmail_InvalidEmailFormat() {
@@ -99,7 +192,15 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that UUID validation succeeds for a valid UUID.
+     * Tests the {@link ValidationUtil#validateUUID(String)} method with a valid UUID.
+     * <p>
+     * This test ensures that validating a correctly formatted UUID does not throw an exception.
+     * </p>
+     * <ul>
+     *     <li>Given: A valid UUID string.</li>
+     *     <li>When: The method {@link ValidationUtil#validateUUID(String)} is called.</li>
+     *     <li>Then: No exception should be thrown.</li>
+     * </ul>
      */
     @Test
     public void testValidateUUID_ValidUUID() {
@@ -107,7 +208,16 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that UUID validation fails for an empty UUID.
+     * Tests the {@link ValidationUtil#validateUUID(String)} method with an empty string.
+     * <p>
+     * This test ensures that validating an empty UUID string throws an 
+     * {@link IllegalArgumentException} with the expected message.
+     * </p>
+     * <ul>
+     *     <li>Given: An empty UUID string.</li>
+     *     <li>When: The method {@link ValidationUtil#validateUUID(String)} is called.</li>
+     *     <li>Then: An {@link IllegalArgumentException} should be thrown with the message "UUID is required."</li>
+     * </ul>
      */
     @Test
     public void testValidateUUID_EmptyUUID() {
@@ -118,7 +228,16 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that UUID validation fails for a null UUID.
+     * Tests the {@link ValidationUtil#validateUUID(String)} method with a null input.
+     * <p>
+     * This test ensures that validating a null UUID string throws an 
+     * {@link IllegalArgumentException} with the expected message.
+     * </p>
+     * <ul>
+     *     <li>Given: A null UUID string.</li>
+     *     <li>When: The method {@link ValidationUtil#validateUUID(String)} is called.</li>
+     *     <li>Then: An {@link IllegalArgumentException} should be thrown with the message "UUID is required."</li>
+     * </ul>
      */
     @Test
     public void testValidateUUID_NullUUID() {
