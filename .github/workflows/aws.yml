@@ -73,7 +73,7 @@ jobs:
       with:
         task-definition:  ecs-demo-revision4.json
         container-name: user-container
-        image: ${{ steps.build-image.outputs.image }}
+        image: user-latest
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
