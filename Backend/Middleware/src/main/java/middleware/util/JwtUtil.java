@@ -40,13 +40,13 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody(); // Return the claims (UUID, username, isAdmin, etc.)
         } catch (ExpiredJwtException e) {
-            throw new RuntimeException("JWT token has expired", e);
+            throw new UnauthorizedException("JWT token has expired", e);
         } catch (UnsupportedJwtException e) {
-            throw new RuntimeException("JWT token is unsupported", e);
+            throw new UnauthorizedException("JWT token is unsupported", e);
         } catch (SignatureException e) {
-            throw new RuntimeException("Invalid JWT signature", e);
+            throw new UnauthorizedException("Invalid JWT signature", e);
         } catch (Exception e) {
-            throw new RuntimeException("Invalid JWT token", e);
+            throw new UnauthorizedException("Invalid JWT token", e);
         }
     }
 }

@@ -3,8 +3,7 @@ package middleware.controller;
 import middleware.MiddlewareApplication;
 import middleware.dto.JWTRequest;
 import middleware.service.MiddlewareService;
-import middleware.util.UserNotFoundException;
-import middleware.util.UnauthorizedException;
+import middleware.util.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,16 +29,16 @@ import static org.hamcrest.Matchers.is;
 /**
  * Integration tests for the {@link MiddlewareController}.
  * <p>
- * This class tests the various scenarios for the JWT validation endpoint, including valid, expired, 
- * and unauthorized tokens. It uses {@link MockMvc} to perform HTTP requests and verify responses 
- * from the controller layer. The service layer is mocked using {@link MockBean}.
+ * This class tests various scenarios for the JWT validation endpoint, including valid, 
+ * expired, and unauthorized tokens. It uses {@link MockMvc} to perform HTTP requests and 
+ * verify responses from the controller layer. The service layer is mocked using {@link MockBean}.
  * </p>
  */
 @SpringBootTest(classes = MiddlewareApplication.class)
 @AutoConfigureMockMvc
 public class MiddlewareControllerTest {
 
-    /** MockMvc instance used to simulate HTTP requests and validate responses. */
+    /** {@link MockMvc} instance used to simulate HTTP requests and validate responses. */
     @Autowired
     private MockMvc mockMvc;
 
@@ -74,6 +73,9 @@ public class MiddlewareControllerTest {
 
     /**
      * Initializes mock JWT request objects before each test case.
+     * <p>
+     * This ensures that each test starts with a fresh set of request objects.
+     * </p>
      */
     @BeforeEach
     public void setUp() {
@@ -88,7 +90,7 @@ public class MiddlewareControllerTest {
     }
 
     /**
-     * Tests the {@code /api/middleware/checkjwt} endpoint with a valid JWT token.
+     * Tests the {@link MiddlewareController#checkJwt(JWTRequest)} endpoint with a valid JWT token.
      * <p>
      * Verifies that the response contains valid user data and returns HTTP 200 status.
      * </p>
@@ -109,7 +111,7 @@ public class MiddlewareControllerTest {
     }
 
     /**
-     * Tests the {@code /api/middleware/checkjwt} endpoint with a user not found scenario.
+     * Tests the {@link MiddlewareController#checkJwt(JWTRequest)} endpoint with a user not found scenario.
      * <p>
      * Verifies that the response returns HTTP 404 status with an appropriate error message.
      * </p>
@@ -128,7 +130,7 @@ public class MiddlewareControllerTest {
     }
 
     /**
-     * Tests the {@code /api/middleware/checkjwt} endpoint with an unauthorized access scenario.
+     * Tests the {@link MiddlewareController#checkJwt(JWTRequest)} endpoint with an unauthorized access scenario.
      * <p>
      * Verifies that the response returns HTTP 401 status with an appropriate error message.
      * </p>
@@ -147,7 +149,7 @@ public class MiddlewareControllerTest {
     }
 
     /**
-     * Tests the {@code /api/middleware/checkjwt} endpoint with an internal server error scenario.
+     * Tests the {@link MiddlewareController#checkJwt(JWTRequest)} endpoint with an internal server error scenario.
      * <p>
      * Verifies that the response returns HTTP 500 status with an appropriate error message.
      * </p>
