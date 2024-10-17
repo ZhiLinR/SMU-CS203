@@ -1,4 +1,4 @@
-package user.util;
+package user.exception;
 
 /**
  * Exception thrown when User inputs the wrong email or password.

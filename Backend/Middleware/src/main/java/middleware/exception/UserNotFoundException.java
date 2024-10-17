@@ -1,27 +1,27 @@
-package middleware.util;
+package middleware.exception;
 
 /**
- * Exception thrown when User inputs the wrong email or password.
+ * Exception thrown when a user is not found in the system.
  * This is a runtime exception that extends {@link RuntimeException}.
  */
-public class UnauthorizedException extends RuntimeException {
+public class UserNotFoundException extends RuntimeException {
 
     /**
-     * Constructs a new {@code UnauthorizedException} with the specified detail message.
+     * Constructs a new {@code UserNotFoundException} with the specified detail message.
      *
      * @param message the detail message, which is saved for later retrieval by the {@link Throwable#getMessage()} method
      */
-    public UnauthorizedException(String message) {
+    public UserNotFoundException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new {@code UnauthorizedException} with the specified detail message and cause.
+     * Constructs a new {@code UserNotFoundException} with the specified detail message and cause.
      *
      * @param message the detail message, which is saved for later retrieval by the {@link Throwable#getMessage()} method
      * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method)
      */
-    public UnauthorizedException(String message, Throwable cause) {
+    public UserNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }

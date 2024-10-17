@@ -1,4 +1,4 @@
-package middleware.util;
+package user.exception;
 
 /**
  * Exception thrown when a user is not found in the system.
