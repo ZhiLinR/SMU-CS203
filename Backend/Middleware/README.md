@@ -5,7 +5,7 @@
 To start the microservice, run the commands below in order
 
 ```console
-cd Backend\Middlware
+cd Backend\Middleware
 mvn clean install
 mvn spring-boot:run
 ```
