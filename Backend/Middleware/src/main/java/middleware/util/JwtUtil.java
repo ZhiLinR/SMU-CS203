@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException; // Import for JwtException
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import middleware.exception.UnauthorizedException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

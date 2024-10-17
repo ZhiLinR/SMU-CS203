@@ -2,8 +2,9 @@ package middleware.controller;
 
 import middleware.MiddlewareApplication;
 import middleware.dto.JWTRequest;
+import middleware.exception.UserNotFoundException;
+import middleware.exception.UnauthorizedException;
 import middleware.service.MiddlewareService;
-import middleware.util.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

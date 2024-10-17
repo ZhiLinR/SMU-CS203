@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import middleware.dto.*;
+import middleware.exception.UserNotFoundException;
+import middleware.exception.UnauthorizedException;
 import middleware.service.MiddlewareService;
 import middleware.util.*;
 
