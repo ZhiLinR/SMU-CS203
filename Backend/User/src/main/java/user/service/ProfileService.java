@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import user.dto.ProfileRequest;
+import user.exception.UnauthorizedException;
+import user.exception.UserNotFoundException;
 import user.model.User;
 import user.repository.*;
 import user.util.*;

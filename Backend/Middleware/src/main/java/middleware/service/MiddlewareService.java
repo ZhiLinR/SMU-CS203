@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import io.jsonwebtoken.Claims;
 
 import middleware.dto.JWTRequest;
+import middleware.exception.UserNotFoundException;
+import middleware.exception.UnauthorizedException;
 import middleware.model.JWToken;
 import middleware.repository.*;
 import middleware.util.*;

@@ -13,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import user.dto.ProfileRequest;
-import user.util.UnauthorizedException;
-import user.util.UserNotFoundException;
+import user.exception.UnauthorizedException;
+import user.exception.UserNotFoundException;
 import user.model.User;
 import user.repository.JWTokenRepository;
 import user.repository.UserRepository;

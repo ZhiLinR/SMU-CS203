@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import user.dto.*;
+import user.exception.UnauthorizedException;
+import user.exception.UserNotFoundException;
 import user.model.User;
 import user.service.ProfileService;
 import user.util.*;

@@ -1,5 +1,7 @@
 package middleware.util;
 
+import middleware.exception.UserNotFoundException;
+import middleware.exception.UnauthorizedException;
 import middleware.model.JWToken;
 
 /**
