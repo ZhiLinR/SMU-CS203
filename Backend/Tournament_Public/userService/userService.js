@@ -1,22 +1,12 @@
-const bcrypt = require('bcrypt');
 const userModel = require('../models/tournament');
 
-// Service to handle user sign-up with hashed password
-// const signUpUser = async (name, email, password) => {
-//     try {
-//         // Hash the password before storing it in the database
-//         const hashedPassword = await bcrypt.hash(password, 10); // 10 salt rounds for security
 
-//         // Call the model function to insert the user
-//         await userModel.insertUser(name, email, hashedPassword);
-
-//         return { success: true, message: 'User signed up successfully' };
-//     } catch (error) {
-//         throw new Error(`Sign-up error: ${error.message}`);
-//     }
-// };
-
-// Service to get all tournaments (example)
+/**
+ * Service to get all active tournaments.
+ * 
+ * @returns {Promise<Array>} A promise that resolves to an array of active tournaments.
+ * @throws {Error} Throws an error if there is an issue fetching the tournaments.
+ */
 const getAllActiveTournaments = async () => {
     try {
         const tournaments = await userModel.getAllActiveTournaments();
@@ -27,7 +17,13 @@ const getAllActiveTournaments = async () => {
 };
 
 
-// Service to get a specific tournament
+/**
+ * Service to get a specific tournament by ID.
+ * 
+ * @param {string} tournamentId - The ID of the tournament to retrieve.
+ * @returns {Promise<Object|null>} A promise that resolves to the tournament object if found, or null if not found.
+ * @throws {Error} Throws an error if there is an issue fetching the tournament.
+ */
 const getTournamentById = async (tournamentId) => {
     try {
         const tournament = await userModel.getTournamentById(tournamentId);

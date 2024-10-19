@@ -1,20 +1,11 @@
 const db = require('./config/db');
 
-// Function to insert a new user (via stored procedure)
-// const insertUser = (name, email, hashedPassword) => {
-//     return new Promise((resolve, reject) => {
-    //dont do like this. you have to abstract this database.
-//         const query = `CALL UserMSVC.sign_up_user(?, ?, ?)`;
-//         db.query(query, [name, email, hashedPassword], (error, results) => {
-//             if (error) {
-//                 return reject(new Error(`Database error: ${error.message}`));
-//             }
-//             resolve(results);
-//         });
-//     });
-// };
-
-
+/**
+ * Fetches all active tournaments from the database.
+ * 
+ * @returns {Promise<Array>} A promise that resolves to an array of active tournaments.
+ * @throws {Error} Throws an error if there is a database error.
+ */
 
 // Function to fetch all tournaments, retrieve only the isActive ones
 const getAllActiveTournaments = () => {
@@ -29,6 +20,14 @@ const getAllActiveTournaments = () => {
     });
 };
 
+/**
+ * Fetches a tournament by its ID from the database.
+ * 
+ * @param {string} tournamentId - The ID of the tournament to fetch.
+ * @returns {Promise<Object|null>} A promise that resolves to the tournament object if found, or null if not found.
+ * @throws {Error} Throws an error if there is a database error.
+ */
+
 // Function to fetch a specific tournament by ID 
 const getTournamentById = (id) => {
     return new Promise((resolve, reject) => {
@@ -42,18 +41,6 @@ const getTournamentById = (id) => {
     });
 };
 
-// Model to get matchups for a specific tournament when user is in public
-// const getTournamentMatchups = (tournamentId, UUID) => {
-//     return new Promise((resolve, reject) => {
-//         const query = 'CALL GetTournamentUsingID(?,?)';  // Stored procedure to get tournament matchups by ID
-//         db.query(query, [tournamentId, UUID], (err, results) => {
-//             if (err) {
-//                 return reject(new Error(`Database error: ${err.message}`));  // Return the error to the service layer
-//             }
-//             resolve(results[0]);  // Return the matchups to the service layer
-//         });
-//     });
-// };
 
 module.exports = {
     getAllActiveTournaments,

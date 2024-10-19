@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "generate-docs": "jsdoc -c jsdoc.json"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,9 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "nodemon": "^3.1.7"
+    "jsdoc": "^4.0.3",
+    "minami": "^1.2.3",
+    "nodemon": "^3.1.7",
+    "taffydb": "^2.7.3"
   }
 }
