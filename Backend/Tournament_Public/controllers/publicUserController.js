@@ -1,22 +1,22 @@
 const userService = require('../userService/userService');
 
 // Controller for user sign-up
-const signUpUser = async (req, res) => {
-    const { name, email, password } = req.body;
+// const signUpUser = async (req, res) => {
+//     const { name, email, password } = req.body;
 
-    try {
-        // Call the service to sign up the user
-        const result = await userService.signUpUser(name, email, password);
-        res.status(201).json(result); // success message from the service
-    } catch (error) {
-        res.status(500).json({ message: 'Error signing up user', error: error.message });
-    }
-};
+//     try {
+//         // Call the service to sign up the user
+//         const result = await userService.signUpUser(name, email, password);
+//         res.status(201).json(result); // success message from the service
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error signing up user', error: error.message });
+//     }
+// };
 
 // Controller to get all tournaments (example)
-const getAllTournaments = async (req, res) => {
+const getAllActiveTournaments = async (req, res) => {
     try {
-        const tournaments = await userService.getAllTournaments();
+        const tournaments = await userService.getAllActiveTournaments();
         res.status(200).json(tournaments);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching tournaments', error: error.message });
@@ -35,7 +35,6 @@ const getTournamentById = async (req, res) => {
 };
 
 module.exports = {
-    signUpUser,
-    getAllTournaments,
+    getAllActiveTournaments,
     getTournamentById,
 };

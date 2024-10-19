@@ -1,24 +1,25 @@
 const db = require('./config/db');
 
 // Function to insert a new user (via stored procedure)
-const insertUser = (name, email, hashedPassword) => {
+// const insertUser = (name, email, hashedPassword) => {
+//     return new Promise((resolve, reject) => {
+    //dont do like this. you have to abstract this database.
+//         const query = `CALL UserMSVC.sign_up_user(?, ?, ?)`;
+//         db.query(query, [name, email, hashedPassword], (error, results) => {
+//             if (error) {
+//                 return reject(new Error(`Database error: ${error.message}`));
+//             }
+//             resolve(results);
+//         });
+//     });
+// };
+
+
+
+// Function to fetch all tournaments, retrieve only the isActive ones
+const getAllActiveTournaments = () => {
     return new Promise((resolve, reject) => {
-        const query = `CALL UserMSVC.sign_up_user(?, ?, ?)`;
-        db.query(query, [name, email, hashedPassword], (error, results) => {
-            if (error) {
-                return reject(new Error(`Database error: ${error.message}`));
-            }
-            resolve(results);
-        });
-    });
-};
-
-
-
-// Function to fetch all tournaments 
-const getAllTournaments = () => {
-    return new Promise((resolve, reject) => {
-        const query = `CALL GetAllTournaments()`;
+        const query = `CALL getAllActiveTournaments()`;
         db.query(query, (error, results) => {
             if (error) {
                 return reject(new Error(`Database error: ${error.message}`));
@@ -55,7 +56,6 @@ const getTournamentById = (id) => {
 // };
 
 module.exports = {
-    insertUser,
-    getAllTournaments,
+    getAllActiveTournaments,
     getTournamentById,
 };
