@@ -52,7 +52,7 @@ mvn spring-boot:run
     }
     ```
 
-## Retrieve results for a specific tournament
+#### Retrieve results for a specific tournament
 - **Response:** 
     ```json
     {
