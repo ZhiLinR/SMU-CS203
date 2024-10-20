@@ -1,5 +1,10 @@
 package TournamentAdminService.response;
 
+/**
+ * Represents the API response returned from the server.
+ * Contains a message and a success flag to indicate the outcome of an operation.
+ */
+
 public class ApiResponse {
     private String message;
     private boolean success;

@@ -35,6 +35,11 @@ public class Tournament {
     @Column(name="name")
     private String name;
 
+    /**
+     * Determines the current status of the tournament based on the current date.
+     * 
+     * @return "Upcoming" if the tournament is in the future, "Ongoing" if it is currently active, or "Completed" if it has ended.
+     */
     public String getStatus() {
             LocalDate now = LocalDate.now();
         if (now.isBefore(startDate)) {

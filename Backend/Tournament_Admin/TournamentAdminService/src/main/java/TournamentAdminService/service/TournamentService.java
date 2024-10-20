@@ -11,11 +11,22 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Service class for managing tournament-related operations.
+ * This class contains methods to create, update, delete, and retrieve tournaments.
+ */
 @Service
 public class TournamentService {
     @Autowired
     private TournamentRepository tournamentRepository;
 
+
+    /**
+     * Creates a new tournament.
+     * Converts the {@link LocalDate} to {@link java.sql.Date} before calling the repository.
+     *
+     * @param tournament the tournament entity to create
+     */
     @Transactional
     public void createTournament(Tournament tournament) {
         LocalDate localStartDate = tournament.getStartDate();
@@ -26,6 +37,13 @@ public class TournamentService {
                 tournament.getName(), sqlStartDate, sqlEndDate, tournament.getLocation(),
                 tournament.getPlayerLimit(), tournament.getIsActive(), tournament.getDescOID());
     }
+
+    /**
+     * Updates an existing tournament.
+     * Converts the {@link LocalDate} to {@link java.sql.Date} before calling the repository.
+     *
+     * @param tournament the tournament entity to update
+     */
     @Transactional
     public void updateTournament(Tournament tournament) {
         LocalDate localStartDate = tournament.getStartDate();
@@ -36,15 +54,34 @@ public class TournamentService {
                 sqlStartDate, sqlEndDate, tournament.getLocation(),
                 tournament.getPlayerLimit(), tournament.getIsActive(), tournament.getDescOID());
     }
+
+    /**
+     * Deletes a tournament by its ID.
+     *
+     * @param tournamentId the ID of the tournament to delete
+     */
     @Transactional
     public void deleteTournament(String tournamentId) {
 
         tournamentRepository.deleteTournament(tournamentId);
     }
+
+    /**
+     * Retrieves a tournament by its ID.
+     *
+     * @param tournamentId the ID of the tournament to retrieve
+     * @return the tournament entity
+     */
     @Transactional
     public Tournament getTournamentById(String tournamentId) {
         return tournamentRepository.getTournamentById(tournamentId);
     }
+
+    /**
+     * Retrieves all tournaments.
+     *
+     * @return a list of all tournament entities
+     */
     @Transactional
     public List<Tournament> getAllTournaments() {
 

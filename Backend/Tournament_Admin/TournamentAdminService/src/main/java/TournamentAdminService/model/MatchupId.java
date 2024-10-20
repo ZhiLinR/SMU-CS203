@@ -4,6 +4,11 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Represents the composite key for the {@link Matchup} entity.
+ * Consists of the tournament ID and the round number.
+ */
+
 @Embeddable
 public class MatchupId implements Serializable {
 
@@ -17,8 +22,13 @@ public class MatchupId implements Serializable {
         this.roundNum = roundNum;
     }
 
-    // Getters and setters
-
+    /**
+     * Compares this {@link MatchupId} with another object for equality.
+     * Two {@link MatchupId} objects are equal if their tournament ID and round number are the same.
+     *
+     * @param o the object to compare
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -28,6 +38,11 @@ public class MatchupId implements Serializable {
                 Objects.equals(roundNum, that.roundNum);
     }
 
+     /**
+     * Returns a hash code for this {@link MatchupId}.
+     *
+     * @return a hash code value
+     */
     @Override
     public int hashCode() {
         return Objects.hash(tournamentID, roundNum);

@@ -15,6 +15,12 @@ public class TournamentController {
     @Autowired
     private TournamentService tournamentService;
 
+     /**
+     * Creates a new tournament.
+     *
+     * @param tournament the tournament object to be created
+     * @return ResponseEntity containing an ApiResponse with success or failure message
+     */
     @PostMapping
     public ResponseEntity<ApiResponse> createTournament(@RequestBody Tournament tournament) {
         try {
@@ -25,6 +31,14 @@ public class TournamentController {
         }
     }
 
+
+    /**
+     * Updates an existing tournament by its ID.
+     *
+     * @param tournamentId the ID of the tournament to be updated
+     * @param tournament the updated tournament object
+     * @return ResponseEntity containing an ApiResponse with success or failure message
+     */
     @PutMapping("/{tournamentId}")
     public ResponseEntity<ApiResponse> updateTournament(@PathVariable String tournamentId, @RequestBody Tournament tournament) {
         try {
@@ -36,6 +50,13 @@ public class TournamentController {
         }
     }
 
+
+    /**
+     * Deletes an existing tournament by its ID.
+     *
+     * @param tournamentId the ID of the tournament to be deleted
+     * @return ResponseEntity containing an ApiResponse with success or failure message
+     */
     @DeleteMapping("/{tournamentId}")
     public ResponseEntity<ApiResponse> deleteTournament(@PathVariable String tournamentId) {
         try {
@@ -46,6 +67,12 @@ public class TournamentController {
         }
     }
 
+     /**
+     * Retrieves a tournament by its ID.
+     *
+     * @param tournamentId the ID of the tournament to retrieve
+     * @return ResponseEntity containing the tournament object or a not-found response if the tournament does not exist
+     */
     @GetMapping("/{tournamentId}")
     public ResponseEntity<Tournament> getTournamentById(@PathVariable String tournamentId) {
         try {
@@ -56,6 +83,11 @@ public class TournamentController {
         }
     }
 
+     /**
+     * Retrieves all tournaments.
+     *
+     * @return ResponseEntity containing a list of all tournaments
+     */
     @GetMapping
     public ResponseEntity<List<Tournament>> getAllTournaments() {
         List<Tournament> tournaments = tournamentService.getAllTournaments();

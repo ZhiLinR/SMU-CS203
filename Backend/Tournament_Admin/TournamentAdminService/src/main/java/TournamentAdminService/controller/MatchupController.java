@@ -17,6 +17,12 @@ public class MatchupController {
     @Autowired
     private MatchupService matchupService;
 
+    /**
+     * Updates the game result for a specific tournament matchup.
+     *
+     * @param gameResultRequest the request containing the details of the game result (player who won, tournament ID, round number)
+     * @return ResponseEntity containing an ApiResponse with success or failure message
+     */
     @PostMapping("/update")
     public ResponseEntity<ApiResponse> updateGameResult(@RequestBody GameResultRequest gameResultRequest) {
         try {
@@ -27,6 +33,13 @@ public class MatchupController {
         }
         
     }
+
+    /**
+     * Deletes the game result for a specific tournament matchup.
+     *
+     * @param gameResultRequest the request containing the details of the game result (player who won, tournament ID, round number)
+     * @return ResponseEntity containing an ApiResponse with success or failure message
+     */
 
     @DeleteMapping("/delete")
     public ResponseEntity<ApiResponse> deleteGameResult(@RequestBody GameResultRequest gameResultRequest) {
@@ -39,6 +52,13 @@ public class MatchupController {
         
     }
 
+    /**
+     * Retrieves all game results for a specific tournament by its ID.
+     *
+     * @param tournamentId the ID of the tournament
+     * @return ResponseEntity containing a list of matchups for the given tournament, or a not-found response
+     */
+
     @GetMapping("/results/{tournamentId}")
     public ResponseEntity<List<Matchup>> getGameResultsByTournamentId(@PathVariable String tournamentId) {
         try {
@@ -50,6 +70,13 @@ public class MatchupController {
        
     }
 
+     /**
+     * Retrieves the list of participants for a specific tournament by its ID.
+     *
+     * @param tournamentId the ID of the tournament
+     * @return ResponseEntity containing a list of participants, or a not-found response
+     */
+    
     @GetMapping("/participants/{tournamentId}")
     public ResponseEntity<List<String>> getParticipantsByTournamentId(@PathVariable String tournamentId) {
         try {
