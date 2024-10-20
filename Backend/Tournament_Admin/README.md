@@ -52,16 +52,18 @@ mvn spring-boot:run
     }
     ```
 
-- **Response:**
+## Retrieve results for a specific tournament
+- **Response:** 
     ```json
     {
         "tournamentID": "generated_id",
-        "name": "Championship",
         "startDate": "2024-10-10",
         "endDate": "2024-10-12",
         "location": "Stadium A",
         "playerLimit": 10,
         "isActive": true,
-        "descOID": "Description of the Championship"
+        "descOID": "Description of the Championship",
+        "name": "Championship",
+        "status": "Completed"
     }
     ```
