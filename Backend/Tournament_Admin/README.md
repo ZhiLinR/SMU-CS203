@@ -1,6 +1,6 @@
 # SMU-CS203
 
-## Workspace for User Management Microservice
+## Workspace for Tournament Admin Microservice
 
 To start the microservice, run the commands below in order
 
