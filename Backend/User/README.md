@@ -267,7 +267,7 @@ Sample Request Body:
     "data": [
         "uuid_1",
         "uuid_2",
-        "uuid_3"    
+        "uuid_3"
     ]
 }
 ```

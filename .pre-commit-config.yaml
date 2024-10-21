@@ -1,0 +1,22 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    -   id: detect-aws-credentials
+-   repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+    -   id: black
+-   repo: local
+    hooks:
+    -   id: check-gitignore
+        name: check for changes in the gitignore file
+        description: prevents modifications to gitignore
+        entry: .git/hooks/check-gitignore.sh
+        language: script
+        stages: [pre-commit, pre-push, manual]
+        minimum_pre_commit_version: 3.2.0
+        always_run: true

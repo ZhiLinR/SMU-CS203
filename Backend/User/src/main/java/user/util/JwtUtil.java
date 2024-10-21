@@ -11,8 +11,8 @@ import java.util.Date;
 /**
  * Utility class for handling JSON Web Tokens (JWT).
  *
- * <p>This class provides methods for generating, extracting claims, 
- * and validating JWTs. The tokens are signed using a secret key and 
+ * <p>This class provides methods for generating, extracting claims,
+ * and validating JWTs. The tokens are signed using a secret key and
  * contain information about the user, such as username, UUID, and admin status.</p>
  *
  * <p>Tokens are set to expire after a specified duration (24 hours in this case).</p>
@@ -42,4 +42,3 @@ public class JwtUtil {
                 .compact();
     }
 }
-
