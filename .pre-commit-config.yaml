@@ -1,5 +1,5 @@
 ci:
-    skip: [detect-aws-credentials]
+    skip: [detect-aws-credentials, check-staged-files, check-gitignore]
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
