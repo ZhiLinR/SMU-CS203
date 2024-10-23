@@ -19,14 +19,14 @@ import java.util.Map;
 
 /**
  * Service class for managing user profiles, including creating, authenticating,
- * logging out, and updating user information. This class interacts with the 
- * {@link UserRepository} and {@link JWTokenRepository} to perform necessary 
+ * logging out, and updating user information. This class interacts with the
+ * {@link UserRepository} and {@link JWTokenRepository} to perform necessary
  * database operations and uses {@link JwtUtil} for JWT token management.
  *
  * <p>This service class provides various methods for user profile management,
  * ensuring validation and transaction handling throughout the processes.</p>
  *
- * <p>All public methods in this service class are transactional, ensuring that 
+ * <p>All public methods in this service class are transactional, ensuring that
  * operations are completed atomically.</p>
  */
 @Service
@@ -107,10 +107,10 @@ public class ProfileService {
             // Get user profile and check for errors (handled in getProfileByUUID)
             @SuppressWarnings("unused")
             User user = getProfileByUUID(uuid);
-    
+
             // Check if JWT token exists and update the logout
             Integer rowsAffected = jwTokenRepository.updateLogout(uuid);
-    
+
             // Handle cases where the update fails (e.g., no token found or already logged out)
             if (rowsAffected == 0) {
                 throw new IllegalStateException("Logout failed. Either no JWT token exists for this user or the user is already logged out.");
@@ -118,7 +118,7 @@ public class ProfileService {
         } catch (Exception e) {
             // Re-throw the exception to be handled by the controller or other layers
             throw e;
-        } 
+        }
     }
 
     /**
@@ -134,13 +134,13 @@ public class ProfileService {
         if (uuid == null || uuid.isEmpty()) {
             throw new IllegalArgumentException("Invalid UUID: UUID cannot be null or empty.");
         }
-    
+
         User user = userRepository.getProfile(uuid);
-    
+
         if (user == null) {
             throw new UserNotFoundException("User not found");
         }
-    
+
         return user; // Return the user profile if everything is valid
     }
 
@@ -153,7 +153,7 @@ public class ProfileService {
     @Transactional
     public Map<String, String> getNamesByUUIDList(List<String> uuids) {
         Map<String, String> nameMap = new HashMap<>();
-        
+
         if (uuids == null || uuids.isEmpty()) {
             return nameMap; // Return empty map for an empty or null list
         }

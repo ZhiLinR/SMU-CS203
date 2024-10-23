@@ -19,12 +19,12 @@ import org.springframework.http.HttpStatus;
 
 /**
  * REST controller for handling profile-related operations.
- * 
- * <p>This controller provides endpoints for user registration, login, logout, 
+ *
+ * <p>This controller provides endpoints for user registration, login, logout,
  * retrieving profiles, updating user information, and managing user ELO ratings.
- * It delegates business logic to the {@link ProfileService} and handles request 
+ * It delegates business logic to the {@link ProfileService} and handles request
  * validation and error management.
- * 
+ *
  * <p>Endpoints:
  * <ul>
  *   <li>{@code POST /api/register}: Registers a new user.</li>
@@ -35,8 +35,8 @@ import org.springframework.http.HttpStatus;
  *   <li>{@code PUT /api/profile/update}: Updates user information (email, password, name, etc.).</li>
  *   <li>{@code PUT /api/profile/update/elo}: Updates the ELO rating for a user.</li>
  * </ul>
- * 
- * <p>Each endpoint uses {@link ResponseManager} to generate structured success or error responses 
+ *
+ * <p>Each endpoint uses {@link ResponseManager} to generate structured success or error responses
  * with appropriate HTTP status codes.
  */
 @RestController
@@ -48,7 +48,7 @@ public class ProfileController {
 
     /**
      * Registers a new user profile.
-     * 
+     *
      * @param profileRequest the request containing profile information
      * @return a {@link ResponseEntity} with success or error response based on the registration result
      */
@@ -70,7 +70,7 @@ public class ProfileController {
 
     /**
      * Authenticates a user and returns a JWT token.
-     * 
+     *
      * @param loginRequest the request containing login credentials
      * @return a {@link ResponseEntity} with the email and JWT token or an error message
      */
@@ -79,7 +79,7 @@ public class ProfileController {
         try {
             // Call the service to authenticate the user and get the JWT token
             String jwtToken = profileService.authenticateUser(loginRequest);
-            
+
             // Return a successful response with the JWT token
             return ResponseManager.success("Successful Login", Map.of(
                 "email", loginRequest.getEmail(),
@@ -99,7 +99,7 @@ public class ProfileController {
 
     /**
      * Logs out a user by invalidating their session or token.
-     * 
+     *
      * @param uuidRequest the request containing the UUID of the user to log out
      * @return a {@link ResponseEntity} indicating whether the logout was successful
      */
@@ -112,12 +112,12 @@ public class ProfileController {
             return ResponseManager.error(HttpStatus.NOT_FOUND, "Error: " + e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
-        } 
+        }
     }
 
     /**
      * Retrieves a user's profile based on their UUID.
-     * 
+     *
      * @param uuidRequest the request containing the UUID of the user
      * @return a {@link ResponseEntity} with the user's info or an error message
      */
@@ -136,7 +136,7 @@ public class ProfileController {
 
     /**
      * Retrieves names of users based on a list of UUIDs.
-     * 
+     *
      * @param request the request containing a list of UUIDs
      * @return a {@link ResponseEntity} with a dictionary of the users' uuid and names or an error message
      */
@@ -150,11 +150,11 @@ public class ProfileController {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
     }
-    
+
 
     /**
      * Updates a user's profile information.
-     * 
+     *
      * @param userUpdateRequest the request containing updated user details
      * @return a {@link ResponseEntity} indicating success or failure of the update
      */
@@ -186,7 +186,7 @@ public class ProfileController {
 
     /**
      * Updates a user's ELO rating.
-     * 
+     *
      * @param eloUpdateRequest the request containing the user's UUID and new ELO rating
      * @return a {@link ResponseEntity} indicating success or failure of the ELO update
      */
@@ -209,4 +209,3 @@ public class ProfileController {
     }
 
 }
-
