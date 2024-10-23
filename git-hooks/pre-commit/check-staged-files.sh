@@ -6,8 +6,10 @@ export GIT_CONFIG_VALUE_0=""
 export GIT_CONFIG_KEY_1="user.email"
 export GIT_CONFIG_VALUE_1=""
 
-if git diff --name-only --cached --diff-filter=AM | grep -i '.env'; then
-  echo 'Do not include files with credentials.'
+output=$(git diff --name-only --cached --diff-filter=AM | grep -P '^\.env(?!\.example$).*')
+
+if [ -n "$output" ]; then
+  echo "Do not include files with credentials. Violating file: $output"
   exit 1
 fi
 
