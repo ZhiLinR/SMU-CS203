@@ -1,4 +1,4 @@
-package user.util;
+package middleware.exception;
 
 /**
  * Exception thrown when a user is not found in the system.
@@ -25,3 +25,4 @@ public class UserNotFoundException extends RuntimeException {
         super(message, cause);
     }
 }
+
