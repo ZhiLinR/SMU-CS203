@@ -48,7 +48,7 @@ public class ValidationUtil {
             throw new UserNotFoundException("User not found for the provided UUID.");
         }
         if (!dbIsAdmin.equals(isAdmin)) {
-            throw new UnauthorizedException("Role does not match admin status.");
+            throw new UnauthorizedException("Unauthorized Transaction");
         }
     }
 }
