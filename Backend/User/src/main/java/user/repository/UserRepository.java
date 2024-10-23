@@ -11,11 +11,11 @@ import user.model.User;
  * Repository interface for managing {@link User} entities. This interface extends
  * {@link JpaRepository}, providing a set of built-in methods for performing
  * CRUD operations on {@link User} objects in the database.
- * 
+ *
  * In addition to the standard repository methods, this interface includes methods
  * for executing stored procedures related to user management, such as inserting
  * new users, retrieving user profiles, and updating user details.
- * 
+ *
  * The methods in this repository use the {@link Procedure} annotation to specify
  * the corresponding stored procedures in the database.
  */
@@ -33,9 +33,9 @@ public interface UserRepository extends JpaRepository<User, String> {
      */
     @Procedure(procedureName = "InsertUser")
     Integer insertUser(
-        @Param("p_email") String email, 
-        @Param("p_password") String password, 
-        @Param("p_name") String name, 
+        @Param("p_email") String email,
+        @Param("p_password") String password,
+        @Param("p_name") String name,
         @Param("p_isAdmin") Byte isAdmin
     );
 
@@ -82,7 +82,7 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return a byte representing the user's role, or null if the user does not exist
      */
     @Procedure(name = "getRoleByUUID")
-    Byte getRoleByUUID(@Param("p_uuid") String uuid);   
+    Byte getRoleByUUID(@Param("p_uuid") String uuid);
 
 
     /**
