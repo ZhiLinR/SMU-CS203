@@ -12,5 +12,7 @@ router.get('/tournaments/view/inProgress', TournamentUserController.getInProgres
 router.get('/tournaments/getTournamentCurrentRanking/:tournamentId', TournamentUserController.getUserTournamentGameRank);
 router.get('tournaments/');
 router.get('/tournaments/GetPlayers/:tournamentId',TournamentUserController.GetPlayersInTournament)
+router.get('/player/:playerUUID/tournaments', TournamentUserController.getPlayerTournaments);
+router.get('/tournaments/view/completed', TournamentUserController.getCompletedTournaments);
 
 module.exports = router;

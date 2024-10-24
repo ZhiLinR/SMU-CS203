@@ -14,7 +14,6 @@ const TournamentUserService = require('../services/tournamentUserService');  // 
  */
 
 
-
 exports.getTournaments = async (req, res, next) => {
     const { UUID } = req.params;
 
@@ -324,6 +323,70 @@ exports.GetPlayersInTournament = async (req, res, next) => {
         });
     } catch (err) {
         console.error('Error retrieving players name:', err);
+        next(err);  // Pass the error to the middleware
+    }
+};
+
+/**
+* Controller to get all tournaments (upcoming, completed, in progress) for a specific player.
+* @param {Object} req - Express request object containing playerUUID in params
+* @param {Object} res - Express response object
+* @param {Function} next - Express next middleware function
+*/
+exports.getPlayerTournaments = async (req, res, next) => {
+    try {
+        const { playerUUID } = req.params;
+        
+        // Validate playerUUID
+        if (!playerUUID) {
+            const error = new Error('Player UUID is required');
+            error.statusCode = 400;
+            return next(error);
+        }
+ 
+        const tournaments = await TournamentUserService.GetPlayerTournamentsByStatus(playerUUID);
+        
+        if (!tournaments || tournaments.length === 0) {
+            const error = new Error('No tournaments found for this player');
+            error.statusCode = 404;
+            return next(error);
+        }
+ 
+        res.status(200).json({
+            "success": true,
+            "status": 200,
+            "message": 'Player tournaments retrieved successfully',
+            "content": tournaments
+        });
+        
+    } catch (err) {
+        console.error('Error retrieving player tournaments:', err);
+        next(err);  // Pass the error to the middleware
+    }
+ };
+
+
+ /**
+* Controller to get all completed tournaments.
+* @param {Object} res - Express response object
+* @param {Function} next - Express next middleware function
+*/
+
+ exports.getCompletedTournaments = async (req, res, next) => {
+    try {
+        const completedTournaments = await TournamentUserService.getCompletedTournaments();
+        if (!completedTournaments || completedTournaments.length === 0) {
+            const error = new Error('No completed tournaments');
+            error.statusCode = 404;
+            return next(error);
+        }
+        res.status(200).json({
+            message: 'Completed tournaments',
+            success: true,
+            content: completedTournaments
+        });
+    } catch (err) {
+        console.error('Error retrieving completed tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
 };
