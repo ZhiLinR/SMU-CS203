@@ -1,65 +1,216 @@
-const request = require('supertest');
-const express = require('express');
-const publicUserRoutes = require('../routes/publicUserRoutes');
-const { getAllActiveTournaments, getTournamentById } = require('../controllers/publicUserController');
+const httpMocks = require('node-mocks-http');
+const tournamentController = require('../controllers/publicUserController');
+const TournamentUserService = require('../userService/userService');
 
-// Mock the controller functions
-jest.mock('../controllers/publicUserController');
+// Mock TournamentUserService methods
+jest.mock('../userService/userService');
 
-const app = express();
-app.use(express.json());
-app.use('/api/public', publicUserRoutes);
+describe('Tournament Controller', () => {
+    let req, res, next;
 
-describe('Public User Routes', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        req = httpMocks.createRequest();
+        res = httpMocks.createResponse();
+        next = jest.fn();
     });
 
-    // Test for GET /tournaments
-    it('should get all tournaments', async () => {
-        const mockTournaments = [
-            { tournament_id: '01433c4a-87aa-11ef-8c7b-0242ac110003', name: 'Active Tournament 1', isactive: 1, startdate: '2024-01-01', enddate: '2024-01-10', location: 'City A', playerlimit: 100 },
-            { tournament_id: '01433c4a-87aa-11ef-8c7b-0242ac110004', name: 'Active Tournament 2', isactive: 1, startdate: '2024-02-01', enddate: '2024-02-15', location: 'City B', playerlimit: 150 }
-        ];
-        getAllActiveTournaments.mockImplementation((req, res) => {
-            res.status(200).json(mockTournaments);
+    describe('getAllTournaments', () => {
+        it('should return all tournaments with a 200 status', async () => {
+            const tournaments = [{ id: '1', name: 'Tournament A' }];
+            TournamentUserService.getAllTournaments.mockResolvedValue(tournaments);
+
+            await tournamentController.getAllTournaments(req, res, next);
+
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                status: 200,
+                message: "successfully retrieved all tournaments",
+                content: tournaments
+            });
         });
 
-        const response = await request(app).get('/api/public/tournaments');
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual(mockTournaments);
-        expect(response.body[0]).toHaveProperty('tournament_id');
-        expect(response.body[0]).toHaveProperty('name');
-        expect(response.body[0]).toHaveProperty('isactive');
-        expect(response.body[0]).toHaveProperty('startdate');
-        expect(response.body[0]).toHaveProperty('enddate');
-        expect(response.body[0]).toHaveProperty('location');
-        expect(response.body[0]).toHaveProperty('playerlimit');
-    });
+        it('should return 404 if no tournaments found', async () => {
+            TournamentUserService.getAllTournaments.mockResolvedValue([]);
 
-    // Test for GET /tournaments/:id
-    it('should get a specific tournament by ID', async () => {
-        const mockTournament = { tournament_id: '01433c4a-87aa-11ef-8c7b-0242ac110004', name: 'Active Tournament 2', isactive: 1, startdate: '2024-02-01', enddate: '2024-02-15', location: 'City B', playerlimit: 150 };
-        getTournamentById.mockImplementation((req, res) => {
-            res.status(200).json(mockTournament);
+            await tournamentController.getAllTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: 'No tournaments retrieved',
+                statusCode: 404
+            }));
         });
 
-        const response = await request(app).get('/api/public/tournaments/01433c4a-87aa-11ef-8c7b-0242ac110004');
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual(mockTournament);
+        it('should handle errors and call next with error', async () => {
+            const errorMessage = 'Database error';
+            TournamentUserService.getAllTournaments.mockRejectedValue(new Error(errorMessage));
+
+            await tournamentController.getAllTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: errorMessage
+            }));
+        });
     });
 
-    // Test for POST /signup
-    // it('should sign up a new user', async () => {
-    //     const mockUser = { id: '1', name: 'User 1', email: 'user1@example.com' };
-    //     signUpUser.mockImplementation((req, res) => {
-    //         res.status(201).json(mockUser);
-    //     });
+    describe('getUpcomingTournaments', () => {
+        it('should return upcoming tournaments with a 200 status', async () => {
+            const tournaments = [{ id: '2', name: 'Upcoming Tournament' }];
+            TournamentUserService.getUpcomingTournaments.mockResolvedValue(tournaments);
 
-    //     const response = await request(app)
-    //         .post('/api/signup')
-    //         .send({ name: 'User 1', email: 'user1@example.com', password: 'password123' });
-    //     expect(response.status).toBe(201);
-    //     expect(response.body).toEqual(mockUser);
-    // });
+            await tournamentController.getUpcomingTournaments(req, res, next);
+
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                status: 200,
+                message: "successfully retrieved upcoming tournaments",
+                content: tournaments
+            });
+        });
+
+        it('should return 404 if no upcoming tournaments found', async () => {
+            TournamentUserService.getUpcomingTournaments.mockResolvedValue([]);
+
+            await tournamentController.getUpcomingTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: 'No upcoming tournaments',
+                statusCode: 404
+            }));
+        });
+
+        it('should handle errors and call next with error', async () => {
+            const errorMessage = 'Service error';
+            TournamentUserService.getUpcomingTournaments.mockRejectedValue(new Error(errorMessage));
+
+            await tournamentController.getUpcomingTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: errorMessage
+            }));
+        });
+    });
+
+    describe('getInProgressTournaments', () => {
+        it('should return in-progress tournaments with a 200 status', async () => {
+            const tournaments = [{ id: '3', name: 'In-Progress Tournament' }];
+            TournamentUserService.getInProgressTournaments.mockResolvedValue(tournaments);
+
+            await tournamentController.getInProgressTournaments(req, res, next);
+
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                status: 200,
+                message: "successfully retrieved in-progress tournaments",
+                content: tournaments
+            });
+        });
+
+        it('should return 404 if no in-progress tournaments found', async () => {
+            TournamentUserService.getInProgressTournaments.mockResolvedValue([]);
+
+            await tournamentController.getInProgressTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: 'No in-progress tournaments',
+                statusCode: 404
+            }));
+        });
+
+        it('should handle errors and call next with error', async () => {
+            const errorMessage = 'Unexpected error';
+            TournamentUserService.getInProgressTournaments.mockRejectedValue(new Error(errorMessage));
+
+            await tournamentController.getInProgressTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: errorMessage
+            }));
+        });
+    });
+
+    describe('getCompletedTournaments', () => {
+        it('should return completed tournaments with a 200 status', async () => {
+            const tournaments = [{ id: '4', name: 'Completed Tournament' }];
+            TournamentUserService.getCompletedTournaments.mockResolvedValue(tournaments);
+
+            await tournamentController.getCompletedTournaments(req, res, next);
+
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                status: 200,
+                message: "successfully retrieved completed tournaments",
+                content: tournaments
+            });
+        });
+
+        it('should return 404 if no completed tournaments found', async () => {
+            TournamentUserService.getCompletedTournaments.mockResolvedValue([]);
+
+            await tournamentController.getCompletedTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: 'No completed tournaments',
+                statusCode: 404
+            }));
+        });
+
+        it('should handle errors and call next with error', async () => {
+            const errorMessage = 'Error retrieving data';
+            TournamentUserService.getCompletedTournaments.mockRejectedValue(new Error(errorMessage));
+
+            await tournamentController.getCompletedTournaments(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: errorMessage
+            }));
+        });
+    });
+
+    describe('getTournamentById', () => {
+        it('should return tournament by ID with a 200 status', async () => {
+            const tournament = { id: '5', name: 'Specific Tournament' };
+            req.params.tournamentId = '5';
+            TournamentUserService.getTournamentByID.mockResolvedValue(tournament);
+
+            await tournamentController.getTournamentById(req, res, next);
+
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                status: 200,
+                message: "successfully retrieved tournament based on tournament ID",
+                content: tournament
+            });
+        });
+
+        it('should return 404 if tournament by ID is not found', async () => {
+            req.params.tournamentId = '6';
+            TournamentUserService.getTournamentByID.mockResolvedValue(null);
+
+            await tournamentController.getTournamentById(req, res, next);
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({
+                message: 'No tournament with that id is found',
+                statusCode: 404
+            }));
+        });
+
+        it('should handle errors and return a 500 status', async () => {
+            const errorMessage = 'Error fetching tournament';
+            req.params.tournamentId = '7';
+            TournamentUserService.getTournamentByID.mockRejectedValue(new Error(errorMessage));
+
+            await tournamentController.getTournamentById(req, res, next);
+
+            expect(res.statusCode).toBe(500);
+            expect(res._getJSONData()).toEqual({
+                message: 'Error fetching tournament',
+                error: errorMessage
+            });
+        });
+    });
 });

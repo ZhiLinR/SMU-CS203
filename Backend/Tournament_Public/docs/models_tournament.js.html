@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAllActiveTournaments">getAllActiveTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTournamentById">getTournamentById</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAllTournaments">getAllTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getCompletedTournaments">getCompletedTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getInProgressTournaments">getInProgressTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTournamentByID">getTournamentByID</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTournamentById">getTournamentById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getUpcomingTournaments">getUpcomingTournaments</a></span></li>
 </nav>
 
 <div id="main">
@@ -42,21 +42,71 @@
             <pre class="prettyprint source linenums"><code>const db = require('./config/db');
 
 /**
- * Fetches all active tournaments from the database.
+ * Retrieves a list of All Tournaments
+ * @returns {Promise&lt;Array>} A promise that resolves to an array of tournaments.
+ * @throws {Error} If the database query fails.
+ */
+exports.getAllTournaments = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetAllTournaments()';  // Stored procedure to get in-progress tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+            resolve(results);  // Return the in-progress tournaments to the service layer
+        });
+    });
+};
+
+/**
+ * Fetches the list of completed tournaments from the database.
  * 
- * @returns {Promise&lt;Array>} A promise that resolves to an array of active tournaments.
- * @throws {Error} Throws an error if there is a database error.
+ * @returns {Promise&lt;Array>} A promise that resolves to an array of completed tournaments.
+ * @throws {Error} If there is an error executing the query.
  */
 
-// Function to fetch all tournaments, retrieve only the isActive ones
-const getAllActiveTournaments = () => {
+exports.getCompletedTournaments = () => {
     return new Promise((resolve, reject) => {
-        const query = `CALL getAllActiveTournaments()`;
-        db.query(query, (error, results) => {
-            if (error) {
-                return reject(new Error(`Database error: ${error.message}`));
+        const query = 'CALL GetCompletedTournament()';  // Stored procedure to get completed tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
             }
-            resolve(results[0]);
+            resolve(results);  // Return the in-progress tournaments to the service layer
+        });
+    });
+};
+
+/**
+* Retrieves a list of upcoming tournaments.
+ * @returns {Promise&lt;Array>} A promise that resolves to an array of upcoming tournaments.
+ * @throws {Error} If the database query fails.
+ */
+exports.getUpcomingTournaments = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetUpComingTournament()';  // Stored procedure to get upcoming tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+            resolve(results);  // Return the upcoming tournaments to the service layer
+        });
+    });
+};
+
+/**
+ * Retrieves a list of tournaments that are currently in progress.
+ * @returns {Promise&lt;Array>} A promise that resolves to an array of in-progress tournaments.
+ * @throws {Error} If the database query fails.
+ */
+exports.getInProgressTournaments = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetInProgressTournament()';  // Stored procedure to get in-progress tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+            resolve(results);  // Return the in-progress tournaments to the service layer
         });
     });
 };
@@ -70,10 +120,10 @@ const getAllActiveTournaments = () => {
  */
 
 // Function to fetch a specific tournament by ID 
-const getTournamentById = (id) => {
+exports.getTournamentByID = (tournamentId) => {
     return new Promise((resolve, reject) => {
-        const query = `CALL GetTournamentById(?)`;
-        db.query(query, [id], (error, results) => {
+        const query = 'CALL GetTournamentById(?)';
+        db.query(query, [tournamentId], (error, results) => {
             if (error) {
                 return reject(new Error(`Database error: ${error.message}`));
             }
@@ -82,11 +132,7 @@ const getTournamentById = (id) => {
     });
 };
 
-
-module.exports = {
-    getAllActiveTournaments,
-    getTournamentById,
-};</code></pre>
+</code></pre>
         </article>
     </section>
 
@@ -98,7 +144,7 @@ module.exports = {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.3</a> on Sun Oct 20 2024 01:34:32 GMT+0800 (Singapore Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Fri Oct 25 2024 14:46:28 GMT+0800 (Singapore Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

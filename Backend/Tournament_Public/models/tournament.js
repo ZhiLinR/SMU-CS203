@@ -1,26 +1,71 @@
 const db = require('./config/db');
 
-
-
-
-
+/**
+ * Retrieves a list of All Tournaments
+ * @returns {Promise<Array>} A promise that resolves to an array of tournaments.
+ * @throws {Error} If the database query fails.
+ */
+exports.getAllTournaments = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetAllTournaments()';  // Stored procedure to get in-progress tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+            resolve(results);  // Return the in-progress tournaments to the service layer
+        });
+    });
+};
 
 /**
- * Fetches all active tournaments from the database.
+ * Fetches the list of completed tournaments from the database.
  * 
- * @returns {Promise<Array>} A promise that resolves to an array of active tournaments.
- * @throws {Error} Throws an error if there is a database error.
+ * @returns {Promise<Array>} A promise that resolves to an array of completed tournaments.
+ * @throws {Error} If there is an error executing the query.
  */
 
-// Function to fetch all tournaments, retrieve only the isActive ones
-const getAllActiveTournaments = () => {
+exports.getCompletedTournaments = () => {
     return new Promise((resolve, reject) => {
-        const query = 'CALL getAllActiveTournaments()';
-        db.query(query, (error, results) => {
-            if (error) {
-                return reject(new Error(`Database error: ${error.message}`));
+        const query = 'CALL GetCompletedTournament()';  // Stored procedure to get completed tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
             }
-            resolve(results[0]);
+            resolve(results);  // Return the in-progress tournaments to the service layer
+        });
+    });
+};
+
+/**
+* Retrieves a list of upcoming tournaments.
+ * @returns {Promise<Array>} A promise that resolves to an array of upcoming tournaments.
+ * @throws {Error} If the database query fails.
+ */
+exports.getUpcomingTournaments = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetUpComingTournament()';  // Stored procedure to get upcoming tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+            resolve(results);  // Return the upcoming tournaments to the service layer
+        });
+    });
+};
+
+/**
+ * Retrieves a list of tournaments that are currently in progress.
+ * @returns {Promise<Array>} A promise that resolves to an array of in-progress tournaments.
+ * @throws {Error} If the database query fails.
+ */
+exports.getInProgressTournaments = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetInProgressTournament()';  // Stored procedure to get in-progress tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+            resolve(results);  // Return the in-progress tournaments to the service layer
         });
     });
 };
@@ -34,10 +79,10 @@ const getAllActiveTournaments = () => {
  */
 
 // Function to fetch a specific tournament by ID 
-const getTournamentById = (id) => {
+exports.getTournamentByID = (tournamentId) => {
     return new Promise((resolve, reject) => {
         const query = 'CALL GetTournamentById(?)';
-        db.query(query, [id], (error, results) => {
+        db.query(query, [tournamentId], (error, results) => {
             if (error) {
                 return reject(new Error(`Database error: ${error.message}`));
             }
@@ -46,8 +91,3 @@ const getTournamentById = (id) => {
     });
 };
 
-
-module.exports = {
-    getAllActiveTournaments,
-    getTournamentById,
-};
