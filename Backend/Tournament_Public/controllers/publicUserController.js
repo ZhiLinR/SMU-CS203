@@ -1,5 +1,7 @@
 const userService = require('../userService/userService');
 
+
+
 /**
  * Controller to get all active tournaments.
  * 
@@ -12,7 +14,13 @@ const userService = require('../userService/userService');
 const getAllActiveTournaments = async (req, res) => {
     try {
         const tournaments = await userService.getAllActiveTournaments();
-        res.status(200).json(tournaments);
+        res.status(200).json({
+            "success": true,
+            "status" : 200,
+            "message": "Active Tournaments successfully fetched",
+            "content": 
+        }
+        );
     } catch (error) {
         res.status(500).json({ message: 'Error fetching tournaments', error: error.message });
     }

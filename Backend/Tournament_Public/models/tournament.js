@@ -1,5 +1,10 @@
 const db = require('./config/db');
 
+
+
+
+
+
 /**
  * Fetches all active tournaments from the database.
  * 
@@ -10,7 +15,7 @@ const db = require('./config/db');
 // Function to fetch all tournaments, retrieve only the isActive ones
 const getAllActiveTournaments = () => {
     return new Promise((resolve, reject) => {
-        const query = `CALL getAllActiveTournaments()`;
+        const query = 'CALL getAllActiveTournaments()';
         db.query(query, (error, results) => {
             if (error) {
                 return reject(new Error(`Database error: ${error.message}`));
@@ -31,7 +36,7 @@ const getAllActiveTournaments = () => {
 // Function to fetch a specific tournament by ID 
 const getTournamentById = (id) => {
     return new Promise((resolve, reject) => {
-        const query = `CALL GetTournamentById(?)`;
+        const query = 'CALL GetTournamentById(?)';
         db.query(query, [id], (error, results) => {
             if (error) {
                 return reject(new Error(`Database error: ${error.message}`));
