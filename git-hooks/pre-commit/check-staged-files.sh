@@ -1,14 +1,15 @@
 #!sh
-# Check if .gitignore is modified and staged
-export GIT_CONFIG_KEY_0="user.name"
+# Hotfix from Issue #30 on GitHub
 export GIT_CONFIG_VALUE_0=""
-export GIT_CONFIG_KEY_1="user.email"
 export GIT_CONFIG_VALUE_1=""
 
+# Check if .gitignore is modified and staged
 output=$(git diff --name-only HEAD | grep -P '^\.env(?!\.example$).*')
 
 if [ -n "$output" ]; then
+  set -x # Enables output of commands again
   echo "Do not include files with credentials. Violating file: $output"
+  set +x
   exit 1
 fi
 
