@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
  * Unit tests for the {@link ValidationUtil} class, focusing on ensuring the proper
  * validation of various fields, roles, email formats, and UUIDs.
  * <p>
- * This test class verifies that the validation methods in {@link ValidationUtil} function 
- * correctly under different scenarios, including required field validation, role validation, 
+ * This test class verifies that the validation methods in {@link ValidationUtil} function
+ * correctly under different scenarios, including required field validation, role validation,
  * email format checks, and UUID format validation.
  * </p>
  */
@@ -33,7 +33,7 @@ public class ValidationUtilTest {
     /**
      * Tests the {@link ValidationUtil#validateRequiredFields(String, String)} method with an empty string.
      * <p>
-     * This test ensures that validating a required field with an empty string throws an 
+     * This test ensures that validating a required field with an empty string throws an
      * {@link IllegalArgumentException} with the expected message.
      * </p>
      * <ul>
@@ -53,7 +53,7 @@ public class ValidationUtilTest {
     /**
      * Tests the {@link ValidationUtil#validateRequiredFields(String, String)} method with a null input.
      * <p>
-     * This test ensures that validating a required field with a null input throws an 
+     * This test ensures that validating a required field with a null input throws an
      * {@link IllegalArgumentException} with the expected message.
      * </p>
      * <ul>
@@ -105,7 +105,7 @@ public class ValidationUtilTest {
     /**
      * Tests the {@link ValidationUtil#validateRole(Byte)} method with an invalid role value (2).
      * <p>
-     * This test ensures that validating an invalid role value throws an 
+     * This test ensures that validating an invalid role value throws an
      * {@link IllegalArgumentException} with the expected message.
      * </p>
      * <ul>
@@ -125,7 +125,7 @@ public class ValidationUtilTest {
     /**
      * Tests the {@link ValidationUtil#validateRole(Byte)} method with a null role.
      * <p>
-     * This test ensures that validating a null role value throws an 
+     * This test ensures that validating a null role value throws an
      * {@link IllegalArgumentException} with the expected message.
      * </p>
      * <ul>
@@ -210,7 +210,7 @@ public class ValidationUtilTest {
     /**
      * Tests the {@link ValidationUtil#validateUUID(String)} method with an empty string.
      * <p>
-     * This test ensures that validating an empty UUID string throws an 
+     * This test ensures that validating an empty UUID string throws an
      * {@link IllegalArgumentException} with the expected message.
      * </p>
      * <ul>
@@ -230,7 +230,7 @@ public class ValidationUtilTest {
     /**
      * Tests the {@link ValidationUtil#validateUUID(String)} method with a null input.
      * <p>
-     * This test ensures that validating a null UUID string throws an 
+     * This test ensures that validating a null UUID string throws an
      * {@link IllegalArgumentException} with the expected message.
      * </p>
      * <ul>

@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * The entry point for the Middleware application.
- * 
+ *
  * <p>This class contains the main method which serves as the starting point for the Spring Boot application.
  * It loads environment variables from a .env file to configure database and JWT settings.</p>
  */

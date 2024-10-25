@@ -29,10 +29,10 @@ public class MiddlewareController {
 
     /**
      * Validates the provided JWT token by calling the MiddlewareService.
-     * 
+     *
      * <p>The endpoint is mapped to "/middleware/checkjwt" and accepts POST requests.
      * It expects a JSON request body containing the JWTRequest object.</p>
-     * 
+     *
      * @param jwtRequest the request body containing the JWT token to be validated.
      * @return a ResponseEntity containing a success message and the validation result if the JWT is valid,
      *         or an error message with the appropriate HTTP status if validation fails.

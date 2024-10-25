@@ -24,13 +24,13 @@ import java.time.LocalDate;
 import java.util.*;
 
 /**
- * Unit tests for the {@link ProfileService} class, focusing on various operations related 
- * to profile management, including profile creation, user authentication, logout functionality, 
+ * Unit tests for the {@link ProfileService} class, focusing on various operations related
+ * to profile management, including profile creation, user authentication, logout functionality,
  * retrieval of user profiles, and updating user details.
  * <p>
- * This test class ensures that the {@link ProfileService} behaves correctly under various scenarios. 
- * It includes tests for successfully creating profiles, handling authentication errors, 
- * and managing user updates, all while ensuring the service interacts properly with 
+ * This test class ensures that the {@link ProfileService} behaves correctly under various scenarios.
+ * It includes tests for successfully creating profiles, handling authentication errors,
+ * and managing user updates, all while ensuring the service interacts properly with
  * mocked repositories.
  * </p>
  */
@@ -54,7 +54,7 @@ public class ProfileServiceTest {
         /**
      * Initializes the mocks before each test method is executed.
      * <p>
-     * This method uses {@link MockitoAnnotations#openMocks(Object)} to set up the mock objects 
+     * This method uses {@link MockitoAnnotations#openMocks(Object)} to set up the mock objects
      * annotated with {@link Mock} and inject them into the {@link ProfileServiceTest} instance.
      * </p>
      */

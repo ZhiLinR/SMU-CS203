@@ -32,7 +32,7 @@ public class MiddlewareService {
     private JwtUtil jwtUtil;
 
     /**
-     * Validates the provided JWT by extracting claims, checking its validity in the database, 
+     * Validates the provided JWT by extracting claims, checking its validity in the database,
      * and comparing user role information.
      *
      * <p>This method decrypts the JWT to extract claims such as user UUID and admin status.

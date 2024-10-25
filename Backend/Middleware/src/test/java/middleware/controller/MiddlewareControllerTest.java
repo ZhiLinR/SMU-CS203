@@ -30,8 +30,8 @@ import static org.hamcrest.Matchers.is;
 /**
  * Integration tests for the {@link MiddlewareController}.
  * <p>
- * This class tests various scenarios for the JWT validation endpoint, including valid, 
- * expired, and unauthorized tokens. It uses {@link MockMvc} to perform HTTP requests and 
+ * This class tests various scenarios for the JWT validation endpoint, including valid,
+ * expired, and unauthorized tokens. It uses {@link MockMvc} to perform HTTP requests and
  * verify responses from the controller layer. The service layer is mocked using {@link MockBean}.
  * </p>
  */
@@ -59,7 +59,7 @@ public class MiddlewareControllerTest {
     /**
      * Sets up environment properties before any tests are executed.
      * <p>
-     * Uses the <a href="https://github.com/cdimascio/dotenv-java">Dotenv</a> library 
+     * Uses the <a href="https://github.com/cdimascio/dotenv-java">Dotenv</a> library
      * to load environment variables and sets system properties required for the middleware.
      * </p>
      */
