@@ -10,6 +10,8 @@ router.delete('/tournaments/quit/:UUID', TournamentUserController.quitTournament
 router.get('/tournaments/view/upcoming', TournamentUserController.getUpcomingTournaments);
 router.get('/tournaments/view/inprogress', TournamentUserController.getInProgressTournaments);
 router.get('/tournaments/ranking/:tournamentId', TournamentUserController.getUserTournamentGameRank);
-router.get('/tournaments/players/:tournamentId',TournamentUserController.getPlayersInTournament)
+router.get('/tournaments/players/:tournamentId',TournamentUserController.getPlayersInTournament);
+router.get('/player/:playerUUID/tournaments', TournamentUserController.getPlayerTournaments);
+router.get('/tournaments/view/completed', TournamentUserController.getCompletedTournaments);
 
 module.exports = router;
