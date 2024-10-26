@@ -1,14 +1,12 @@
 const TournamentUserService = require('../services/tournamentUserService');  // Import service
+const TournamentService = require('../services/tournamentService');  // Import service
 
 
 /**
  * Get participated tournament history for a user
  * @async
- * @param {Object} req - The request object.
- * @param {Object} req.params - The request parameters
+ * @param {Object} req.params - The request parameters TournamentID
  * @param {string} req.params.UUID - The ID of the User.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json} Returns a list of tournament names.
  * @throws {error} If UUID invalid.
  */
@@ -46,12 +44,9 @@ exports.getTournaments = async (req, res, next) => {
 /**
  * Get tournament matchups for a user
  * @async
- * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json}} Returns all matchups of the specified tournament that involve the tournament user.Shows player1, player2,playerwon,tournamentID,round number.
  * @throws {error} If UUID invalid.
  */
@@ -84,13 +79,10 @@ exports.getTournamentMatchups = async (req, res, next) => {
 /**
  * Sign up for a tournament
  * @async
- * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
  * @param {int} req.params.elo - The elo of the user.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json} Return User's input as well as success message.
  * @throws {error} If input invalid or missing fields.
  */
@@ -113,9 +105,6 @@ exports.signUpForTournament = async (req, res, next) => {
             content: { UUID, tournamentID, elo }
         });
     } catch (err) {
-        if (err.sqlState === '45000') {
-            return res.status(400).send(err.message);  // Custom error from SIGNAL
-        }
         console.error('Error during tournament signup:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -124,12 +113,9 @@ exports.signUpForTournament = async (req, res, next) => {
 /**
  * Quit tournament
  * @async
- * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json} Return success message for quitting.
  * @throws {error} If input invalid or missing fields
  */
@@ -164,10 +150,7 @@ exports.quitTournament = async (req, res, next) => {
 /**
  * Get upcoming tournaments
  * @async
- * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json} Return Upcoming tournament based on upcoming dates.
  * @throws {error} If input invalid or missing fields.
  */
@@ -175,7 +158,7 @@ exports.quitTournament = async (req, res, next) => {
 
 exports.getUpcomingTournaments = async (req, res, next) => {
     try {
-        const upcomingTournaments = await TournamentUserService.getUpcomingTournaments();
+        const upcomingTournaments = await TournamentService.getUpcomingTournaments();
         if (!upcomingTournaments || upcomingTournaments.length === 0) {
             const error = new Error('No upcoming tournaments');
             error.statusCode = 404;
@@ -195,17 +178,14 @@ exports.getUpcomingTournaments = async (req, res, next) => {
 /**
  * Get in-progress tournaments
  * @async
- * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json} Return incoming tournament based on upcoming dates.
  * @throws {error} If input invalid or missing fields.
  */
 
 exports.getInProgressTournaments = async (req, res, next) => {
     try {
-        const inProgressTournaments = await TournamentUserService.getInProgressTournaments();
+        const inProgressTournaments = await TournamentService.getInProgressTournaments();
         if (!inProgressTournaments || inProgressTournaments.length === 0) {
             const error = new Error('No in-progress tournaments');
             error.statusCode = 404;
@@ -226,12 +206,9 @@ exports.getInProgressTournaments = async (req, res, next) => {
 /**
  * Get UserTournamentGameResult 
  * @async
- * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json} Return incoming tournament based on upcoming dates.
  * @throws {error} If input invalid or missing fields.
  */
@@ -242,7 +219,7 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
 
     try {
         // Step 1: Check if tournament exists
-        const tournamentExists = await TournamentUserService.checkTournamentExists(tournamentId);
+        const tournamentExists = await TournamentService.checkTournamentExists(tournamentId);
         
         if (!tournamentExists) {
             const error = new Error('Tournament not found.');
@@ -251,7 +228,7 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
         }
 
         // Step 2: Get user's tournament game rank if tournament exists
-        const getUserTournamentGameRank = await TournamentUserService.getUserTournamentGameRank(tournamentId, UUID);
+        const getUserTournamentGameRank = await TournamentService.getUserTournamentGameRank(tournamentId, UUID);
         
         if (!getUserTournamentGameRank || getUserTournamentGameRank.length === 0) {
             const error = new Error('No Game result found for the provided tournamentID.');
@@ -276,18 +253,15 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
 /**
  * Get the list of UUID players in the specified tournament.
  * @async
- * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.tournamentId - The ID of the tournament.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
  * @returns {Json} Returns a list of UUIDs participating in the tournament.
  * @throws {error} If tournamentID invalid.
  */
 
 
 // Get upcoming tournaments
-exports.GetPlayersInTournament = async (req, res, next) => {
+exports.getPlayersInTournament = async (req, res, next) => {
     const { tournamentId } = req.params;
 
     if (!tournamentId) {
@@ -297,7 +271,7 @@ exports.GetPlayersInTournament = async (req, res, next) => {
     }
     try {
         //Check if tournament exist else return relavant error message.
-        const tournamentExists = await TournamentUserService.checkTournamentExists(tournamentId);
+        const tournamentExists = await TournamentService.checkTournamentExists(tournamentId);
         if (!tournamentExists) {
             const error = new Error('Invalid tournamentID: Tournament not found.');
             error.statusCode = 404;
@@ -305,7 +279,7 @@ exports.GetPlayersInTournament = async (req, res, next) => {
         }
 
 
-        const GetPlayersInTournament = await TournamentUserService.GetPlayersInTournament(tournamentId);
+        const GetPlayersInTournament = await TournamentService.getPlayersInTournament(tournamentId);
         if (GetPlayersInTournament.length === 0) {
             return res.status(200).json({
                 message: 'No players have signed up for this tournament yet.',

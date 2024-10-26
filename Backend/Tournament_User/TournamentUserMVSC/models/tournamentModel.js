@@ -192,7 +192,7 @@ exports.checkTournamentExists = (tournamentId) => {
  * @throws {Error} If the database query fails.
  */
 
-exports.GetPlayersInTournament = (tournamentId) => {
+exports.getPlayersInTournament = (tournamentId) => {
     return new Promise((resolve, reject) => {
         const query = 'Call GetPlayersInTournament(?)';
         
