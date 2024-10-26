@@ -206,3 +206,46 @@ exports.getPlayersInTournament = (tournamentId) => {
         });
     });
 };
+
+
+/**
+ * Model to get all tournaments for a player with their status.
+ * @param {string} playerUUID - The UUID of the player.
+ * @returns {Promise<Array<{tournamentID: string, tournamentName: string, startDate: Date, endDate: Date, status: string}>>} A promise that resolves to an array of tournaments.
+ * @throws {Error} If the database query fails.
+ */
+
+exports.GetPlayerTournamentsByStatus = (playerUUID) => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetPlayerTournamentsByStatus(?)';
+        
+        db.query(query, [playerUUID], (err, result) => {
+            if (err) {
+                return reject(err);  // Handle any database error
+            }
+
+            console.log("Raw result from the database:", result);
+            resolve(result[0]);
+        });
+    });
+};
+
+
+/**
+ * Fetches the list of completed tournaments from the database.
+ * 
+ * @returns {Promise<Array>} A promise that resolves to an array of completed tournaments.
+ * @throws {Error} If there is an error executing the query.
+ */
+
+exports.getCompletedTournaments = () => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetCompletedTournament()';  // Stored procedure to get completed tournaments
+        db.query(query, (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+            resolve(results);  // Return the in-progress tournaments to the service layer
+        });
+    });
+};
