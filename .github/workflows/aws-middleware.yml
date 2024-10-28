@@ -39,7 +39,7 @@ env:
   ECS_SERVICE: middleware-launch                 # set this to your Amazon ECS service name
   ECS_CLUSTER: cs203-middleware          # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: middleware:1
-  CONTAINER_NAME: middleware           # set this to the name of the container in the
+  CONTAINER_NAME: middleware
 
 permissions:
   contents: read
@@ -48,7 +48,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: staging-ecs
+    environment: staging-middleware
 
     steps:
     - name: Checkout
@@ -81,7 +81,7 @@ jobs:
 
     - name: Run User Task from ECS
       id: run-task
-      working-directory: Backend/Middleware
+      working-directory: Backend/Middleware`
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
@@ -90,4 +90,5 @@ jobs:
         --cluster ${{ env.ECS_CLUSTER }} \
         --task-definition ${{env.ECS_TASK_DEFINITION}} \
         --launch-type FARGATE \
+        --network-configuration "awsvpcConfiguration={subnets=[${{ secrets.AWS_VPC_SUBNETS }}],securityGroups=[${{ secrets.AWS_SG_ID }}],assignPublicIp='ENABLED'}"
 
