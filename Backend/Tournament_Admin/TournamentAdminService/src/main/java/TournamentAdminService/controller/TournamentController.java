@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/tournaments")
+@RequestMapping("/api/tournaments")
 public class TournamentController {
     @Autowired
     private TournamentService tournamentService;

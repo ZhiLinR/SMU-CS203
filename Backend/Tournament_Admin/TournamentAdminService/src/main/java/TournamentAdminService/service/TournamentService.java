@@ -25,7 +25,7 @@ public class TournamentService {
      * Creates a new tournament.
      * Converts the {@link LocalDate} to {@link java.sql.Date} before calling the repository.
      *
-     * @param tournament the tournament entity to create
+     * @param tournament the {@link Tournament} entity to create
      */
     @Transactional
     public void createTournament(Tournament tournament) {
@@ -42,7 +42,7 @@ public class TournamentService {
      * Updates an existing tournament.
      * Converts the {@link LocalDate} to {@link java.sql.Date} before calling the repository.
      *
-     * @param tournament the tournament entity to update
+     * @param tournament the {@link Tournament} entity to update
      */
     @Transactional
     public void updateTournament(Tournament tournament) {
@@ -58,7 +58,7 @@ public class TournamentService {
     /**
      * Deletes a tournament by its ID.
      *
-     * @param tournamentId the ID of the tournament to delete
+     * @param tournamentId the {@link String} ID of the tournament to delete
      */
     @Transactional
     public void deleteTournament(String tournamentId) {
@@ -69,8 +69,8 @@ public class TournamentService {
     /**
      * Retrieves a tournament by its ID.
      *
-     * @param tournamentId the ID of the tournament to retrieve
-     * @return the tournament entity
+     * @param tournamentId the {@link String} ID of the tournament to retrieve
+     * @return the {@link Tournament} entity
      */
     @Transactional
     public Tournament getTournamentById(String tournamentId) {
@@ -80,7 +80,7 @@ public class TournamentService {
     /**
      * Retrieves all tournaments.
      *
-     * @return a list of all tournament entities
+     * @return a {@link List} of all {@link Tournament} entities
      */
     @Transactional
     public List<Tournament> getAllTournaments() {
