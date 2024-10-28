@@ -13,5 +13,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ApiResponse {
     private String message;
-    private boolean success;
+    private boolean isSuccessful;
+    private Object data;
+
+    public ApiResponse(String message, boolean isSucessful) {
+        this.message = message;
+        this.isSuccessful = isSucessful;
+    }
+    
 }
+
+
+

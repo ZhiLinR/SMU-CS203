@@ -35,7 +35,7 @@ public class TournamentService {
         java.sql.Date sqlEndDate = Date.valueOf(localEndDate);
         tournamentRepository.createTournament(
                 tournament.getName(), sqlStartDate, sqlEndDate, tournament.getLocation(),
-                tournament.getPlayerLimit(), tournament.getIsActive(), tournament.getDescOID());
+                tournament.getPlayerLimit(), tournament.getStatus(), tournament.getDescOID());
     }
 
     /**
@@ -52,7 +52,7 @@ public class TournamentService {
         java.sql.Date sqlEndDate = Date.valueOf(localEndDate);;
         tournamentRepository.updateTournament(tournament.getTournamentID(), tournament.getName(),
                 sqlStartDate, sqlEndDate, tournament.getLocation(),
-                tournament.getPlayerLimit(), tournament.getIsActive(), tournament.getDescOID());
+                tournament.getPlayerLimit(), tournament.getStatus(), tournament.getDescOID());
     }
 
     /**

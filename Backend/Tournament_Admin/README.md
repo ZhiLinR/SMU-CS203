@@ -35,11 +35,102 @@ mvn spring-boot:run
 
 ### Example Request and Response
 
-#### Create a Tournament
+### 1. Get All Tournaments
+
+**Endpoint:** `GET /api/tournaments`
+
+**Description:** Retrieves a list of all tournaments.
+
+**Response:**
+```json
+[
+    {
+        "tournamentID": "01433c4a-87aa-11ef-8c7b-0242ac110003",
+        "startDate": "2024-10-10",
+        "endDate": "2024-10-12",
+        "location": "Pungul",
+        "playerLimit": 10,
+        "status": "Completed",
+        "descOID": "ID073",
+        "name": "NorthEastSlummers"
+    },
+    ...
+]
+```
+
+### 2. Get tournament by tournament ID
+
+**Endpoint:** `GET /api/tournaments/tournamentID`
+
+**Description:** Retrieves a tournament by its tournament ID.
+
+**Response:**
+```json
+
+{
+    "message": "Successfully retrieved tournament.",
+    "success": true,
+    "data": {
+        "tournamentID": "0e6e34ea-8a02-11ef-8c7b-0242ac110003",
+        "startDate": "2024-10-30",
+        "endDate": "2024-11-15",
+        "location": "Nevada",
+        "playerLimit": 10,
+        "status": "Upcoming",
+        "descOID": "ID045",
+        "name": "GP Tournament"
+    }
+}
+```
+
+### 3. Update tournament based on tournament ID
+
+**Endpoint:** `PUT /api/tournaments/tournamentID`
+
+**Description:** Updates a tournament by its tournament ID.
+
+**Response:**
+```json
+
+{
+    "message": "Successfully updated tournament.",
+    "success": true,
+    "data": {
+        "tournamentID": "0e6e34ea-8a02-11ef-8c7b-0242ac110003",
+        "startDate": "2024-10-30",
+        "endDate": "2024-11-15",
+        "location": "Nevada",
+        "playerLimit": 10,
+        "status": "Upcoming",
+        "descOID": "ID044",
+        "name": "GP Tournament"
+    }
+}
+```
+
+### 4. Delete tournament by tournament ID
+
+**Endpoint:** `DELETE /api/tournaments/tournamentID`
+
+**Description:** Deletes a tournament by its tournament ID.
+
+**Response:**
+```json
+
+{
+    "message": "Successfully deleted tournament.",
+    "success": true,
+}
+```
+
+### 4. Creates a tournament 
+
+**Endpoint:** `POST /api/tournaments`
+
+**Description:** Create a tournament
+
 - **Request:**
-    ```http
-    POST /api/tournaments
-    Content-Type: application/json
+    ``json
 
     {
         "name": "Championship",
@@ -56,14 +147,8 @@ mvn spring-boot:run
 - **Response:** 
     ```json
     {
-        "tournamentID": "generated_id",
-        "startDate": "2024-10-10",
-        "endDate": "2024-10-12",
-        "location": "Stadium A",
-        "playerLimit": 10,
-        "isActive": true,
-        "descOID": "Description of the Championship",
-        "name": "Championship",
-        "status": "Completed"
+        "message": "Successfully created tournament",
+        "success": true,
     }
     ```
+

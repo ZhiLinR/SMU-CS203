@@ -46,7 +46,7 @@ public class TournamentAdminServiceTest {
         tournament.setEndDate(LocalDate.of(2024, 10, 5));
         tournament.setLocation("Stadium A");
         tournament.setPlayerLimit(16);
-        tournament.setIsActive(true);
+        tournament.setStatus("Completed");
         tournament.setDescOID("Description of Tournament");
     }
 
@@ -66,7 +66,7 @@ public class TournamentAdminServiceTest {
                 any(Date.class), 
                 anyString(), 
                 anyInt(), 
-                anyBoolean(), 
+                anyString(), 
                 anyString()
         );
     }
@@ -101,7 +101,7 @@ public class TournamentAdminServiceTest {
                 any(Date.class), 
                 anyString(), 
                 anyInt(), 
-                anyBoolean(), 
+                anyString(), 
                 anyString()
         );
     }

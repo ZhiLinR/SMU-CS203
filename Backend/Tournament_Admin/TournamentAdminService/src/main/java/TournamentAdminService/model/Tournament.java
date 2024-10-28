@@ -28,8 +28,8 @@ public class Tournament {
     private String location;
     @Column(name="playerLimit")
     private Integer playerLimit;
-    @Column(name="isActive")
-    private Boolean isActive;
+    @Column(name="status")
+    private String status;
     @Column(name="descOID")
     private String descOID;
     @Column(name="name")
@@ -49,5 +49,25 @@ public class Tournament {
         } else {
             return "Ongoing";
         }
+    }
+
+    /**
+     * Sets the start date of the tournament and updates the status accordingly.
+     *
+     * @param startDate the start date to set
+     */
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+        this.status = getStatus();
+    }
+
+    /**
+     * Sets the end date of the tournament and updates the status accordingly.
+     *
+     * @param endDate the end date to set
+     */
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+        this.status = getStatus();
     }
 }

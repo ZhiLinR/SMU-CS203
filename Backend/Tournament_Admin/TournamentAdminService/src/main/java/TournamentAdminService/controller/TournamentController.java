@@ -44,7 +44,7 @@ public class TournamentController {
         try {
             tournament.setTournamentID(tournamentId);
             tournamentService.updateTournament(tournament);
-            return ResponseEntity.ok(new ApiResponse("Successfully updated tournament.", true));
+            return ResponseEntity.ok(new ApiResponse("Successfully updated tournament.", true, tournament));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse("Failed to update tournament: " + e.getMessage(), false));
         }
@@ -74,12 +74,12 @@ public class TournamentController {
      * @return ResponseEntity containing the tournament object or a not-found response if the tournament does not exist
      */
     @GetMapping("/{tournamentId}")
-    public ResponseEntity<Tournament> getTournamentById(@PathVariable String tournamentId) {
+    public ResponseEntity<ApiResponse> getTournamentById(@PathVariable String tournamentId) {
         try {
             Tournament tournament = tournamentService.getTournamentById(tournamentId);
-            return ResponseEntity.ok(tournament);
+            return ResponseEntity.ok(new ApiResponse("Successfully retrieved tournament.", true, tournament));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(new ApiResponse("Tournament not found: " + e.getMessage(), false));
         }
     }
 
@@ -89,8 +89,8 @@ public class TournamentController {
      * @return ResponseEntity containing a list of all tournaments
      */
     @GetMapping
-    public ResponseEntity<List<Tournament>> getAllTournaments() {
+    public ResponseEntity<ApiResponse> getAllTournaments() {
         List<Tournament> tournaments = tournamentService.getAllTournaments();
-        return ResponseEntity.ok(tournaments);
+        return ResponseEntity.ok(new ApiResponse("Successfully retrieved tournaments.", true, tournaments));
     }
 }

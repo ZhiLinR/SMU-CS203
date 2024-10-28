@@ -21,13 +21,13 @@ public interface TournamentRepository extends JpaRepository<Tournament, String> 
      * @param endDate    the end date of the tournament
      * @param location   the location of the tournament
      * @param playerLimit the player limit for the tournament
-     * @param isActive   the active status of the tournament
+     * @param status    the status of the tournament
      * @param descOID    the description OID for the tournament
      */
     @Procedure(name = "CreateTournament")
     void createTournament(@Param("p_name") String name, @Param("p_startDate") Date startDate,
                           @Param("p_endDate") Date endDate, @Param("p_location") String location,
-                          @Param("p_playerLimit") int playerLimit, @Param("p_isActive") boolean isActive,
+                          @Param("p_playerLimit") int playerLimit, @Param("p_status") String status,
                           @Param("p_descOID") String descOID);
 
                           
@@ -40,14 +40,14 @@ public interface TournamentRepository extends JpaRepository<Tournament, String> 
      * @param endDate      the updated end date of the tournament
      * @param location     the updated location of the tournament
      * @param playerLimit  the updated player limit for the tournament
-     * @param isActive     the updated active status of the tournament
+     * @param status       the updated status of the tournament
      * @param descOID      the updated description OID for the tournament
      */
     @Procedure(name = "UpdateTournament")
     void updateTournament(@Param("p_tournamentId") String tournamentId, @Param("p_name") String name,
                           @Param("p_startDate") Date startDate, @Param("p_endDate") Date endDate,
                           @Param("p_location") String location, @Param("p_playerLimit") int playerLimit,
-                          @Param("p_isActive") boolean isActive, @Param("p_descOID") String descOID);
+                          @Param("p_status") String status, @Param("p_descOID") String descOID);
 
 
     /**
