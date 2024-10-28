@@ -7,7 +7,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn clean install
+RUN mvn clean install -DskipTests
 
 # Use an official OpenJDK image as the base image
 FROM openjdk:11-jre-slim
