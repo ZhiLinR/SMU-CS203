@@ -31,13 +31,14 @@ on:
     branches: [ "main" ]
     paths:
       - 'Backend/Middleware/src/**' # Run when there is a push to the path User/src
+      - 'Backend/Middleware/Dockerfile'
 
 env:
   AWS_REGION: ap-southeast-1                  # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: cs203/middleware          # set this to your Amazon ECR repository name
   ECS_SERVICE: middleware-launch                 # set this to your Amazon ECS service name
   ECS_CLUSTER: cs203-middleware          # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: middleware:1
+  ECS_TASK_DEFINITION: middleware:latest
   CONTAINER_NAME: middleware           # set this to the name of the container in the
 
 permissions:
@@ -47,7 +48,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: staging-middleware
+    environment: staging-ecs
 
     steps:
     - name: Checkout
