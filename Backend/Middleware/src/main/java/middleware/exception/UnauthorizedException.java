@@ -1,4 +1,4 @@
-package user.util;
+package middleware.exception;
 
 /**
  * Exception thrown when User inputs the wrong email or password.
@@ -25,3 +25,4 @@ public class UnauthorizedException extends RuntimeException {
         super(message, cause);
     }
 }
+

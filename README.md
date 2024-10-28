@@ -1,6 +1,6 @@
 # SMU-CS203
 
-**Created By**  
+**Created By**
 Ooi Zhi lin, Tai Ngee Tian, Arshiya Jahan, Nur Athirah Binte Mohd Noor, Jasper Ang Zhen Xiang
 
 ## Overview
@@ -9,27 +9,27 @@ A chess tournament website that allows players to sign up, register for tourname
 
 ---
 
-## Table of Contents  
+## Table of Contents
 
-1. [Features](#features)  
-2. [Tech Stack](#tech-stack)  
-3. [Setup Instructions](#setup-instructions)  
-4. [Endpoints](#endpoint-references)  
+1. [Features](#features)
+2. [Tech Stack](#tech-stack)
+3. [Setup Instructions](#setup-instructions)
+4. [Endpoints](#endpoint-references)
 
 ---
 
-## Features  
+## Features
 
-- User Registration and Login  
-- Swiss-system tournament matchmaking  
-- Admin interface for managing tournaments  
+- User Registration and Login
+- Swiss-system tournament matchmaking
+- Admin interface for managing tournaments
 - Player rankings
 
 ---
 
-## Setup Instructions  
+## Setup Instructions
 
-1. Clone the repository:  
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/ZhiLinR/SMU-CS203.git
@@ -37,17 +37,17 @@ A chess tournament website that allows players to sign up, register for tourname
 
 ---
 
-## Tech Stack  
+## Tech Stack
 
 - **Backend:** Java (Spring Boot) and Javascript (NodeJS)
-- **Database:** MySQL  
+- **Database:** MySQL
 
 ---
 
 ## Endpoint References
 
-[Middleware](https://github.com/ZhiLinR/SMU-CS203/blob/middleware/Backend/Middleware/README.md)  
-Tournament-Admin (TBA)  
-Tournament-Public (TBA)  
-Tournament-User (TBA)  
+[Middleware](https://github.com/ZhiLinR/SMU-CS203/blob/middleware/Backend/Middleware/README.md)
+Tournament-Admin (TBA)
+Tournament-Public (TBA)
+Tournament-User (TBA)
 [User](https://github.com/ZhiLinR/SMU-CS203/blob/main/Backend/User/README.md)
