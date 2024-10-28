@@ -91,3 +91,4 @@ jobs:
         --cluster ${{ env.ECS_CLUSTER }} \
         --task-definition ${{env.ECS_TASK_DEFINITION}} \
         --launch-type FARGATE \
+        --network-configuration "awsvpcConfiguration={subnets=[${{ secrets.AWS_VPC_SUBNETS }}],securityGroups=[${{ secrets.AWS_SG_ID }}],assignPublicIp='ENABLED'}"
