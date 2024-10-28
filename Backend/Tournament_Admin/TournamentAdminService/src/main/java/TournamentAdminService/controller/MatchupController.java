@@ -20,7 +20,7 @@ public class MatchupController {
     /**
      * Updates the game result for a specific tournament matchup.
      *
-     * @param gameResultRequest the request containing the details of the game result (player who won, tournament ID, round number)
+     * @param gameResultRequest the request containing the details of the game result (player who won, tournament ID, round number) inside the function body
      * @return ResponseEntity containing an ApiResponse with success or failure message
      */
     @PostMapping("/update")
@@ -37,7 +37,7 @@ public class MatchupController {
     /**
      * Deletes the game result for a specific tournament matchup.
      *
-     * @param gameResultRequest the request containing the details of the game result (player who won, tournament ID, round number)
+     * @param gameResultRequest the request containing the details of the game result (playerWon, tournamentID, roundNum) inside the function body
      * @return ResponseEntity containing an ApiResponse with success or failure message
      */
 
@@ -55,7 +55,7 @@ public class MatchupController {
     /**
      * Retrieves all game results for a specific tournament by its ID.
      *
-     * @param tournamentId the ID of the tournament
+     * @param tournamentId the ID of the tournament inside the function body
      * @return ResponseEntity containing a list of matchups for the given tournament, or a not-found response
      */
 
@@ -73,7 +73,7 @@ public class MatchupController {
      /**
      * Retrieves the list of participants for a specific tournament by its ID.
      *
-     * @param tournamentId the ID of the tournament
+     * @param tournamentId the ID of the tournament inside the function body
      * @return ResponseEntity containing a list of participants, or a not-found response
      */
     
