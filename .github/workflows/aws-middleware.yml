@@ -38,7 +38,7 @@ env:
   ECR_REPOSITORY: cs203/middleware          # set this to your Amazon ECR repository name
   ECS_SERVICE: middleware-launch                 # set this to your Amazon ECS service name
   ECS_CLUSTER: cs203-middleware          # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: middleware:latest
+  ECS_TASK_DEFINITION: middleware:1
   CONTAINER_NAME: middleware           # set this to the name of the container in the
 
 permissions:
