@@ -4,7 +4,7 @@ export GIT_CONFIG_VALUE_0=""
 export GIT_CONFIG_VALUE_1=""
 
 # Check if .gitignore is modified and staged
-output=$(git diff --name-only HEAD | grep -P '^\.env(?!\.example$).*')
+output=$(git diff --name-only HEAD | grep -i -P '\.env(?!\.example$).*')
 
 if [ -n "$output" ]; then
   set -x # Enables output of commands again
