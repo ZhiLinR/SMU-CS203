@@ -32,6 +32,7 @@ on:
     paths:
       - 'Backend/User/src/**' # Run when there is a push to the path User/src
       - 'Backend/User/Dockerfile'
+  workflow_dispatch:
 
 env:
   AWS_REGION: ap-southeast-1                  # set this to your preferred AWS region, e.g. us-west-1

@@ -27,12 +27,12 @@
 name: Middleware - Deploy to Amazon ECS
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'Backend/Middleware/src/**' # Run when there is a push to the path User/src
-      - 'Backend/Middleware/Dockerfile'
-
+    push:
+        branches: [ "main" ]
+        paths:
+        - 'Backend/Middleware/src/**' # Run when there is a push to the path User/src
+        - 'Backend/Middleware/Dockerfile'
+    workflow_dispatch:
 env:
   AWS_REGION: ap-southeast-1                  # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: cs203/middleware          # set this to your Amazon ECR repository name
