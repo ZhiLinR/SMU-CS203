@@ -22,7 +22,7 @@ Sample Success 200 Response:
 ```json
 {
     "success": true,
-    "message": "User registered successfully",
+    "message": "Players matched successfully",
     "content": null
 }
 ```
@@ -32,7 +32,17 @@ Sample Failed 400 Response:
 ```json
 {
     "success": false,
-    "message": "A user with this email already exists.",
+    "message": "TournamentID must not be null or empty.",
+    "content": null
+}
+```
+
+Sample Failed 404 Response:
+
+```json
+{
+    "success": false,
+    "message": "Tournament not found.",
     "content": null
 }
 ```

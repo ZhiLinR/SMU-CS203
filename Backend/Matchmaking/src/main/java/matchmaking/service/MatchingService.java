@@ -1,11 +1,12 @@
 package matchmaking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import user.dto.MatchingRequest;
+import matchmaking.repository.MatchupsRepository;
+import matchmaking.repository.SignupsRepository;
+import matchmaking.model.Signups;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -18,8 +19,14 @@ import java.util.Map;
 @Service
 public class MatchingService {
 
+    @Autowired
+    private MatchupsRepository matchupsRepository;
+
+    @Autowired
+    private SignupsRepository signupsRepository;
+
     /**
-     * Matchmake users in tournament provided in the {@link MatchingRequest} 
+     * Matchmake users in tournament with {@code tournamentId}
      * based on ELO and round number.
      *
      * @param request the matching request containing the tournamentID.
@@ -27,7 +34,10 @@ public class MatchingService {
      * @throws IllegalArgumentException if the provided profile request is invalid
      */
     @Transactional
-    public void createProfile(MatchingRequest request) {
-
+    public void createProfile(String tournamentId) {
+        // Get List<Signups> for UUID-ELO reference
+        // Get Round num for current tournament
+        // Get current player wins and draws (Win: 1pt, Draw: 0.5pts)
+            // Call MatchmakingUtil.calculatePoints to calculate points of all users
     }
 }

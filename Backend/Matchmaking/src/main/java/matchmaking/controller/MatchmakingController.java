@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import matchmaking.dto.*;
+import matchmaking.exception.TournamentNotFoundException;
 import matchmaking.service.MatchingService;
-import matching.util.*;
+import matchmaking.util.*;
 
 import org.springframework.http.HttpStatus;
 
@@ -30,13 +30,15 @@ public class MatchmakingController {
      * @param profileRequest the request containing profile information
      * @return a {@link ResponseEntity} with success or error response based on the registration result
      */
-    @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> createProfile(@RequestBody ProfileRequest profileRequest) {
+    @GetMapping("/matchmaking/{tournamentId}")
+    public ResponseEntity<Map<String, Object>> createProfile(@PathVariable("tournamentId") String tournamentId) {
         try {
 
-                return ResponseManager.success("User registered successfully");
+                return ResponseManager.success("Players matched successfully");
         } catch (IllegalArgumentException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (TournamentNotFoundException e) {
+            return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }

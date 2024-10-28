@@ -1,17 +1,17 @@
-package user.util;
+package matchmaking.exception;
 
 /**
- * Exception thrown when a user is not found in the system.
+ * Exception thrown when a tournamnent is not found in the system.
  * This is a runtime exception that extends {@link RuntimeException}.
  */
-public class UserNotFoundException extends RuntimeException {
+public class TournamentNotFoundException extends RuntimeException {
 
     /**
      * Constructs a new {@code UserNotFoundException} with the specified detail message.
      *
      * @param message the detail message, which is saved for later retrieval by the {@link Throwable#getMessage()} method
      */
-    public UserNotFoundException(String message) {
+    public TournamentNotFoundException(String message) {
         super(message);
     }
 
@@ -21,7 +21,7 @@ public class UserNotFoundException extends RuntimeException {
      * @param message the detail message, which is saved for later retrieval by the {@link Throwable#getMessage()} method
      * @param cause the cause (which is saved for later retrieval by the {@link Throwable#getCause()} method)
      */
-    public UserNotFoundException(String message, Throwable cause) {
+    public TournamentNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }
