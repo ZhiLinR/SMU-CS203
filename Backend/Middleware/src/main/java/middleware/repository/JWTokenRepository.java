@@ -23,7 +23,7 @@ import middleware.model.JWToken;
 public interface JWTokenRepository extends JpaRepository<JWToken, String> {
 
         /**
-     * Checks the if JWT exists and is valid.
+     * Checks the if JWT exists in the database.
      *
      * @param jwt the JWToken given to check
      */
