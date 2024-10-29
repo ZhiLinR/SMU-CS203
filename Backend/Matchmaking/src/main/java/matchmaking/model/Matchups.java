@@ -26,10 +26,4 @@ public class Matchups {
 
     @Column(name = "playerWon")
     private String playerWon;
-
-    @Column(name = "tournamentID")
-    private String tournamentId;
-
-    @Column(name = "roundNum")
-    private int roundNum;
 }

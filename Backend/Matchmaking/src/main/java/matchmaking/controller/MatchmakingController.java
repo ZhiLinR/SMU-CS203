@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import matchmaking.exception.TournamentNotFoundException;
 import matchmaking.service.MatchingService;
 import matchmaking.util.*;
+import matchmaking.model.*;
 
 import org.springframework.http.HttpStatus;
 
@@ -33,8 +34,11 @@ public class MatchmakingController {
     @GetMapping("/matchmaking/{tournamentId}")
     public ResponseEntity<Map<String, Object>> createProfile(@PathVariable("tournamentId") String tournamentId) {
         try {
-
-                return ResponseManager.success("Players matched successfully");
+            List<Matchups> matchups = matchingService.generateUniqueMatchups(tournamentId);
+            for (Matchups matchup : matchups) {
+                System.out.println(matchup);
+            }
+            return ResponseManager.success("Players matched successfully");
         } catch (IllegalArgumentException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (TournamentNotFoundException e) {

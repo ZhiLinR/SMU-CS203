@@ -4,40 +4,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import matchmaking.repository.MatchupsRepository;
-import matchmaking.repository.SignupsRepository;
-import matchmaking.model.Signups;
+import matchmaking.util.ValidationUtil;
+import matchmaking.util.TournamentInfoUtil;
+import matchmaking.util.PlayerSorter;
+import matchmaking.manager.MatchupManager;
+import matchmaking.model.*;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
- * TODO: Javadocs
+ * The {@code MatchingService} class provides functionality for matchmaking users
+ * in a tournament based on their ELO ratings and the current round number.
+ * It uses the {@link MatchupManager} to handle matchmaking logic.
  */
 @Service
 public class MatchingService {
 
     @Autowired
-    private MatchupsRepository matchupsRepository;
+    private TournamentInfoUtil tournamentInfoUtil;
 
     @Autowired
-    private SignupsRepository signupsRepository;
+    private PlayerSorter playerSorter;
+
+    @Autowired
+    private MatchupManager matchupManager;
 
     /**
-     * Matchmake users in tournament with {@code tournamentId}
-     * based on ELO and round number.
+     * Generates unique matchups for users in the tournament with the specified
+     * {@code tournamentId}. It retrieves the current round number, the list of
+     * signups, and the previous matchups to ensure that players are matched 
+     * uniquely without repeating pairs.
      *
-     * @param request the matching request containing the tournamentID.
-     * @return {@code true} if the users successfully matched; {@code false} otherwise
-     * @throws IllegalArgumentException if the provided profile request is invalid
+     * @param tournamentId the ID of the tournament for which to generate matchups.
+     * @return a list of {@link Matchups} representing the newly generated matchups.
+     * @throws IllegalArgumentException if the provided {@code tournamentId} is null or empty.
      */
     @Transactional
-    public void createProfile(String tournamentId) {
-        // Get List<Signups> for UUID-ELO reference
-        // Get Round num for current tournament
-        // Get current player wins and draws (Win: 1pt, Draw: 0.5pts)
-            // Call MatchmakingUtil.calculatePoints to calculate points of all users
+    public List<Matchups> generateUniqueMatchups(String tournamentId) {
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+    
+        // Use the TournamentInfoUtil to get current round and signups
+        int roundNum = tournamentInfoUtil.getCurrentRoundByTournamentId(tournamentId);
+        List<Signups> signups = tournamentInfoUtil.getSignupsByTournamentId(tournamentId);
+        List<Matchups> previousMatchups = tournamentInfoUtil.getMatchupsByTournamentId(tournamentId);
+    
+        // Create a set of played pairs to track unique matches
+        Set<String> playedPairs = matchupManager.getPlayedPairs(previousMatchups);
+    
+        if (roundNum == 1) {
+            signups = playerSorter.sortPlayersByELO(signups);
+        }
+    
+        List<Matchups> newMatchups = matchupManager.createUniqueMatchups(signups, tournamentId, roundNum, playedPairs);
+        return newMatchups;
     }
 }
+
+

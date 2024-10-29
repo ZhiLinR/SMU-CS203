@@ -1,7 +1,5 @@
 package matchmaking.util;
 
-import java.util.regex.Pattern;
-
 /**
  * Utility class for common validation operations.
  * Provides methods to validate fields such as email, UUID, role, and required fields.

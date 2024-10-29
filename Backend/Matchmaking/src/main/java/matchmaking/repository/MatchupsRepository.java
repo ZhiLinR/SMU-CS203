@@ -40,7 +40,22 @@ public interface MatchupsRepository extends JpaRepository<Matchups, String> {
     );
 
     @Procedure(procedureName = "GetPlayerWinsByTournamentId")
-    List<PlayerWins> getWinsLossesByTournamentId(
+    List<PlayerWins> getPlayerWinsByTournamentId(
         @Param("p_tournamentId") String tournamentId
+    );
+
+    // TODO: create and add to server
+    @Procedure(procedureName = "GetMatchupsByTournamentId")
+    List<Matchups> getMatchupsByTournamentId(
+        @Param("p_tournamentId") String tournamentId
+    );
+
+    @Procedure(procedureName = "InsertMatchup")
+    void insertMatchup(
+        @Param("player1") String player1, 
+        @Param("player2") String player2, 
+        @Param("playerWon") String playerWon, 
+        @Param("tournamentId") String tournamentId, 
+        @Param("roundNum") int roundNum
     );
 }

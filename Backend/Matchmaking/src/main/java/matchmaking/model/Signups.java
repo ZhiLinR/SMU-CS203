@@ -25,5 +25,5 @@ public class Signups {
     private String tournamentId;
 
     @Column(name = "elo")
-    private String elo;
+    private int elo;
 }
