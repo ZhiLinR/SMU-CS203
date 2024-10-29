@@ -24,6 +24,7 @@ public class TournamentController {
     @PostMapping
     public ResponseEntity<ApiResponse> createTournament(@RequestBody Tournament tournament) {
         try {
+            tournament.updateStatus();
             tournamentService.createTournament(tournament);
             return ResponseEntity.ok(new ApiResponse("Successfully created tournament.", true));
         } catch (Exception e) {
@@ -43,6 +44,13 @@ public class TournamentController {
     public ResponseEntity<ApiResponse> updateTournament(@PathVariable String tournamentId, @RequestBody Tournament tournament) {
         try {
             tournament.setTournamentID(tournamentId);
+            if (tournament.getStartDate() != null) {
+                tournament.setStartDate(tournament.getStartDate());
+            }
+            if (tournament.getEndDate() != null) {
+                tournament.setEndDate(tournament.getEndDate());
+            }
+            tournament.updateStatus();
             tournamentService.updateTournament(tournament);
             return ResponseEntity.ok(new ApiResponse("Successfully updated tournament.", true, tournament));
         } catch (Exception e) {

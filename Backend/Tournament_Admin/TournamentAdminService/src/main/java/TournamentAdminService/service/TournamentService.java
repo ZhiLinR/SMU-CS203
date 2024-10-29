@@ -6,9 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -20,38 +18,29 @@ public class TournamentService {
     @Autowired
     private TournamentRepository tournamentRepository;
 
-
     /**
-     * Creates a new tournament.
-     * Converts the {@link LocalDate} to {@link java.sql.Date} before calling the repository.
+     * Creates a new tournament entry in the repository.
      *
-     * @param tournament the {@link Tournament} entity to create
+     * @param tournament The {@link Tournament} object containing the tournament details to be created.
      */
     @Transactional
     public void createTournament(Tournament tournament) {
-        LocalDate localStartDate = tournament.getStartDate();
-        java.sql.Date sqlStartDate = Date.valueOf(localStartDate);
-        LocalDate localEndDate = tournament.getEndDate();
-        java.sql.Date sqlEndDate = Date.valueOf(localEndDate);
+        tournament.updateStatus();
         tournamentRepository.createTournament(
-                tournament.getName(), sqlStartDate, sqlEndDate, tournament.getLocation(),
+                tournament.getName(), tournament.getStartDate(), tournament.getEndDate(), tournament.getLocation(),
                 tournament.getPlayerLimit(), tournament.getStatus(), tournament.getDescOID());
     }
 
     /**
-     * Updates an existing tournament.
-     * Converts the {@link LocalDate} to {@link java.sql.Date} before calling the repository.
+     * Updates an existing tournament in the repository.
      *
-     * @param tournament the {@link Tournament} entity to update
+     * @param tournament The {@link Tournament} object containing the tournament details to be updated.
      */
     @Transactional
     public void updateTournament(Tournament tournament) {
-        LocalDate localStartDate = tournament.getStartDate();
-        java.sql.Date sqlStartDate = Date.valueOf(localStartDate);
-        LocalDate localEndDate = tournament.getEndDate();
-        java.sql.Date sqlEndDate = Date.valueOf(localEndDate);;
-        tournamentRepository.updateTournament(tournament.getTournamentID(), tournament.getName(),
-                sqlStartDate, sqlEndDate, tournament.getLocation(),
+        tournament.updateStatus();
+        tournamentRepository.updateTournament(
+                tournament.getTournamentID(),tournament.getName(), tournament.getStartDate(), tournament.getEndDate(), tournament.getLocation(),
                 tournament.getPlayerLimit(), tournament.getStatus(), tournament.getDescOID());
     }
 

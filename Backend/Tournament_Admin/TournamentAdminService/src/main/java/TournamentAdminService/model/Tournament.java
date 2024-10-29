@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 
 @Data
@@ -20,31 +20,41 @@ public class Tournament {
     @Id
     @Column(name="tournamentID")
     private String tournamentID;
-    @Column(name="startDate")
-    private LocalDate startDate;
-    @Column(name="endDate")
-    private LocalDate endDate;
-    @Column(name="location")
-    private String location;
-    @Column(name="playerLimit")
-    private Integer playerLimit;
-    @Column(name="status")
-    private String status;
-    @Column(name="descOID")
-    private String descOID;
+
     @Column(name="name")
     private String name;
+
+    @Column(name="startDate")
+    private Date startDate;
+
+    @Column(name="endDate")
+    private Date endDate;
+
+    @Column(name="location")
+    private String location;
+
+    @Column(name="playerLimit")
+    private Integer playerLimit;
+
+    @Column(name="status")
+    private String status;
+
+    @Column(name="descOID")
+    private String descOID;
 
     /**
      * Determines the current status of the tournament based on the current date.
      * 
      * @return "Upcoming" if the tournament is in the future, "Ongoing" if it is currently active, or "Completed" if it has ended.
      */
-    public String getStatus() {
-            LocalDate now = LocalDate.now();
-        if (now.isBefore(startDate)) {
+    public String updateStatus() {
+        Date now = new Date(System.currentTimeMillis());
+        if (startDate == null || endDate == null) {
+            return "Unknown";
+        }
+        if (now.before(startDate)) {
             return "Upcoming";
-        } else if (now.isAfter(endDate)) {
+        } else if (now.after(endDate)) {
             return "Completed";
         } else {
             return "Ongoing";
@@ -56,18 +66,17 @@ public class Tournament {
      *
      * @param startDate the start date to set
      */
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate != null ? startDate : new Date(System.currentTimeMillis());
         this.status = getStatus();
     }
-
     /**
      * Sets the end date of the tournament and updates the status accordingly.
      *
      * @param endDate the end date to set
      */
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate != null ? endDate : new Date(System.currentTimeMillis() + 86400000);
         this.status = getStatus();
     }
 }
