@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import matchmaking.util.ValidationUtil;
 import matchmaking.util.TournamentInfoUtil;
-import matchmaking.util.PlayerSorter;
 import matchmaking.manager.MatchupManager;
 import matchmaking.model.*;
 
@@ -23,9 +22,6 @@ public class MatchingService {
 
     @Autowired
     private TournamentInfoUtil tournamentInfoUtil;
-
-    @Autowired
-    private PlayerSorter playerSorter;
 
     @Autowired
     private MatchupManager matchupManager;
@@ -45,18 +41,21 @@ public class MatchingService {
         ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
     
         // Use the TournamentInfoUtil to get current round and signups
+        System.out.println("Getting info");
         int roundNum = tournamentInfoUtil.getCurrentRoundByTournamentId(tournamentId);
         List<Signups> signups = tournamentInfoUtil.getSignupsByTournamentId(tournamentId);
         List<Matchups> previousMatchups = tournamentInfoUtil.getMatchupsByTournamentId(tournamentId);
+        System.out.println("Finished getting info");
     
         // Create a set of played pairs to track unique matches
         Set<String> playedPairs = matchupManager.getPlayedPairs(previousMatchups);
-    
-        if (roundNum == 1) {
-            signups = playerSorter.sortPlayersByELO(signups);
-        }
-    
+
+        System.out.println("Creating Unique Matchups");
         List<Matchups> newMatchups = matchupManager.createUniqueMatchups(signups, tournamentId, roundNum, playedPairs);
+
+        for (Matchups m : newMatchups) {
+            System.out.println(m.toString());
+        }
         return newMatchups;
     }
 }
