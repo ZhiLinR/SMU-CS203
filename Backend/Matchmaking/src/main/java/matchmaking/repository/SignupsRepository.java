@@ -13,28 +13,31 @@ import matchmaking.model.Signups;
  * Repository interface for managing {@link Signups} entities. This interface extends
  * {@link JpaRepository}, providing a set of built-in methods for performing
  * CRUD operations on {@link Signups} objects in the database.
- *
+ * <p>
  * In addition to the standard repository methods, this interface includes methods
  * for executing stored procedures related to user management, such as inserting
  * new users, retrieving user profiles, and updating user details.
- *
+ * </p>
+ * <p>
  * The methods in this repository use the {@link Procedure} annotation to specify
  * the corresponding stored procedures in the database.
+ * </p>
  */
 @Repository
 public interface SignupsRepository extends JpaRepository<Signups, String> {
 
     /**
-     * Inserts a new user into the database with the provided details.
+     * Retrieves a list of signups for a specified tournament.
      *
-     * @param email the email address of the new user
-     * @param password the password of the new user
-     * @param name the name of the new user
-     * @param isAdmin a byte indicating whether the user is an administrator (1) or not (0)
-     * @return {@code 1} if the email format is valid; {@code 0} otherwise
+     * This method calls the stored procedure "GetSignupsByTournamentId" to
+     * fetch all signups associated with the given tournament ID.
+     *
+     * @param tournamentId the ID of the tournament for which signups are requested
+     * @return a list of {@link Signups} objects representing the users who signed up for the tournament
      */
     @Procedure(procedureName = "GetSignupsByTournamentId")
     List<Signups> getSignupsByTournamentId(
         @Param("p_tournamentId") String tournamentId
     );
 }
+

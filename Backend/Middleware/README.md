@@ -12,6 +12,31 @@ mvn spring-boot:run
 
 ### Quick Reference API Endpoints
 
+### GET /health
+
+---
+Check the health of the application
+
+Sample Success 200 Response:
+
+```json
+{
+    "success": true,
+    "message": "Health Check Success",
+    "content": null
+}
+```
+
+Sample Success 500 Response:
+
+```json
+{
+    "success": true,
+    "message": "Error: <Error Message>",
+    "content": null
+}
+```
+
 ### POST /middleware/checkjwt
 
 ---

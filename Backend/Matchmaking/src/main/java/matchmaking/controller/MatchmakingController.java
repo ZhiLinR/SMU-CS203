@@ -16,7 +16,13 @@ import org.springframework.http.HttpStatus;
 
 
 /**
- * TODO: Javadocs
+ * The {@code MatchmakingController} class is responsible for handling matchmaking requests
+ * related to tournaments. It provides endpoints for registering user profiles and generating
+ * matchups based on the specified tournament ID.
+ * <p>
+ * This class is annotated with {@link RestController} and {@link RequestMapping}, making it a
+ * Spring REST controller that handles requests to the "/api" endpoint.
+ * </p>
  */
 @RestController
 @RequestMapping("/api")
@@ -26,13 +32,39 @@ public class MatchmakingController {
     private MatchingService matchingService;
 
     /**
-     * Registers a new user profile.
+     * Performs a health check for the application.
      *
-     * @param profileRequest the request containing profile information
-     * @return a {@link ResponseEntity} with success or error response based on the registration result
+     * This method is exposed as a GET endpoint to verify that the application is
+     * running and responsive. It returns a success message if the health check
+     * passes or an error message if an unexpected issue occurs during the check.
+     *
+     * @return a {@link ResponseEntity} containing a map with success or error message
+     *         indicating the health status of the application
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, Object>> healthCheck() {
+        try {
+            return ResponseManager.success("Health Check Success");
+        } catch (Exception e) {
+            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Generates unique matchups for the specified tournament.
+     *
+     * This method retrieves the matchups associated with a given tournament ID and prints 
+     * each matchup to the console. It returns a success response if the matchups are generated 
+     * successfully, or an error response if there are any issues during the process.
+     *
+     * @param tournamentId the ID of the tournament for which matchups are to be generated
+     * @return a {@link ResponseEntity} containing a map with success or error message
+     * @throws IllegalArgumentException if the tournament ID is invalid
+     * @throws TournamentNotFoundException if no tournament is found with the given ID
+     * @throws Exception for any other unexpected errors that may occur
      */
     @GetMapping("/matchmaking/{tournamentId}")
-    public ResponseEntity<Map<String, Object>> createProfile(@PathVariable("tournamentId") String tournamentId) {
+    public ResponseEntity<Map<String, Object>> matchPlayers(@PathVariable("tournamentId") String tournamentId) {
         try {
             List<Matchups> matchups = matchingService.generateUniqueMatchups(tournamentId);
             for (Matchups matchup : matchups) {
@@ -47,5 +79,4 @@ public class MatchmakingController {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
     }
-
 }
