@@ -101,4 +101,9 @@ public class TournamentController {
         List<Tournament> tournaments = tournamentService.getAllTournaments();
         return ResponseEntity.ok(new ApiResponse("Successfully retrieved tournaments.", true, tournaments));
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<ApiResponse> healthCheckTournament() {
+        return ResponseEntity.ok(new ApiResponse("Application successfully running.", true));
+    }
 }

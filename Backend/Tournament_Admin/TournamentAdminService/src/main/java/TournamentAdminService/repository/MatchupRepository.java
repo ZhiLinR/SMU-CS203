@@ -14,6 +14,18 @@ import java.util.List;
 public interface MatchupRepository extends JpaRepository<Matchup, Long> {
 
     /**
+     * Creates a new game result for a tournament matchup.
+     *
+     * @param playerWon the player who won the game
+     * @param tournamentId the ID of the tournament
+     * @param roundNum the round number
+     */
+    @Procedure(name = "CreateGameResult")
+    void createGameResult(@Param("p_playerWon") String playerWon,
+                          @Param("p_tournamentId") String tournamentId,
+                          @Param("p_roundNum") Integer roundNum);
+
+    /**
      * Updates the game result for a specific player in a tournament.
      * 
      * @param playerWon   the player who won the game
