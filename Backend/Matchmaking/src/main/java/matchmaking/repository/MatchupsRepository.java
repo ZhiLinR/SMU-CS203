@@ -11,20 +11,20 @@ import matchmaking.dto.PlayerWins;
 import matchmaking.model.Matchups;
 
 /**
- * Repository interface for managing {@link Matchups} entities. This interface
- * extends
- * {@link JpaRepository}, providing a set of built-in methods for performing
- * CRUD operations on {@link Matchups} objects in the database.
+ * Repository interface for managing {@link Matchups} entities.
+ * This interface extends {@link JpaRepository}, providing a set of built-in
+ * methods for performing CRUD operations on {@link Matchups} objects in the
+ * database.
+ *
  * <p>
  * In addition to the standard repository methods, this interface includes
- * methods
- * for executing stored procedures related to user management, such as inserting
- * new users, retrieving user profiles, and updating user details.
+ * methods for executing stored procedures related to matchups management,
+ * such as retrieving the current round, player wins, and matchups for a
+ * specific tournament.
  * </p>
  * <p>
  * The methods in this repository use the {@link Procedure} annotation to
- * specify
- * the corresponding stored procedures in the database.
+ * specify the corresponding stored procedures in the database.
  * </p>
  */
 @Repository
@@ -33,17 +33,16 @@ public interface MatchupsRepository extends JpaRepository<Matchups, String> {
         /**
          * Retrieves the current round number for the specified tournament.
          *
-         * This method calls the stored procedure "GetCurrentRoundByTournamentId" to
+         * This method calls the stored procedure "GetRoundNumByTournamentId" to
          * fetch the current round associated with the given tournament ID.
          *
          * @param tournamentId the ID of the tournament for which the current round is
-         *                     requested
+         *                     requested.
          * @return the current round number for the tournament, or {@code null} if not
-         *         found
+         *         found.
          */
         @Procedure(procedureName = "GetRoundNumByTournamentId")
-        Integer getCurrentRoundByTournamentId(
-                        @Param("p_tournamentId") String tournamentId);
+        Integer getCurrentRoundByTournamentId(@Param("p_tournamentId") String tournamentId);
 
         /**
          * Retrieves the list of player wins for a specified tournament.
@@ -53,13 +52,12 @@ public interface MatchupsRepository extends JpaRepository<Matchups, String> {
          * tournament.
          *
          * @param tournamentId the ID of the tournament for which player wins are
-         *                     requested
+         *                     requested.
          * @return a list of {@link PlayerWins} objects containing player win
-         *         information
+         *         information.
          */
         @Procedure(procedureName = "GetPlayerWinsByTournamentId")
-        List<Object[]> getPlayerWinsByTournamentId(
-                        @Param("p_tournamentId") String tournamentId);
+        List<Object[]> getPlayerWinsByTournamentId(@Param("p_tournamentId") String tournamentId);
 
         /**
          * Retrieves a list of matchups for a specified tournament.
@@ -67,26 +65,26 @@ public interface MatchupsRepository extends JpaRepository<Matchups, String> {
          * This method calls the stored procedure "GetMatchupsByTournamentId" to
          * fetch the matchups associated with the given tournament ID.
          *
-         * @param tournamentId the ID of the tournament for which matchups are requested
+         * @param tournamentId the ID of the tournament for which matchups are
+         *                     requested.
          * @return a list of {@link Matchups} objects representing the matchups for the
-         *         tournament
+         *         tournament.
          */
         @Procedure(procedureName = "GetMatchupsByTournamentId")
-        List<Matchups> getMatchupsByTournamentId(
-                        @Param("p_tournamentId") String tournamentId);
+        List<Matchups> getMatchupsByTournamentId(@Param("p_tournamentId") String tournamentId);
 
         /**
          * Inserts a new matchup into the database.
          *
          * This method calls the stored procedure "InsertMatchup" to create a new
-         * matchup
-         * entry with the specified players, winner, tournament ID, and round number.
+         * matchup entry with the specified players, winner, tournament ID, and round
+         * number.
          *
-         * @param player1      the ID of the first player in the matchup
-         * @param player2      the ID of the second player in the matchup
-         * @param playerWon    the ID of the player who won the matchup
-         * @param tournamentId the ID of the tournament associated with the matchup
-         * @param roundNum     the round number in which the matchup occurs
+         * @param player1      the ID of the first player in the matchup.
+         * @param player2      the ID of the second player in the matchup.
+         * @param playerWon    the ID of the player who won the matchup.
+         * @param tournamentId the ID of the tournament associated with the matchup.
+         * @param roundNum     the round number in which the matchup occurs.
          */
         @Procedure(procedureName = "InsertMatchup")
         void insertMatchup(

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 /**
  * Utility class for retrieving tournament information.
+ * This class provides methods to access tournament-related data,
+ * such as current round numbers, matchups, and player results.
  */
 @Component
 public class TournamentInfoUtil {
@@ -26,7 +28,9 @@ public class TournamentInfoUtil {
      * Retrieves the current round number for a given tournament.
      *
      * @param tournamentId the ID of the tournament.
-     * @return the current round number.
+     * @return the current round number, incremented by one.
+     * @throws IllegalArgumentException if the {@code tournamentId} is null or
+     *                                  empty.
      */
     public int getCurrentRoundByTournamentId(String tournamentId) {
         return matchupsRepository.getCurrentRoundByTournamentId(tournamentId) + 1;
@@ -36,7 +40,9 @@ public class TournamentInfoUtil {
      * Retrieves all matchups for a given tournament.
      *
      * @param tournamentId the ID of the tournament.
-     * @return a list of matchups for the tournament.
+     * @return a list of {@link Matchups} for the tournament.
+     * @throws IllegalArgumentException if the {@code tournamentId} is null or
+     *                                  empty.
      */
     public List<Matchups> getMatchupsByTournamentId(String tournamentId) {
         System.out.println(matchupsRepository.getMatchupsByTournamentId(tournamentId));
@@ -44,10 +50,24 @@ public class TournamentInfoUtil {
     }
 
     /**
+     * Retrieves the list of signups for a given tournament.
+     *
+     * @param tournamentId the ID of the tournament.
+     * @return a list of {@link Signups} for the tournament.
+     * @throws IllegalArgumentException if the {@code tournamentId} is null or
+     *                                  empty.
+     */
+    public List<Signups> getSignupsByTournamentId(String tournamentId) {
+        return signupsRepository.getSignupsByTournamentId(tournamentId);
+    }
+
+    /**
      * Retrieves all player results for a given tournament.
      *
      * @param tournamentId the ID of the tournament.
-     * @return a list of matchups for the tournament.
+     * @return a list of {@link PlayerWins} for the tournament.
+     * @throws IllegalArgumentException if the {@code tournamentId} is null or
+     *                                  empty.
      */
     public List<PlayerWins> getPlayerWinsByTournamentId(String tournamentId) {
         List<Object[]> results = matchupsRepository.getPlayerWinsByTournamentId(tournamentId);
@@ -56,21 +76,13 @@ public class TournamentInfoUtil {
     }
 
     /**
-     * Retrieves the list of signups for a given tournament.
-     *
-     * @param tournamentId the ID of the tournament.
-     * @return a list of signups for the tournament.
-     */
-    public List<Signups> getSignupsByTournamentId(String tournamentId) {
-        return signupsRepository.getSignupsByTournamentId(tournamentId);
-    }
-
-    /**
      * Creates a matchup between two players.
      *
-     * @param player1 the first player.
-     * @param player2 the second player.
-     * @return a new Matchups object.
+     * @param player1      the first player.
+     * @param player2      the second player.
+     * @param tournamentId the ID of the tournament.
+     * @param roundNum     the current round number.
+     * @return a new {@link Matchups} object representing the matchup.
      */
     public Matchups createMatchup(Signups player1, Signups player2, String tournamentId, int roundNum) {
         MatchupsId matchupsId = new MatchupsId();
@@ -87,11 +99,15 @@ public class TournamentInfoUtil {
     }
 
     /**
-     * Creates a matchup between two players.
+     * Creates a matchup between two players with a specified winner.
      *
-     * @param player1 the first player.
-     * @param player2 the second player.
-     * @return a new Matchups object.
+     * @param player1      the first player.
+     * @param player2      the second player.
+     * @param playerWon    the player who won the matchup.
+     * @param tournamentId the ID of the tournament.
+     * @param roundNum     the current round number.
+     * @return a new {@link Matchups} object representing the matchup with the
+     *         winner set.
      */
     public Matchups createMatchup(Signups player1, Signups player2, Signups playerWon, String tournamentId,
             int roundNum) {
@@ -111,9 +127,11 @@ public class TournamentInfoUtil {
     /**
      * Inserts matchups into the repository.
      *
-     * @param matchups     the list of matchups to insert.
+     * @param matchups     the list of {@link Matchups} to insert.
      * @param tournamentId the ID of the tournament.
      * @param roundNum     the current round number.
+     * @throws IllegalArgumentException if the {@code matchups} list is null or
+     *                                  empty.
      */
     public void insertMatchups(List<Matchups> matchups, String tournamentId, int roundNum) {
         for (Matchups matchup : matchups) {
@@ -126,6 +144,13 @@ public class TournamentInfoUtil {
         }
     }
 
+    /**
+     * Maps the result set from the database to a {@link PlayerWins} object.
+     *
+     * @param result the result array from the database query.
+     * @return a new {@link PlayerWins} object populated with data from the result
+     *         array.
+     */
     private PlayerWins mapToPlayerWins(Object[] result) {
         PlayerWins playerWins = new PlayerWins();
         playerWins.setUuid((String) result[0]);

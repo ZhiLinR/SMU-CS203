@@ -12,6 +12,8 @@ import matchmaking.dto.*;
 
 /**
  * Utility class for sorting players based on ELO ratings and points.
+ * This class provides methods to sort players for tournament matchmaking
+ * based on different criteria such as ELO ratings or accumulated points.
  */
 @Component
 public class PlayerSorter {
@@ -50,6 +52,9 @@ public class PlayerSorter {
      * @param tournamentId the ID of the tournament.
      * @param roundNum     the current round number.
      * @return the sorted list of players.
+     * @throws IllegalArgumentException if the provided {@code tournamentId} is null
+     *                                  or empty, or if {@code roundNum} is less
+     *                                  than 1.
      */
     public List<Signups> sortPlayersForRound(List<Signups> players, String tournamentId, int roundNum) {
         System.out.println("Sort players called");

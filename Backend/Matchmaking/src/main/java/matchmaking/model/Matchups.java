@@ -17,12 +17,23 @@ import lombok.Data;
 @Table(name = "Matchups")
 @Data
 public class Matchups {
+
+    /**
+     * The composite primary key for this matchup, containing the player UUIDs
+     * and the tournament ID.
+     */
     @EmbeddedId
     private MatchupsId id;
 
+    /**
+     * The UUID of the player who won the matchup.
+     */
     @Column(name = "playerWon")
     private String playerWon;
 
+    /**
+     * The round number in which this matchup occurs.
+     */
     @Column(name = "roundNum")
     private int roundNum;
 }

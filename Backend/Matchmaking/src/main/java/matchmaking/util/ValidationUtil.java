@@ -1,6 +1,6 @@
 package matchmaking.util;
 
-import matchmaking.exception.InvalidRound;
+import matchmaking.exception.InvalidRoundException;
 import matchmaking.model.Matchups;
 import matchmaking.model.Signups;
 
@@ -53,12 +53,13 @@ public class ValidationUtil {
      *
      * @param roundNum    The current round number to validate.
      * @param playerCount The total number of players in the tournament.
-     * @throws InvalidRound if the round number exceeds the maximum possible rounds.
+     * @throws InvalidRoundException if the round number exceeds the maximum
+     *                               possible rounds.
      */
     public static void isValidRoundNum(int roundNum, int playerCount) {
         int maxRound = playerCount * (playerCount - 1) / 2;
         if (roundNum > maxRound) {
-            throw new InvalidRound("Max number of rounds for signups have been reached");
+            throw new InvalidRoundException("Max number of rounds for signups have been reached");
         }
     }
 
@@ -68,12 +69,13 @@ public class ValidationUtil {
      *
      * @param matchup The matchup object containing the result of the previous
      *                round.
-     * @throws InvalidRound if the winner of the previous round has not been
-     *                      allocated (i.e., {@code playerWon} is null).
+     * @throws InvalidRoundException if the winner of the previous round has not
+     *                               been allocated (i.e., {@code playerWon} is
+     *                               null).
      */
     public static void isPrevRoundOver(Matchups matchup) {
         if (matchup.getPlayerWon() == null) {
-            throw new InvalidRound("Previous round results have not been allocated");
+            throw new InvalidRoundException("Previous round results have not been allocated");
         }
     }
 
@@ -82,18 +84,25 @@ public class ValidationUtil {
      *
      * @param matchups A list of current round matchups.
      * @param players  A list of players who signed up for the tournament.
-     * @throws InvalidRound if not all players have been uniquely matched (i.e., the
-     *                      number of matchups is insufficient).
+     * @throws InvalidRoundException if not all players have been uniquely matched
+     *                               (i.e., the
+     *                               number of matchups is insufficient).
      */
     public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
         if (matchups.size() < (players.size() / 2)) {
-            throw new InvalidRound("Failed to match up all players uniquely");
+            throw new InvalidRoundException("Failed to match up all players uniquely");
         }
     }
 
+    /**
+     * Checks if the provided player pair is valid.
+     *
+     * @param pair the pair of players to check.
+     * @throws InvalidRoundException if the pair is null.
+     */
     public static void isValidPair(Pair<Signups, Signups> pair) {
         if (pair == null) {
-            throw new InvalidRound("Invalid matchup made");
+            throw new InvalidRoundException("Invalid matchup made");
         }
     }
 }

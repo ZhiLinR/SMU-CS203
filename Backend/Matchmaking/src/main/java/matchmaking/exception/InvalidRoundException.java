@@ -1,24 +1,24 @@
 package matchmaking.exception;
 
 /**
- * Exception thrown when trying to matchmake out of max num of rounds.
+ * Exception thrown when there are any issues with matchmaking logic.
  * This is a runtime exception that extends {@link RuntimeException}.
  */
-public class InvalidRound extends RuntimeException {
+public class InvalidRoundException extends RuntimeException {
 
     /**
-     * Constructs a new {@code UserNotFoundException} with the specified detail
+     * Constructs a new {@code InvalidRoundException} with the specified detail
      * message.
      *
      * @param message the detail message, which is saved for later retrieval by the
      *                {@link Throwable#getMessage()} method
      */
-    public InvalidRound(String message) {
+    public InvalidRoundException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new {@code UserNotFoundException} with the specified detail
+     * Constructs a new {@code InvalidRoundException} with the specified detail
      * message and cause.
      *
      * @param message the detail message, which is saved for later retrieval by the
@@ -26,7 +26,7 @@ public class InvalidRound extends RuntimeException {
      * @param cause   the cause (which is saved for later retrieval by the
      *                {@link Throwable#getCause()} method)
      */
-    public InvalidRound(String message, Throwable cause) {
+    public InvalidRoundException(String message, Throwable cause) {
         super(message, cause);
     }
 }

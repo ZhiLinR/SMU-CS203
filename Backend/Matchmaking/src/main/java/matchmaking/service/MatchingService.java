@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import matchmaking.util.ValidationUtil;
 import matchmaking.util.TournamentInfoUtil;
+import matchmaking.util.MatchupUtil;
 import matchmaking.manager.MatchupManager;
 import matchmaking.model.*;
 
@@ -58,7 +59,7 @@ public class MatchingService {
             System.out.println("Finished getting info");
 
             // Create a set of played pairs to track unique matches
-            Set<String> playedPairs = matchupManager.getPlayedPairs(previousMatchups);
+            Set<String> playedPairs = MatchupUtil.getPlayedPairs(previousMatchups);
 
             System.out.println("Creating Unique Matchups");
             List<Matchups> newMatchups = matchupManager.createUniqueMatchups(signups, tournamentId, roundNum,
