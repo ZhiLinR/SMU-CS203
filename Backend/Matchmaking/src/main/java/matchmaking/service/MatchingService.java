@@ -48,6 +48,9 @@ public class MatchingService {
             int roundNum = tournamentInfoUtil.getCurrentRoundByTournamentId(tournamentId);
             List<Signups> signups = tournamentInfoUtil.getSignupsByTournamentId(tournamentId);
             List<Matchups> previousMatchups = tournamentInfoUtil.getMatchupsByTournamentId(tournamentId);
+
+            ValidationUtil.isValidRoundNum(roundNum, signups.size());
+
             System.out.println("Finished getting info");
 
             // Create a set of played pairs to track unique matches

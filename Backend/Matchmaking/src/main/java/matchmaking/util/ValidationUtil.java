@@ -1,5 +1,7 @@
 package matchmaking.util;
 
+import matchmaking.exception.InvalidRound;
+
 import java.util.Set;
 
 /**
@@ -38,5 +40,12 @@ public class ValidationUtil {
     public static boolean isValidPair(String player1, String player2, Set<String> playedPairs) {
         return !playedPairs.contains(player1 + "-" + player2) &&
                 !playedPairs.contains(player2 + "-" + player1);
+    }
+
+    public static void isValidRoundNum(int roundNum, int playerCount) {
+        int maxRound = playerCount * (playerCount - 1) / 2;
+        if (roundNum > (maxRound)) {
+            throw new InvalidRound("Max number of rounds for signups have been reached");
+        }
     }
 }

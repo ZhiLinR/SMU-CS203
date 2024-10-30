@@ -27,7 +27,7 @@ public class TournamentInfoUtil {
      * @return the current round number.
      */
     public int getCurrentRoundByTournamentId(String tournamentId) {
-        return matchupsRepository.getCurrentRoundByTournamentId(tournamentId);
+        return matchupsRepository.getCurrentRoundByTournamentId(tournamentId) + 1;
     }
 
     /**

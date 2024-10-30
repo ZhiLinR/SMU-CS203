@@ -7,20 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import matchmaking.exception.TournamentNotFoundException;
+import matchmaking.exception.*;
 import matchmaking.service.MatchingService;
 import matchmaking.util.*;
 import matchmaking.model.*;
 
 import org.springframework.http.HttpStatus;
 
-
 /**
- * The {@code MatchmakingController} class is responsible for handling matchmaking requests
- * related to tournaments. It provides endpoints for registering user profiles and generating
+ * The {@code MatchmakingController} class is responsible for handling
+ * matchmaking requests
+ * related to tournaments. It provides endpoints for registering user profiles
+ * and generating
  * matchups based on the specified tournament ID.
  * <p>
- * This class is annotated with {@link RestController} and {@link RequestMapping}, making it a
+ * This class is annotated with {@link RestController} and
+ * {@link RequestMapping}, making it a
  * Spring REST controller that handles requests to the "/api" endpoint.
  * </p>
  */
@@ -38,7 +40,8 @@ public class MatchmakingController {
      * running and responsive. It returns a success message if the health check
      * passes or an error message if an unexpected issue occurs during the check.
      *
-     * @return a {@link ResponseEntity} containing a map with success or error message
+     * @return a {@link ResponseEntity} containing a map with success or error
+     *         message
      *         indicating the health status of the application
      */
     @GetMapping("/health")
@@ -53,15 +56,22 @@ public class MatchmakingController {
     /**
      * Generates unique matchups for the specified tournament.
      *
-     * This method retrieves the matchups associated with a given tournament ID and prints 
-     * each matchup to the console. It returns a success response if the matchups are generated 
-     * successfully, or an error response if there are any issues during the process.
+     * This method retrieves the matchups associated with a given tournament ID and
+     * prints
+     * each matchup to the console. It returns a success response if the matchups
+     * are generated
+     * successfully, or an error response if there are any issues during the
+     * process.
      *
-     * @param tournamentId the ID of the tournament for which matchups are to be generated
-     * @return a {@link ResponseEntity} containing a map with success or error message
-     * @throws IllegalArgumentException if the tournament ID is invalid
-     * @throws TournamentNotFoundException if no tournament is found with the given ID
-     * @throws Exception for any other unexpected errors that may occur
+     * @param tournamentId the ID of the tournament for which matchups are to be
+     *                     generated
+     * @return a {@link ResponseEntity} containing a map with success or error
+     *         message
+     * @throws IllegalArgumentException    if the tournament ID is invalid
+     * @throws TournamentNotFoundException if no tournament is found with the given
+     *                                     ID
+     * @throws Exception                   for any other unexpected errors that may
+     *                                     occur
      */
     @GetMapping("/matchmaking/{tournamentId}")
     public ResponseEntity<Map<String, Object>> matchPlayers(@PathVariable("tournamentId") String tournamentId) {
@@ -72,6 +82,8 @@ public class MatchmakingController {
             }
             return ResponseManager.success("Players matched successfully");
         } catch (IllegalArgumentException e) {
+            return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (InvalidRound e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (TournamentNotFoundException e) {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
