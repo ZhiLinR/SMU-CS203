@@ -15,10 +15,13 @@ import middleware.util.*;
 import org.springframework.http.HttpStatus;
 
 /**
- * MiddlewareController is a REST controller that handles HTTP requests related to middleware services.
+ * MiddlewareController is a REST controller that handles HTTP requests related
+ * to middleware services.
  * It provides endpoints for validating JWT tokens.
  *
- * <p>This controller is mapped to the base URL "/api".</p>
+ * <p>
+ * This controller is mapped to the base URL "/api".
+ * </p>
  */
 @RestController
 @RequestMapping("/api")
@@ -34,7 +37,8 @@ public class MiddlewareController {
      * running and responsive. It returns a success message if the health check
      * passes or an error message if an unexpected issue occurs during the check.
      *
-     * @return a {@link ResponseEntity} containing a map with success or error message
+     * @return a {@link ResponseEntity} containing a map with success or error
+     *         message
      *         indicating the health status of the application
      */
     @GetMapping("/health")
@@ -49,17 +53,22 @@ public class MiddlewareController {
     /**
      * Validates the provided JWT token by calling the MiddlewareService.
      *
-     * <p>The endpoint is mapped to "/middleware/checkjwt" and accepts POST requests.
-     * It expects a JSON request body containing the JWTRequest object.</p>
+     * <p>
+     * The endpoint is mapped to "/middleware/checkjwt" and accepts POST requests.
+     * It expects a JSON request body containing the JWTRequest object.
+     * </p>
      *
      * @param jwtRequest the request body containing the JWT token to be validated.
-     * @return a ResponseEntity containing a success message and the validation result if the JWT is valid,
-     *         or an error message with the appropriate HTTP status if validation fails.
-     * @throws UserNotFoundException if the user associated with the JWT is not found.
+     * @return a ResponseEntity containing a success message and the validation
+     *         result if the JWT is valid,
+     *         or an error message with the appropriate HTTP status if validation
+     *         fails.
+     * @throws UserNotFoundException if the user associated with the JWT is not
+     *                               found.
      * @throws UnauthorizedException if the JWT token is invalid or unauthorized.
-     * @throws Exception for any other unexpected errors.
+     * @throws Exception             for any other unexpected errors.
      */
-    @PostMapping("/middleware/checkjwt")
+    @PostMapping("/jwt")
     public ResponseEntity<Map<String, Object>> checkJwt(@RequestBody JWTRequest jwtRequest) {
         try {
             // Call the service function to check the JWT
@@ -78,4 +87,3 @@ public class MiddlewareController {
         }
     }
 }
-

@@ -83,7 +83,7 @@ public class MatchmakingController {
             return ResponseManager.success("Players matched successfully");
         } catch (IllegalArgumentException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (InvalidRound e) {
+        } catch (InvalidRoundException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (TournamentNotFoundException e) {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
