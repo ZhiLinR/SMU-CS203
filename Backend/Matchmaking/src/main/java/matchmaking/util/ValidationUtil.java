@@ -1,7 +1,10 @@
 package matchmaking.util;
 
 import matchmaking.exception.InvalidRound;
+import matchmaking.model.Matchups;
+import matchmaking.model.Signups;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -42,10 +45,47 @@ public class ValidationUtil {
                 !playedPairs.contains(player2 + "-" + player1);
     }
 
+    /**
+     * Validates whether the provided round number is within the valid range based
+     * on the number of players.
+     *
+     * @param roundNum    The current round number to validate.
+     * @param playerCount The total number of players in the tournament.
+     * @throws InvalidRound if the round number exceeds the maximum possible rounds.
+     */
     public static void isValidRoundNum(int roundNum, int playerCount) {
         int maxRound = playerCount * (playerCount - 1) / 2;
-        if (roundNum > (maxRound)) {
+        if (roundNum > maxRound) {
             throw new InvalidRound("Max number of rounds for signups have been reached");
+        }
+    }
+
+    /**
+     * Checks if the previous round has been completed by verifying if the winner
+     * for all matchups have been allocated.
+     *
+     * @param matchup The matchup object containing the result of the previous
+     *                round.
+     * @throws InvalidRound if the winner of the previous round has not been
+     *                      allocated (i.e., {@code playerWon} is null).
+     */
+    public static void isPrevRoundOver(Matchups matchup) {
+        if (matchup.getPlayerWon() == null) {
+            throw new InvalidRound("Previous round results have not been allocated");
+        }
+    }
+
+    /**
+     * Verifies if all players have been uniquely matched in the current round.
+     *
+     * @param matchups A list of current round matchups.
+     * @param players  A list of players who signed up for the tournament.
+     * @throws InvalidRound if not all players have been uniquely matched (i.e., the
+     *                      number of matchups is insufficient).
+     */
+    public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
+        if (matchups.size() < (players.size() / 2)) {
+            throw new InvalidRound("Failed to match up all players uniquely");
         }
     }
 }

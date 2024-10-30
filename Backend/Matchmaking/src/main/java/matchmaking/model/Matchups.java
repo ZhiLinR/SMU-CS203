@@ -17,13 +17,12 @@ import lombok.Data;
 @Table(name = "Matchups")
 @Data
 public class Matchups {
-    @Id
-    @Column(name = "player1")
-    private String player1;
-
-    @Column(name = "player2")
-    private String player2;
+    @EmbeddedId
+    private MatchupsId id;
 
     @Column(name = "playerWon")
     private String playerWon;
+
+    @Column(name = "roundNum")
+    private int roundNum;
 }

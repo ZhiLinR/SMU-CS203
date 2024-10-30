@@ -51,6 +51,10 @@ public class MatchingService {
 
             ValidationUtil.isValidRoundNum(roundNum, signups.size());
 
+            for (Matchups matchup : previousMatchups) {
+                ValidationUtil.isPrevRoundOver(matchup);
+            }
+
             System.out.println("Finished getting info");
 
             // Create a set of played pairs to track unique matches

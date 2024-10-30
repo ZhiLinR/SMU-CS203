@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import matchmaking.model.*;
-import matchmaking.repository.MatchupsRepository;
+import matchmaking.dto.*;
 
 /**
  * Utility class for sorting players based on ELO ratings and points.
@@ -17,7 +17,7 @@ import matchmaking.repository.MatchupsRepository;
 public class PlayerSorter {
 
     @Autowired
-    private MatchupsRepository matchupsRepository;
+    private TournamentInfoUtil tournamentInfoUtil;
 
     /**
      * Sorts players based on the provided criterion (ELO, points, or PlayerWins).
@@ -58,7 +58,8 @@ public class PlayerSorter {
             return sortPlayers(players, null, true); // Sort by ELO
         } else {
             System.out.println("Not round 1: Using Swiss pairing");
-            List<PlayerWins> playerWins = matchupsRepository.getPlayerWinsByTournamentId(tournamentId);
+            List<PlayerWins> playerWins = tournamentInfoUtil.getPlayerWinsByTournamentId(tournamentId);
+
             Map<String, Double> playerPoints = convertPlayerWinsToMap(playerWins);
             return sortPlayers(players, playerPoints, false); // Sort by points
         }
