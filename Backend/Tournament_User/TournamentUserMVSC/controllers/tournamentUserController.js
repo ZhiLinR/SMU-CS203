@@ -16,25 +16,35 @@ exports.getTournaments = async (req, res, next) => {
     const { UUID } = req.params;
 
     try {
-        const tournaments = await TournamentUserService.getTournaments(UUID);
+        let result = await TournamentUserService.getTournaments(UUID);
 
         // If no tournaments were found, return a 404 response
-        if (!tournaments) {
-            const error = new Error('No tournaments found');
-            error.statusCode = 404;
-            return next(error);  // Pass error to middleware
+        if (!result) {
+            throw new Error('No tournaments found');
         }
 
-        // Extract names from the tournaments and put to a map.
-        const tournamentNames = tournaments.map(tournament => tournament.name);
 
-        res.status(200).json({
+        // Extract names from the tournaments and put to a map.
+        const tournamentNames = result.map(tournament => tournament.name);
+
+
+
+        // Set the success response in res.locals.data and call next()
+        res.locals.data = {
+            statusCode: 200,
             message: 'Tournament Found',
             success: true,
-            content: tournamentNames 
+            content: tournamentNames,
+        };
 
-        });
+        next();
+
     } catch (err) {
+
+        if(err.message === 'No tournaments found'){
+            err.statusCode = 404;
+        }
+
         console.error('Error retrieving tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -56,20 +66,26 @@ exports.getTournamentMatchups = async (req, res, next) => {
     const {UUID} = req.body;
 
     try {
-        const matchups = await TournamentUserService.getTournamentMatchups(tournamentId,UUID);
+        let result = await TournamentUserService.getTournamentMatchups(tournamentId,UUID);
         //If no matchups found return error message.
-        if (!matchups || matchups.length === 0) {
-            const error = new Error('No matchups found for the provided tournament ID/UUID');
-            error.statusCode = 404;
-            return next(error);
+        if (!result || result.length === 0) {
+            throw new Error('No matchups found for the provided tournament ID/UUID');
         }
         //Matchup Found
-        res.status(200).json({
+
+        res.locals.data = {
+            statusCode: 200,
             message: 'Tournament Matchups:',
             success: true,
-            content: matchups
-        });
+            content: result
+        };
+
+        next();
+
     } catch (err) {
+        if(err.message === 'No matchups found for the provided tournament ID/UUID'){
+            err.statusCode = 404;
+        }
         console.error('Error fetching matchups:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -90,24 +106,42 @@ exports.signUpForTournament = async (req, res, next) => {
     const { UUID } = req.params;
     const { tournamentID, elo } = req.body;
 
-    if (!UUID || !tournamentID || !elo) {
-        const error = new Error('Missing required fields (UUID, tournamentID, or elo)');
-        error.statusCode = 400;
-        return next(error);  // Pass error to middleware
-    }
-
     try {
+        // Check for missing fields
+        const missingFields = [];
+        if (!UUID) missingFields.push('UUID');
+        if (!tournamentID) missingFields.push('tournamentID');
+        if (!elo) missingFields.push('elo');
+
+        // Throw an error if any fields are missing
+        if (missingFields.length > 0) {
+            throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+        }
+
+        // Proceed with the signup process if all fields are present
         await TournamentUserService.signUpForTournament(UUID, tournamentID, elo);
-        res.status(201).json({
+
+        // Success response
+        res.locals.data = {
+            statusCode: 200,
             message: 'Successfully signed up for the tournament',
             success: true,
             content: { UUID, tournamentID, elo }
-        });
+        };
+
+        next();  // Pass control to the success handler middleware
+
     } catch (err) {
+        // Check if the error is due to missing fields and set a 400 status code
+        if (err.message.startsWith('Missing required fields')) {
+            err.statusCode = 400;  // Bad Request
+        }
+        
         console.error('Error during tournament signup:', err);
-        next(err);  // Pass the error to the middleware
+        next(err);  // Pass the error to the error-handling middleware
     }
 };
+
 
 /**
  * Quit tournament
@@ -124,24 +158,33 @@ exports.quitTournament = async (req, res, next) => {
     const { tournamentID } = req.body;
 
     if (!UUID || !tournamentID) {
-        const error = new Error('Missing required fields (UUID or tournamentID)');
-        error.statusCode = 400;
-        return next(error);
+        throw new Error('Missing required fields (UUID or tournamentID)');
     }
 
     try {
-        const result = await TournamentUserService.quitTournament(UUID, tournamentID);
+        let result = await TournamentUserService.quitTournament(UUID, tournamentID);
         if (result.affectedRows === 0) {
-            const error = new Error('No signup found for the provided UUID and tournamentID');
-            error.statusCode = 404;
-            return next(error);  // Pass error to middleware
+            throw new Error('No signup found for the provided UUID and tournamentID');
         }
 
-        res.status(200).json({
+        res.locals.data ={
+            statusCode: 200,
             message: 'Successfully quit from the tournament',
             success: true
-        });
+        };
+
+        next();//pass to the next middleware
+
     } catch (err) {
+
+        if(err.message === 'Missing required fields (UUID or tournamentID)'){
+            err.statusCode = 400;
+        }
+
+        if(err.message === 'No signup found for the provided UUID and tournamentID'){
+            err.statusCode = 404;
+        }
+
         console.error('Error quitting tournament:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -157,18 +200,29 @@ exports.quitTournament = async (req, res, next) => {
 
 exports.getUpcomingTournaments = async (req, res, next) => {
     try {
-        const upcomingTournaments = await TournamentService.getUpcomingTournaments();
-        if (!upcomingTournaments || upcomingTournaments.length === 0) {
-            const error = new Error('No upcoming tournaments');
-            error.statusCode = 404;
-            return next(error);
+        const result = await TournamentService.getUpcomingTournaments();
+        if (!result || result.length === 0) {
+            throw new Error('No upcoming tournaments');
         }
-        res.status(200).json({
+
+
+
+        res.locals.data = {
+            statusCode: 200,
             message: 'Upcoming tournaments',
             success: true,
-            content : upcomingTournaments
-        });
+            content : result
+        };
+
+        next();
+
+
     } catch (err) {
+
+        if(err.message === 'No upcoming tournaments'){
+            err.statusCode = 404;
+        }
+
         console.error('Error retrieving upcoming tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -184,18 +238,25 @@ exports.getUpcomingTournaments = async (req, res, next) => {
 
 exports.getInProgressTournaments = async (req, res, next) => {
     try {
-        const inProgressTournaments = await TournamentService.getInProgressTournaments();
-        if (!inProgressTournaments || inProgressTournaments.length === 0) {
-            const error = new Error('No in-progress tournaments');
-            error.statusCode = 404;
-            return next(error);
+        let result = await TournamentService.getInProgressTournaments();
+        if (!result || result.length === 0) {
+            throw new Error('No in-progress tournaments');
         }
-        res.status(200).json({
+
+        res.locals.data = {
+            statusCode: 200,
             message: 'In-progress tournaments',
             success: true,
-            content: inProgressTournaments
-        });
+            content: result
+        };
+
+        next();
+
     } catch (err) {
+
+        if(err.message === 'No in-progress tournaments'){
+            err.statusCode = 404;
+        }
         console.error('Error retrieving in-progress tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -221,28 +282,31 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
         const tournamentExists = await TournamentService.checkTournamentExists(tournamentId);
         
         if (!tournamentExists) {
-            const error = new Error('Tournament not found.');
-            error.statusCode = 404;  // Not Found
-            return next(error);  // Pass the error to middleware
+            throw new Error('Tournament not found.');
         }
 
         // Step 2: Get user's tournament game rank if tournament exists
-        const getUserTournamentGameRank = await TournamentService.getUserTournamentGameRank(tournamentId, UUID);
+        let result = await TournamentUserService.getUserTournamentGameRank(tournamentId, UUID);
         
-        if (!getUserTournamentGameRank || getUserTournamentGameRank.length === 0) {
-            const error = new Error('No Game result found for the provided tournamentID.');
-            error.statusCode = 404;  // Not Found
-            return next(error);
+        if (!result || result.length === 0) {
+           throw new Error('No Game result found for the provided tournamentID.');
         }
 
-        // Respond with the ranking information
-        res.status(200).json({
-            
+        // Pass to success handler
+        res.locals.data = {
+            statusCode: 200,
             message: 'Current Tournament Ranking:',
             success: true,
-            content: getUserTournamentGameRank
-        });
+            content: result
+        };
+
+        next();
+
     } catch (err) {
+        if(err.message === 'Tournament not found.' || 'No Game result found for the provided tournamentID.'){
+            err.statusCode = 404;
+        }
+
         console.error('Error retrieving current ranking in the tournament:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -264,38 +328,54 @@ exports.getPlayersInTournament = async (req, res, next) => {
     const { tournamentId } = req.params;
 
     if (!tournamentId) {
-        const error = new Error('Missing required fields tournamentID');
-        error.statusCode = 400;
-        return next(error);
+        throw new Error('Missing required fields tournamentID');
     }
     try {
         //Check if tournament exist else return relavant error message.
         const tournamentExists = await TournamentService.checkTournamentExists(tournamentId);
+
         if (!tournamentExists) {
-            const error = new Error('Invalid tournamentID: Tournament not found.');
-            error.statusCode = 404;
-            return next(error);
+            throw new Error('Invalid tournamentID: Tournament not found.');
         }
 
+        const result = await TournamentService.getPlayersInTournament(tournamentId);
 
-        const GetPlayersInTournament = await TournamentService.getPlayersInTournament(tournamentId);
-        if (GetPlayersInTournament.length === 0) {
-            return res.status(200).json({
-                message: 'No players have signed up for this tournament yet.',
-                success: true,
-                content: []  // Return an empty array
-            });
+        if (result.length === 0) {
+        res.locals.data = {
+            statusCode: 200,
+            message: 'No players have signed up for this tournament yet.',
+            success: true,
+            content: []  // Return an empty array
+        };
+        // Pass to success handler
+        next();
+        
         }
 
         // Map over the result and extract UUID values into an array
-        const uuidArray = GetPlayersInTournament.map(player => player.UUID);
+        const uuidArray = result.map(player => player.UUID);
 
-        res.status(200).json({
+
+        res.locals.data = {
+            statusCode: 200,
             message: 'Players in the tournament:',
             success: true,
             content : uuidArray
-        });
+        };
+        // Pass to success handler
+        next();
+
+        
     } catch (err) {
+
+        if(err.message ==='Missing required fields tournamentID'){
+            err.statusCode = 400;
+        }
+
+        if(err.message === 'Invalid tournamentID: Tournament not found.'){
+            err.statusCode = 404;
+        }
+
         console.error('Error retrieving players name:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -313,27 +393,34 @@ exports.getPlayerTournaments = async (req, res, next) => {
         
         // Validate playerUUID
         if (!playerUUID) {
-            const error = new Error('Player UUID is required');
-            error.statusCode = 400;
-            return next(error);
+            throw new Error('Player UUID is required');
         }
  
-        const tournaments = await TournamentUserService.GetPlayerTournamentsByStatus(playerUUID);
+        const result = await TournamentUserService.GetPlayerTournamentsByStatus(playerUUID);
         
-        if (!tournaments || tournaments.length === 0) {
-            const error = new Error('No tournaments found for this player');
-            error.statusCode = 404;
-            return next(error);
+        if (!result || result.length === 0) {
+            throw new Error('No tournaments found for this player')
         }
  
-        res.status(200).json({
-            "success": true,
-            "status": 200,
-            "message": 'Player tournaments retrieved successfully',
-            "content": tournaments
-        });
+        res.locals.data = {
+            statusCode : 200,
+            message: 'Player tournaments retrieved successfully',
+            success: true,
+            content: result
+        };
+        // Pass to success handler
+        next();
         
     } catch (err) {
+
+        if(err.message ==='No tournaments found for this player'){
+            err.statusCode = 404;
+        }
+
+        if(err.message === 'Player UUID is required'){
+            err.statusCode = 400;
+        }
+
         console.error('Error retrieving player tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
@@ -345,22 +432,30 @@ exports.getPlayerTournaments = async (req, res, next) => {
 * @param {Object} res - Express response object
 * @param {Function} next - Express next middleware function
 */
-
- exports.getCompletedTournaments = async (req, res, next) => {
+exports.getCompletedTournaments = async (req, res, next) => {
     try {
-        const completedTournaments = await TournamentUserService.getCompletedTournaments();
-        if (!completedTournaments || completedTournaments.length === 0) {
-            const error = new Error('No completed tournaments');
-            error.statusCode = 404;
-            return next(error);
+        const result = await TournamentUserService.getCompletedTournaments();
+
+        // If no results are found, throw an error to be handled by the catch block
+        if (!result || result.length === 0) {
+            throw new Error('No completed tournaments');  // This goes directly to the catch block
         }
-        res.status(200).json({
+
+        // If result exists, send a success response
+        res.locals.data={
             message: 'Completed tournaments',
             success: true,
-            content: completedTournaments
-        });
+            content: result
+        };
+
+        next();
     } catch (err) {
+        // Customize error handling based on the error message or type
+        if (err.message === 'No completed tournaments') {
+            err.statusCode = 404;  // Set a custom status code for this specific error
+        }
+        
         console.error('Error retrieving completed tournaments:', err);
-        next(err);  // Pass the error to the middleware
+        next(err);  // Pass the error to the error-handling middleware
     }
 };

@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const tournamentUserRoutes = require('./routes/tournamentUserRoutes');
 const errorHandler = require('./middlewares/errorHandler');  // Import error-handling middleware
+const successHandler = require('./middlewares/successHandler');// Import success-handling middleware
+
 
 // Middleware to parse incoming JSON
 app.use(express.json());
@@ -11,6 +13,9 @@ app.use('/api', tournamentUserRoutes);
 
 // Use the error-handling middleware after routes
 app.use(errorHandler);
+
+// use the success-handling middleware
+app.use(successHandler);
 
 const PORT = process.env.DB_PORT || 3000;
 app.listen(PORT, () => {
