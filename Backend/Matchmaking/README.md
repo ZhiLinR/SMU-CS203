@@ -1,7 +1,7 @@
 # SMU-CS203
 
 ## Quick Links
----
+
 1. [Workspace for Matchmaking Microservice](#workspace-for-matchmaking-microservice)
 2. [Quick Reference API Endpoints](#quick-reference-api-endpoints)
 3. [API Endpoints with Requests and Responses](#api-endpoints-with-requests-and-responses)
