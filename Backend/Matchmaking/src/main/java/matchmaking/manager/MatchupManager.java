@@ -2,17 +2,16 @@ package matchmaking.manager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import matchmaking.model.*;
-import matchmaking.repository.*;
 import matchmaking.util.PlayerSorter;
+import matchmaking.util.TournamentInfoUtil;
+import matchmaking.util.ValidationUtil;
 
 /**
  * Utility class for managing matchups in a tournament.
@@ -21,10 +20,13 @@ import matchmaking.util.PlayerSorter;
 public class MatchupManager {
 
     @Autowired
-    private MatchupsRepository matchupsRepository;
+    private TournamentInfoUtil tournamentInfoUtil;
+
+    @Autowired
+    private PlayerSorter playerSorter;
 
     /**
-     * Creates unique matchups for players, considering played pairs.
+     * Creates unique matchups for players while avoiding duplicate pairs.
      *
      * @param players      the list of players to match.
      * @param tournamentId the ID of the tournament.
@@ -32,98 +34,142 @@ public class MatchupManager {
      * @param playedPairs  the set of already played pairs.
      * @return a list of created matchups.
      */
-    public List<Matchups> createUniqueMatchups(List<Signups> players, String tournamentId, int roundNum, Set<String> playedPairs) {
+    public List<Matchups> createUniqueMatchups(List<Signups> players, String tournamentId, int roundNum,
+            Set<String> playedPairs) {
         List<Matchups> matchups = new ArrayList<>();
+        Set<String> pairedPlayers = new HashSet<>();
 
-        // Sort players for the first round or apply Swiss-style for subsequent rounds
-        if (roundNum == 1) {
-            players = new PlayerSorter().sortPlayersByELO(players);
-        } else {
-            List<PlayerWins> playerWins = matchupsRepository.getPlayerWinsByTournamentId(tournamentId);
-            players = swissPairing(playerWins, players, playedPairs);
-        }
+        System.out.println(players);
 
-        // Create matchups from the sorted or paired players
-        for (int i = 0; i < players.size() - 1; i += 2) {
-            Signups player1 = players.get(i);
-            Signups player2 = players.get(i + 1);
+        // Sort players based on round
+        players = playerSorter.sortPlayersForRound(players, tournamentId, roundNum);
 
-            String currentPair1 = player1.getUuid() + "-" + player2.getUuid();
-            String currentPair2 = player2.getUuid() + "-" + player1.getUuid();
+        System.out.println(players);
+        System.out.println("PairedPlayers");
+        System.out.println(pairedPlayers);
 
-            // Skip duplicate pairs
-            if (playedPairs.contains(currentPair1) || playedPairs.contains(currentPair2)) {
-                System.out.println("Duplicate pair found, skipping to next available pair...");
-                continue; // Skip to the next pair
-            }
+        System.out.println("PlayedPairs");
+        System.out.println(playedPairs);
 
-            // Create and add the valid matchup
-            Matchups matchup = new Matchups();
-            matchup.setPlayer1(player1.getUuid());
-            matchup.setPlayer2(player2.getUuid());
-            matchup.setPlayerWon(null);
-            matchups.add(matchup);
+        // Generate matchups by pairing players
+        generateMatchups(players, matchups, pairedPlayers, playedPairs);
 
-            // Track the current pair to avoid future duplicates
-            playedPairs.add(currentPair1);
-            playedPairs.add(currentPair2);
-        }
+        // Handle any unpaired player with a bye, if needed
+        handleBye(players, matchups, pairedPlayers);
 
-        // Handle odd number of players: Assign a bye to the last player
-        if (players.size() % 2 != 0) {
-            Signups byePlayer = players.get(players.size() - 1);
-            Matchups byeMatchup = new Matchups();
-            byeMatchup.setPlayer1(byePlayer.getUuid());
-            byeMatchup.setPlayer2("No Player");
-            byeMatchup.setPlayerWon(byePlayer.getUuid()); // Bye counts as a win
-            matchups.add(byeMatchup);
-        }
+        // Insert matchups into the database
+        tournamentInfoUtil.insertMatchups(matchups, tournamentId, roundNum);
 
-        // Insert matchups using the stored procedure
-        insertMatchups(matchups, tournamentId, roundNum);
+        System.out.println("All matchups:");
+        System.out.println(matchups);
+
         return matchups;
     }
 
     /**
-     * Inserts matchups into the repository.
+     * Generates matchups by pairing players while avoiding duplicate pairs.
      *
-     * @param matchups      the list of matchups to insert.
-     * @param tournamentId  the ID of the tournament.
-     * @param roundNum      the current round number.
+     * @param players       the list of players.
+     * @param matchups      the list to store matchups.
+     * @param pairedPlayers a set to track players already paired.
+     * @param playedPairs   the set of previously played pairs.
      */
-    public void insertMatchups(List<Matchups> matchups, String tournamentId, int roundNum) {
-        for (Matchups matchup : matchups) {
-            matchupsRepository.insertMatchup(
-                matchup.getPlayer1(),
-                matchup.getPlayer2(),
-                matchup.getPlayerWon(),
-                tournamentId,
-                roundNum
-            );
+    private void generateMatchups(List<Signups> players, List<Matchups> matchups,
+            Set<String> pairedPlayers, Set<String> playedPairs) {
+        System.out.println("Generating Matchups");
+
+        for (int i = 0; i < players.size(); i++) {
+            Signups player1 = players.get(i);
+
+            if (pairedPlayers.contains(player1.getUuid())) {
+                continue; // Skip if already paired
+            }
+
+            // Find a valid matchup for the current player
+            Matchups matchup = findMatchup(player1, players, pairedPlayers, playedPairs, i);
+
+            System.out.println(matchup);
+
+            if (matchup != null) {
+                matchups.add(matchup);
+            } else {
+                System.out.println("No valid matchup found for player: " + player1.getUuid());
+            }
         }
     }
 
     /**
-     * Swiss-style pairing logic for players based on their current scores.
+     * Adds a pair in both directions to the played pairs set.
      *
-     * @param playerWinsList the list of players with their wins and points.
-     * @param players        the list of players to pair.
-     * @param playedPairs    the set of already played pairs.
-     * @return a list of players sorted for Swiss pairing.
+     * @param player1     the first player.
+     * @param player2     the second player.
+     * @param playedPairs the set to track played pairs.
      */
-    private List<Signups> swissPairing(List<PlayerWins> playerWinsList, List<Signups> players, Set<String> playedPairs) {
-        // Create a map from UUID to PlayerWins for quick access
-        Map<String, PlayerWins> playerWinsMap = playerWinsList.stream()
-                .collect(Collectors.toMap(PlayerWins::getUuid, playerWins -> playerWins));
+    private void addPlayedPair(String player1, String player2, Set<String> playedPairs) {
+        playedPairs.add(player1 + "-" + player2);
+        playedPairs.add(player2 + "-" + player1); // Symmetric pair to prevent re-pairing
+    }
 
-        // Sort players by their scores based on PlayerWins
-        players.sort((p1, p2) -> {
-            double points1 = playerWinsMap.getOrDefault(p1.getUuid(), new PlayerWins()).getPoints();
-            double points2 = playerWinsMap.getOrDefault(p2.getUuid(), new PlayerWins()).getPoints();
-            return Double.compare(points2, points1); // Sort in descending order
-        });
+    /**
+     * Attempts to find a valid matchup for the given player.
+     *
+     * @param player1       the player for whom a pair is being searched.
+     * @param players       the list of players to search.
+     * @param pairedPlayers a set to track players already paired.
+     * @param playedPairs   the set of previously played pairs.
+     * @param currentIndex  the current index in the player list.
+     * @return a valid Matchups object or null if no valid pair is found.
+     */
+    private Matchups findMatchup(Signups player1, List<Signups> players,
+            Set<String> pairedPlayers, Set<String> playedPairs, int currentIndex) {
+        for (int j = currentIndex + 1; j < players.size(); j++) {
+            Signups player2 = players.get(j);
 
-        return players;
+            if (pairedPlayers.contains(player2.getUuid())) {
+                continue; // Skip if the player is already paired
+            }
+
+            // Check if the pair has already played
+            if (ValidationUtil.isValidPair(player1.getUuid(), player2.getUuid(), playedPairs)) {
+                Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2);
+
+                System.out.println(matchup);
+
+                // Track the played pair in both directions
+                addPlayedPair(player1.getUuid(), player2.getUuid(), playedPairs);
+
+                // Mark players as paired
+                pairedPlayers.add(player1.getUuid());
+                pairedPlayers.add(player2.getUuid());
+
+                System.out.println("Valid pair: " + player1.getUuid() + " vs " + player2.getUuid());
+                return matchup;
+            }
+        }
+        return null; // No valid pair found
+    }
+
+    /**
+     * Handles assigning a bye to the last unpaired player if needed.
+     *
+     * @param players       the list of players.
+     * @param matchups      the list to store matchups.
+     * @param pairedPlayers a set to track players already paired.
+     */
+    private void handleBye(List<Signups> players, List<Matchups> matchups, Set<String> pairedPlayers) {
+        if (players.size() % 2 != 0) {
+            for (Signups player : players) {
+                if (!pairedPlayers.contains(player.getUuid())) {
+                    Matchups byeMatchup = new Matchups();
+                    byeMatchup.setPlayer1(player.getUuid());
+                    byeMatchup.setPlayer2("No Player");
+                    byeMatchup.setPlayerWon(player.getUuid());
+                    matchups.add(byeMatchup);
+                    System.out.println("Bye matchup created: " + byeMatchup);
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -143,4 +189,3 @@ public class MatchupManager {
         return playedPairs;
     }
 }
-
