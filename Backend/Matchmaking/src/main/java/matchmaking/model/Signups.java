@@ -2,6 +2,7 @@ package matchmaking.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * Represents a signups entity in the system.
@@ -16,6 +17,7 @@ import lombok.Data;
 @Entity
 @Table(name = "Signups")
 @Data
+@Accessors(chain = true)
 public class Signups {
     @Id
     @Column(name = "UUID")

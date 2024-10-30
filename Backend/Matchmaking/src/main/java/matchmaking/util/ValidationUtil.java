@@ -4,6 +4,8 @@ import matchmaking.exception.InvalidRound;
 import matchmaking.model.Matchups;
 import matchmaking.model.Signups;
 
+import org.springframework.data.util.Pair;
+
 import java.util.List;
 import java.util.Set;
 
@@ -86,6 +88,12 @@ public class ValidationUtil {
     public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
         if (matchups.size() < (players.size() / 2)) {
             throw new InvalidRound("Failed to match up all players uniquely");
+        }
+    }
+
+    public static void isValidPair(Pair<Signups, Signups> pair) {
+        if (pair == null) {
+            throw new InvalidRound("Invalid matchup made");
         }
     }
 }

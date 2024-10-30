@@ -87,6 +87,28 @@ public class TournamentInfoUtil {
     }
 
     /**
+     * Creates a matchup between two players.
+     *
+     * @param player1 the first player.
+     * @param player2 the second player.
+     * @return a new Matchups object.
+     */
+    public Matchups createMatchup(Signups player1, Signups player2, Signups playerWon, String tournamentId,
+            int roundNum) {
+        MatchupsId matchupsId = new MatchupsId();
+        matchupsId.setPlayer1(player1.getUuid());
+        matchupsId.setPlayer2(player2.getUuid());
+        matchupsId.setTournamentId(tournamentId);
+
+        Matchups matchup = new Matchups();
+        matchup.setId(matchupsId);
+        matchup.setRoundNum(roundNum);
+        matchup.setPlayerWon(playerWon.getUuid());
+        System.out.println("Matchup created: " + matchup);
+        return matchup;
+    }
+
+    /**
      * Inserts matchups into the repository.
      *
      * @param matchups     the list of matchups to insert.

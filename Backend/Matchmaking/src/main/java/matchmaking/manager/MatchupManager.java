@@ -26,6 +26,11 @@ public class MatchupManager {
     @Autowired
     private PlayerSorter playerSorter;
 
+    private final Signups NO_PLAYER = new Signups()
+            .setUuid("null") // Or "null" as a placeholder
+            .setTournamentId(null)
+            .setElo(-1);
+
     /**
      * Creates unique matchups for players while avoiding duplicate pairs.
      *
@@ -55,7 +60,18 @@ public class MatchupManager {
 
         // Handle any unpaired player with a bye, if odd number of players
         // Auto make player winner for round
+        System.out.println("player count: " + players.size());
         if (players.size() % 2 != 0) {
+            // Create new pair
+            Pair<Signups, Signups> byePair = handleBye(players, matchups, pairedPlayers);
+
+            // Check that handleBye didn't return null
+            ValidationUtil.isValidPair(byePair);
+
+            Matchups matchup = tournamentInfoUtil.createMatchup(byePair.getFirst(), byePair.getSecond(),
+                    byePair.getFirst(), tournamentId, roundNum);
+            matchups.add(matchup);
+
             handleBye(players, matchups, pairedPlayers);
         }
 
@@ -137,18 +153,16 @@ public class MatchupManager {
      * @param matchups      the list to store matchups.
      * @param pairedPlayers a set to track players already paired.
      */
-    private void handleBye(List<Signups> players, List<Matchups> matchups, Set<String> pairedPlayers) {
+    private Pair<Signups, Signups> handleBye(List<Signups> players, List<Matchups> matchups,
+            Set<String> pairedPlayers) {
+        System.out.println("Handling Bye");
+        System.out.println(pairedPlayers);
         for (Signups player : players) {
             if (!pairedPlayers.contains(player.getUuid())) {
-                Matchups byeMatchup = new Matchups();
-                byeMatchup.getId().setPlayer1(player.getUuid());
-                byeMatchup.getId().setPlayer2("No Player");
-                byeMatchup.setPlayerWon(player.getUuid());
-                matchups.add(byeMatchup);
-                System.out.println("Bye matchup created: " + byeMatchup);
-                break;
+                return Pair.of(player, NO_PLAYER);
             }
         }
+        return null;
     }
 
     /**
