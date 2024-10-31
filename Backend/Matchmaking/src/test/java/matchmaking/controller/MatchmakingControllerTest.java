@@ -25,6 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = MatchmakingApplication.class)
 @AutoConfigureMockMvc
+/**
+ * Integration tests for the MatchmakingController class,
+ * which handles matchmaking operations.
+ */
 public class MatchmakingControllerTest {
 
         @Autowired
@@ -37,9 +41,8 @@ public class MatchmakingControllerTest {
          * Sets up environment properties before any tests are executed.
          * <p>
          * Uses the <a href="https://github.com/cdimascio/dotenv-java">Dotenv</a>
-         * library
-         * to load environment variables and sets system properties required for the
-         * middleware.
+         * library to load environment variables and sets system properties required for
+         * the middleware.
          * </p>
          */
         @BeforeAll
@@ -50,6 +53,18 @@ public class MatchmakingControllerTest {
                 System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
         }
 
+        /**
+         * Tests the health check endpoint for a successful response.
+         * <p>
+         * This test performs a GET request to the health check endpoint and verifies
+         * that
+         * the response status is OK (200), the content type is JSON, and the response
+         * contains the expected success message.
+         * </p>
+         * 
+         * @throws Exception if an error occurs during the request execution or response
+         *                   validation.
+         */
         @Test
         public void testHealthCheck_Success() throws Exception {
                 mockMvc.perform(get("/api/health"))
@@ -59,6 +74,16 @@ public class MatchmakingControllerTest {
                                 .andExpect(jsonPath("$.message").value("Health Check Success"));
         }
 
+        /**
+         * Tests the matchmaking functionality for a successful response.
+         * <p>
+         * This test simulates a scenario where valid player data is provided,
+         * and it verifies that the matchmaking service returns the expected response.
+         * </p>
+         * 
+         * @throws Exception if an error occurs during the request execution or response
+         *                   validation.
+         */
         @Test
         public void testMatchPlayers_Success() throws Exception {
                 String tournamentId = "123";
@@ -90,6 +115,16 @@ public class MatchmakingControllerTest {
                                 .andExpect(jsonPath("$.message").value("Players matched successfully"));
         }
 
+        /**
+         * Tests the matchmaking functionality when the tournament is not found.
+         * <p>
+         * This test simulates a scenario where an invalid tournament ID is provided,
+         * and it verifies that the appropriate error response is returned.
+         * </p>
+         * 
+         * @throws Exception if an error occurs during the request execution or response
+         *                   validation.
+         */
         @Test
         public void testMatchPlayers_TournamentNotFound() throws Exception {
                 String tournamentId = "invalid";
@@ -103,6 +138,16 @@ public class MatchmakingControllerTest {
                                 .andExpect(jsonPath("$.message").value("Tournament not found."));
         }
 
+        /**
+         * Tests the matchmaking functionality when an invalid argument is provided.
+         * <p>
+         * This test simulates a scenario where an empty tournament ID is provided,
+         * and it verifies that the appropriate error response is returned.
+         * </p>
+         * 
+         * @throws Exception if an error occurs during the request execution or response
+         *                   validation.
+         */
         @Test
         public void testMatchPlayers_InvalidArgument() throws Exception {
                 String tournamentId = "";
@@ -117,6 +162,17 @@ public class MatchmakingControllerTest {
                                 .andExpect(jsonPath("$.message").value("TournamentID must not be null or empty."));
         }
 
+        /**
+         * Tests the matchmaking functionality when an internal server error occurs.
+         * <p>
+         * This test simulates a scenario where an unexpected error occurs during the
+         * matchmaking process, and it verifies that the appropriate error response is
+         * returned.
+         * </p>
+         * 
+         * @throws Exception if an error occurs during the request execution or response
+         *                   validation.
+         */
         @Test
         public void testMatchPlayers_InternalServerError() throws Exception {
                 String tournamentId = "123";
