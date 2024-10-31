@@ -2,6 +2,7 @@ package matchmaking.util;
 
 import matchmaking.exception.InvalidRoundException;
 import matchmaking.model.Matchups;
+import matchmaking.model.MatchupsId;
 import matchmaking.model.Signups;
 
 import org.springframework.data.util.Pair;
@@ -15,6 +16,9 @@ import java.util.Set;
  * fields.
  */
 public class ValidationUtil {
+
+    // Constant for the minimum number of signups required
+    private static final int MIN_SIGNUPS = 2;
 
     /**
      * Validates that a string is not null or empty.
@@ -56,7 +60,10 @@ public class ValidationUtil {
      * @throws InvalidRoundException if the round number exceeds the maximum
      *                               possible rounds.
      */
-    public static void isValidRoundNum(int roundNum, int playerCount) {
+    public static void isValidRoundNum(Integer roundNum, int playerCount) {
+        if (roundNum == null || roundNum <= 0) {
+            throw new IllegalArgumentException("Round number must not be null.");
+        }
         int maxRound = playerCount * (playerCount - 1) / 2;
         if (roundNum > maxRound) {
             throw new InvalidRoundException("Max number of rounds for signups have been reached");
@@ -103,6 +110,35 @@ public class ValidationUtil {
     public static void isValidPair(Pair<Signups, Signups> pair) {
         if (pair == null) {
             throw new InvalidRoundException("Invalid matchup made");
+        }
+    }
+
+    /**
+     * Checks if there is enough signups for matchmaking.
+     *
+     * @param signups a List of Signups objects to be validated
+     * @throws IllegalArgumentException if the signups list is null or empty
+     */
+    public static void isValidSignups(List<Signups> signups) {
+        if (signups == null || signups.isEmpty() || signups.size() <= MIN_SIGNUPS) {
+            throw new InvalidRoundException("Not enough signups for the tournament.");
+        }
+    }
+
+    /**
+     * Checks if the matchup is valid by ensuring there are no duplicate PlayerIDs.
+     *
+     * @param signups a List of Signups objects to be validated
+     * @throws IllegalArgumentException if the signups list is null or empty
+     */
+    public static void isValidMatchup(Matchups matchup) {
+        if (matchup == null) {
+            throw new IllegalArgumentException("Matchup must not be null.");
+        }
+
+        MatchupsId id = matchup.getId();
+        if (id.getPlayer1().equals(id.getPlayer2())) {
+            throw new InvalidRoundException("Invalid matchup: Player1 and Player2 cannot be the same.");
         }
     }
 }

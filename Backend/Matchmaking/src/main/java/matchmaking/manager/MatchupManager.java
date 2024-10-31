@@ -20,8 +20,7 @@ import matchmaking.util.MatchupUtil;
  * 
  * It helps generate matchups while avoiding duplicate pairs, handles scenarios
  * with an odd number of players by granting auto-wins (bye), and manages
- * previous
- * match history to avoid rematches.
+ * previous match history to avoid rematches.
  */
 @Component
 public class MatchupManager {
@@ -61,6 +60,9 @@ public class MatchupManager {
         for (Pair<Signups, Signups> pair : playerPairs) {
             Matchups matchup = tournamentInfoUtil.createMatchup(pair.getFirst(), pair.getSecond(),
                     tournamentId, roundNum);
+
+            // Double check valid matchup
+            ValidationUtil.isValidMatchup(matchup);
             matchups.add(matchup);
         }
 
@@ -69,6 +71,9 @@ public class MatchupManager {
             ValidationUtil.isValidPair(byePair);
             Matchups byeMatchup = tournamentInfoUtil.createMatchup(byePair.getFirst(), byePair.getSecond(),
                     byePair.getFirst(), tournamentId, roundNum);
+
+            // Double check valid matchup
+            ValidationUtil.isValidMatchup(byeMatchup);
             matchups.add(byeMatchup);
         }
 

@@ -42,6 +42,7 @@ public class MatchingService {
     @Transactional
     public List<Matchups> generateUniqueMatchups(String tournamentId) {
         try {
+            System.out.println(tournamentId);
             ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
 
             // Use the TournamentInfoUtil to get current round and signups
@@ -52,7 +53,11 @@ public class MatchingService {
 
             ValidationUtil.isValidRoundNum(roundNum, signups.size());
 
+            ValidationUtil.isValidSignups(signups);
+
+            // Validation check that matchup is valid and previous round results are out
             for (Matchups matchup : previousMatchups) {
+                ValidationUtil.isValidMatchup(matchup);
                 ValidationUtil.isPrevRoundOver(matchup);
             }
 

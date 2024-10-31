@@ -91,4 +91,24 @@ public class MatchmakingController {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
     }
+
+    /**
+     * Handles requests to the matchmaking endpoint when no tournament ID is
+     * provided.
+     *
+     * <p>
+     * This endpoint is triggered when the {@code /api/matchmaking/} URL is accessed
+     * without
+     * a tournament ID. It returns a {@code BAD_REQUEST} response with an error
+     * message
+     * indicating that the tournament ID must not be null or empty.
+     *
+     * @return a {@link ResponseEntity} containing an error response with status
+     *         {@code BAD_REQUEST}
+     *         and a message specifying that the tournament ID is required.
+     */
+    @GetMapping("/matchmaking/")
+    public ResponseEntity<Map<String, Object>> missingTournamentId() {
+        return ResponseManager.error(HttpStatus.BAD_REQUEST, "TournamentID must not be null or empty.");
+    }
 }
