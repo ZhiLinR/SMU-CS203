@@ -47,7 +47,7 @@ public class MatchupController {
      * @param gameResultRequest the request containing the details of the game result (player who won, tournament ID, round number) inside the function body
      * @return ResponseEntity containing an ApiResponse with success or failure message
      */
-    @PostMapping("/update")
+    @PostMapping
     public ResponseEntity<ApiResponse> updateGameResult(@RequestBody GameResultRequest gameResultRequest) {
         try {
             matchupService.updateGameResult(gameResultRequest.getPlayerWon(), gameResultRequest.getTournamentID(), gameResultRequest.getRoundNum());
@@ -65,7 +65,7 @@ public class MatchupController {
      * @return ResponseEntity containing an ApiResponse with success or failure message
      */
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<ApiResponse> deleteGameResult(@RequestBody GameResultRequest gameResultRequest) {
         try {
             matchupService.deleteGameResult(gameResultRequest.getPlayerWon(), gameResultRequest.getTournamentID(), gameResultRequest.getRoundNum());

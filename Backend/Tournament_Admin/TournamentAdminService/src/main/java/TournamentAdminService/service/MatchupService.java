@@ -26,7 +26,7 @@ public class MatchupService {
     @Transactional
     public void createGameResult(String playerWon, String tournamentId, Integer roundNum) {
         // Input validation
-        if (tournamentId == null || roundNum == null || playerWon == null) {
+        if (tournamentId == null || tournamentId.isEmpty() || roundNum == null || playerWon.isEmpty()) {
             throw new IllegalArgumentException("All fields are required");
         }
 
@@ -70,7 +70,7 @@ public class MatchupService {
      * @return a list of matchups containing the results of the tournament
      */
     @Transactional
-    public List getGameResultsByTournamentId(String tournamentId) {
+    public List<Matchup> getGameResultsByTournamentId(String tournamentId) {
         return matchupRepository.getGameResultsByTournamentId(tournamentId);
     }
 
@@ -81,7 +81,7 @@ public class MatchupService {
      * @return a list of participant names for the tournament
      */
     @Transactional
-    public List getParticipantsByTournamentId(String tournamentId) {
+    public List<String> getParticipantsByTournamentId(String tournamentId) {
         return matchupRepository.getParticipantsByTournamentId(tournamentId);
     }
 }
