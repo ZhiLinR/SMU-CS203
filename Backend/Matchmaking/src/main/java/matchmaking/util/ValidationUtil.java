@@ -96,7 +96,8 @@ public class ValidationUtil {
      *                               number of matchups is insufficient).
      */
     public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
-        if (matchups.size() < (players.size() / 2)) {
+        if (matchups.size() < ((players.size() + 1) / 2)) {
+            System.out.println("Error thrown");
             throw new InvalidRoundException("Failed to match up all players uniquely");
         }
     }

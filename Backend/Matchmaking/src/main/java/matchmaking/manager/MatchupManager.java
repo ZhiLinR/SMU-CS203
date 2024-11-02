@@ -57,11 +57,15 @@ public class MatchupManager {
 
         List<Pair<Signups, Signups>> playerPairs = generateMatchups(players, pairedPlayers, playedPairs);
 
+        System.out.println("Player Pairs:");
+        System.out.println(playerPairs);
+
         for (Pair<Signups, Signups> pair : playerPairs) {
             Matchups matchup = tournamentInfoUtil.createMatchup(pair.getFirst(), pair.getSecond(),
                     tournamentId, roundNum);
 
             // Double check valid matchup
+            System.out.println("Matchup: ");
             ValidationUtil.isValidMatchup(matchup);
             matchups.add(matchup);
         }
@@ -69,10 +73,13 @@ public class MatchupManager {
         if (players.size() % 2 != 0) {
             Pair<Signups, Signups> byePair = handleBye(players, matchups, pairedPlayers);
             ValidationUtil.isValidPair(byePair);
+            System.out.println("Bye Pair");
+            System.out.println(byePair);
             Matchups byeMatchup = tournamentInfoUtil.createMatchup(byePair.getFirst(), byePair.getSecond(),
                     byePair.getFirst(), tournamentId, roundNum);
 
             // Double check valid matchup
+            System.out.println("Matchup: ");
             ValidationUtil.isValidMatchup(byeMatchup);
             matchups.add(byeMatchup);
         }

@@ -33,6 +33,8 @@ public class TournamentInfoUtil {
      *                                  empty.
      */
     public int getCurrentRoundByTournamentId(String tournamentId) {
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+
         return matchupsRepository.getCurrentRoundByTournamentId(tournamentId) + 1;
     }
 
@@ -45,7 +47,8 @@ public class TournamentInfoUtil {
      *                                  empty.
      */
     public List<Matchups> getMatchupsByTournamentId(String tournamentId) {
-        System.out.println(matchupsRepository.getMatchupsByTournamentId(tournamentId));
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+
         return matchupsRepository.getMatchupsByTournamentId(tournamentId);
     }
 
@@ -58,6 +61,8 @@ public class TournamentInfoUtil {
      *                                  empty.
      */
     public List<Signups> getSignupsByTournamentId(String tournamentId) {
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+
         return signupsRepository.getSignupsByTournamentId(tournamentId);
     }
 
@@ -70,6 +75,8 @@ public class TournamentInfoUtil {
      *                                  empty.
      */
     public List<PlayerWins> getPlayerWinsByTournamentId(String tournamentId) {
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+
         List<Object[]> results = matchupsRepository.getPlayerWinsByTournamentId(tournamentId);
 
         return results.stream().map(this::mapToPlayerWins).collect(Collectors.toList());
@@ -134,6 +141,9 @@ public class TournamentInfoUtil {
      *                                  empty.
      */
     public void insertMatchups(List<Matchups> matchups, String tournamentId, int roundNum) {
+        if (matchups.size() == 0) {
+            throw new IllegalArgumentException("Missing matchup to insert");
+        }
         for (Matchups matchup : matchups) {
             matchupsRepository.insertMatchup(
                     matchup.getId().getPlayer1(),
