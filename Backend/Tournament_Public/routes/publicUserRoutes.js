@@ -14,21 +14,21 @@ router.get('/view/tournaments', publicUserController.getAllTournaments);
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of upcoming tournaments.
  */
-router.get('/view/upComing', publicUserController.getUpcomingTournaments);
+router.get('/view/upcoming-events', publicUserController.getUpcomingTournaments);
 
 /**
  * Route to get a list of in-progress tournaments.
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of in-progress tournaments.
  */
-router.get('/view/inProgress', publicUserController.getInProgressTournaments);
+router.get('/view/events', publicUserController.getInProgressTournaments);
 
 /**
  * Route to get a list of completed tournaments.
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of completed tournaments.
  */
-router.get('/view/completed', publicUserController.getCompletedTournaments);
+router.get('/view/past-events', publicUserController.getCompletedTournaments);
 
 /**
  * Route to get a tournament by its ID.

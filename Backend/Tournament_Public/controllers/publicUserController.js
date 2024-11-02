@@ -143,10 +143,9 @@ exports.getTournamentById = async (req, res, next) => {
             "message": "successfully retrieved tournament based on tournament ID",
             "content": specificTournament
         });
-    } catch (error) {
-        res.status(500).json({ 
-            message: 'Error fetching tournament', 
-            error: error.message });
+    } catch (err) {
+        console.error('Error retrieving completed tournaments:', err);
+        next(err);  // Pass the error to the middleware
     }
 };
 
