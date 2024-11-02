@@ -1,0 +1,33 @@
+ci:
+    skip: [detect-aws-credentials, check-staged-files, check-gitignore]
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-yaml
+    -   id: trailing-whitespace
+    -   id: detect-aws-credentials
+    -   id: detect-private-key
+-   repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+    -   id: black
+-   repo: local
+    hooks:
+    -   id: check-gitignore
+        name: check for changes in the gitignore file
+        description: prevents modifications to gitignore
+        entry: ./git-hooks/pre-commit/check-gitignore.sh
+        language: script
+        stages: [pre-commit, pre-push, manual]
+        minimum_pre_commit_version: 3.2.0
+        always_run: true
+    -   id: check-staged-files
+        name: Check the files staged for a commit.
+        description: Prevent/Unstage unneccessary or important files from being committed
+        entry: ./git-hooks/pre-commit/check-staged-files.sh
+        language: script
+        stages: [pre-commit, pre-push, manual]
+        minimum_pre_commit_version: 3.2.0
+        always_run: true
+

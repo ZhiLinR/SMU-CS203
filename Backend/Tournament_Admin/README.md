@@ -143,14 +143,14 @@ mvn spring-boot:run
         "success": true
     }
     ```
-### 5. Health checkpoint 
+### 5. Health checkpoint
 
 **Endpoint:** `GET /api/tournaments/health`
 
-**Description:** Checks if the application is running successfully 
+**Description:** Checks if the application is running successfully
 
 - **Response:**
-```json 
+```json
     {
       "message": "Application running successfully",
       "success": true
@@ -171,14 +171,14 @@ mvn spring-boot:run
 
 ### Example Request and Response
 
-### 1. Create new game result 
+### 1. Create new game result
 
 **Endpoint:** `POST /api/matchups/results`
 
-**Description:** Creates a new game result for a tournament 
+**Description:** Creates a new game result for a tournament
 
--**Request:** 
-```json 
+-**Request:**
+```json
     {
       "playerWon": "John Doe",
       "tournamentID": "123",
@@ -187,7 +187,7 @@ mvn spring-boot:run
 ```
 
 - **Response:**
-```json 
+```json
     {
       "message": "Successfully created tournament result",
       "success": true
@@ -201,7 +201,7 @@ mvn spring-boot:run
 **Description:** Retrieve player list  for a specific tournament.
 
 - **Response:**
-```json 
+```json
     {
       "message": "Successfully found participants for the tournament",
       "success": true,
@@ -221,7 +221,7 @@ mvn spring-boot:run
 **Description:** Checks if the application is running successfully
 
 - **Response:**
-```json 
+```json
     {
       "message": "Successfully found game results for the tournament",
       "success": true,
@@ -256,7 +256,7 @@ mvn spring-boot:run
     }
 ```
 - **Response:**
-```json 
+```json
     {
       "message": "Successfully updated tournament result.",
       "success": true
@@ -270,7 +270,7 @@ mvn spring-boot:run
 **Description:** Deletes a game result
 
 - **Request:**
-```json 
+```json
     {
       "playerWon": "John Doe",
       "tournamentID": "123",
@@ -279,7 +279,7 @@ mvn spring-boot:run
 ```
 
 - **Response:**
-```json 
+```json
     {
       "message": "Successfully deleted tournament result",
       "success": true
@@ -294,7 +294,7 @@ mvn spring-boot:run
 **Description:** Checks if the application is running successfully
 
 - **Response:**
-```json 
+```json
     {
       "message": "Application running successfully",
       "success": true
