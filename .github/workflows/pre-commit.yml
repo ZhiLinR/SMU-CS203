@@ -15,8 +15,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        chmod +x $PWD/git-hooks/pre-commit/check-gitignore.sh
-        chmod +x $PWD/git-hooks/pre-commit/check-staged-files.sh
+        chmod +x git-hooks/pre-commit/check-gitignore.sh
+        chmod +x git-hooks/pre-commit/check-staged-files.sh
         pip install pre-commit
         pre-commit run
     - uses: pre-commit-ci/lite-action@v1.1.0
