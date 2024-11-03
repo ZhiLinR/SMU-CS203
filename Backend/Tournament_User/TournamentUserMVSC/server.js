@@ -11,11 +11,14 @@ app.use(express.json());
 // Tournament user routes
 app.use('/api', tournamentUserRoutes);
 
-// Use the error-handling middleware after routes
-app.use(errorHandler);
 
 // use the success-handling middleware
 app.use(successHandler);
+
+// Use the error-handling middleware after routes
+app.use(errorHandler);
+
+
 
 const PORT = process.env.DB_PORT || 3000;
 app.listen(PORT, () => {

@@ -3,7 +3,6 @@ const router = express.Router();
 const TournamentUserController = require('../controllers/tournamentUserController');
 
 // Define routes and map them to controller methods
-router.get('/tournaments/:UUID', TournamentUserController.getTournaments);
 router.get('/tournaments/matchups/:tournamentId', TournamentUserController.getTournamentMatchups); 
 router.post('/tournaments/signup/:UUID', TournamentUserController.signUpForTournament);
 router.delete('/tournaments/quit/:UUID', TournamentUserController.quitTournament);

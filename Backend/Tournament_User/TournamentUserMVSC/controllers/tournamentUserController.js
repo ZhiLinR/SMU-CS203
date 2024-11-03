@@ -16,7 +16,7 @@ exports.getTournaments = async (req, res, next) => {
     const { UUID } = req.params;
 
     try {
-        let result = await TournamentUserService.getTournaments(UUID);
+        let result =  await TournamentUserService.getTournaments(UUID);
 
         // If no tournaments were found, return a 404 response
         if (!result) {
@@ -102,7 +102,7 @@ exports.getTournamentMatchups = async (req, res, next) => {
  * @throws {error} If input invalid or missing fields.
  */
 
-exports.signUpForTournament = async (req, res, next) => {
+exports.signUpForTournament =  async (req, res, next) => {
     const { UUID } = req.params;
     const { tournamentID, elo } = req.body;
 
@@ -286,7 +286,7 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
         }
 
         // Step 2: Get user's tournament game rank if tournament exists
-        let result = await TournamentUserService.getUserTournamentGameRank(tournamentId, UUID);
+        let result = await  TournamentUserService.getUserTournamentGameRank(tournamentId, UUID);
         
         if (!result || result.length === 0) {
            throw new Error('No Game result found for the provided tournamentID.');
@@ -338,7 +338,7 @@ exports.getPlayersInTournament = async (req, res, next) => {
             throw new Error('Invalid tournamentID: Tournament not found.');
         }
 
-        const result = await TournamentService.getPlayersInTournament(tournamentId);
+        const result =  await TournamentService.getPlayersInTournament(tournamentId);
 
         if (result.length === 0) {
         res.locals.data = {
@@ -387,7 +387,7 @@ exports.getPlayersInTournament = async (req, res, next) => {
 * @param {Object} res - Express response object
 * @param {Function} next - Express next middleware function
 */
-exports.getPlayerTournaments = async (req, res, next) => {
+exports.getPlayerTournaments = async  (req, res, next) => {
     try {
         const { playerUUID } = req.params;
         
@@ -432,7 +432,7 @@ exports.getPlayerTournaments = async (req, res, next) => {
 * @param {Object} res - Express response object
 * @param {Function} next - Express next middleware function
 */
-exports.getCompletedTournaments = async (req, res, next) => {
+exports.getCompletedTournaments = async  (req, res, next) => {
     try {
         const result = await TournamentUserService.getCompletedTournaments();
 
