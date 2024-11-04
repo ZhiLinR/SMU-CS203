@@ -4,10 +4,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the EloKFactor class, which determines the K value used in
+ * Elo rating calculations based on a player's Elo rating.
+ */
 public class EloKFactorTest {
 
     /**
      * Tests that the K value is correctly returned for Elo ratings below 1200.
+     * <p>
+     * Expected K value for ratings below 1200 is 40. This includes edge cases
+     * such as the lowest possible Elo rating and various values just below 1200.
+     * </p>
      */
     @Test
     public void testGetKValue_Below1200() {
@@ -19,6 +27,10 @@ public class EloKFactorTest {
     /**
      * Tests that the K value is correctly returned for Elo ratings between 1200 and
      * 1800.
+     * <p>
+     * Expected K value for ratings in this range is 20. This tests the boundary
+     * conditions for the lower edge of the range and values near the upper edge.
+     * </p>
      */
     @Test
     public void testGetKValue_Between1200And1800() {
@@ -30,6 +42,10 @@ public class EloKFactorTest {
     /**
      * Tests that the K value is correctly returned for Elo ratings of 1800 and
      * above.
+     * <p>
+     * Expected K value for ratings of 1800 or higher is 10. This includes tests
+     * for the lower edge at 1800 and a range of higher values.
+     * </p>
      */
     @Test
     public void testGetKValue_Above1800() {
@@ -39,8 +55,12 @@ public class EloKFactorTest {
     }
 
     /**
-     * Tests that the K value is returned correctly for Elo exactly at the boundary
-     * conditions.
+     * Tests that the K value is returned correctly for Elo ratings at the defined
+     * boundary conditions.
+     * <p>
+     * This test checks the K values at the critical points: just below 1200,
+     * exactly 1200, just below 1800, and exactly 1800.
+     * </p>
      */
     @Test
     public void testGetKValue_BoundaryConditions() {
@@ -53,6 +73,10 @@ public class EloKFactorTest {
     /**
      * Tests that the K value returns the default for Elo ratings outside defined
      * ranges.
+     * <p>
+     * Expected K value for ratings below 0 and above the maximum defined range
+     * is 10, testing the robustness of the method against extreme inputs.
+     * </p>
      */
     @Test
     public void testGetKValue_OutsideDefinedRanges() {

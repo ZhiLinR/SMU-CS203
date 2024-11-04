@@ -98,22 +98,23 @@ public class MatchmakingController {
     }
 
     /**
-     * Generates unique matchups for the specified tournament.
+     * Ranks players for the specified tournament and retrieves the ranking results.
      *
-     * This method retrieves the matchups associated with a given tournament ID and
-     * prints
-     * each matchup to the console. It returns a success response if the matchups
-     * are generated
-     * successfully, or an error response if there are any issues during the
-     * process.
+     * This method retrieves the ranking updates for a given tournament ID,
+     * prints the ranking results to the console, and returns a response indicating
+     * whether the ranking process was successful or if there were any issues during
+     * the process.
      *
-     * @param tournamentId the ID of the tournament for which matchups are to be
-     *                     generated
+     * @param tournamentId the ID of the tournament for which players are to be
+     *                     ranked
      * @return a {@link ResponseEntity} containing a map with success or error
-     *         message
+     *         message,
+     *         along with the ranking results if successful
      * @throws IllegalArgumentException    if the tournament ID is invalid
      * @throws TournamentNotFoundException if no tournament is found with the given
      *                                     ID
+     * @throws ResultsNotFoundException    if no ranking results are found for the
+     *                                     tournament
      * @throws Exception                   for any other unexpected errors that may
      *                                     occur
      */
@@ -127,7 +128,7 @@ public class MatchmakingController {
 
             // Create a response map in the desired format
             Map<String, Object> response = new HashMap<>();
-            response.put("Results", rankingResults);
+            response.put("results", rankingResults);
 
             return ResponseManager.success("Players ranked successfully", response);
         } catch (IllegalArgumentException e) {

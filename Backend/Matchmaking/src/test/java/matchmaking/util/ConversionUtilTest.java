@@ -11,10 +11,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the ConversionUtil class, which provides utility methods
+ * for converting and processing player data, specifically converting Signups
+ * to PlayerResults and ordering players by rank.
+ */
 public class ConversionUtilTest {
 
     /**
-     * Tests the getUuidsOrderedByRank method with an empty list.
+     * Tests that the getUuidsOrderedByRank method throws an exception when
+     * an empty list is provided.
      */
     @Test
     public void testGetUuidsOrderedByRank_EmptyList() {
@@ -27,7 +33,8 @@ public class ConversionUtilTest {
     }
 
     /**
-     * Tests the conversion from null Signups to PlayerResults.
+     * Tests that the convertSignupsToPlayerResults method throws an exception when
+     * provided with a null input, indicating missing Signups data.
      */
     @Test
     public void testConvertSignupsToPlayerResults_NullInput() {
@@ -40,7 +47,8 @@ public class ConversionUtilTest {
     }
 
     /**
-     * Tests the conversion from an empty list of Signups to PlayerResults.
+     * Tests that the convertSignupsToPlayerResults method throws an exception when
+     * an empty list of Signups is provided, indicating no signup data is available.
      */
     @Test
     public void testConvertSignupsToPlayerResults_EmptyInput() {
@@ -53,7 +61,8 @@ public class ConversionUtilTest {
     }
 
     /**
-     * Tests the conversion from a single Signup to PlayerResults.
+     * Tests that the convertSignupsToPlayerResults method correctly converts
+     * a single Signup entry to a corresponding PlayerResults entry.
      */
     @Test
     public void testConvertSignupsToPlayerResults_SingleEntry() {
@@ -68,7 +77,8 @@ public class ConversionUtilTest {
     }
 
     /**
-     * Tests the getUuidsOrderedByRank method with duplicate ranks.
+     * Tests the getUuidsOrderedByRank method when multiple players have
+     * duplicate ranks, ensuring correct ordering based on input order.
      */
     @Test
     public void testGetUuidsOrderedByRank_DuplicateRanks() {
@@ -94,8 +104,9 @@ public class ConversionUtilTest {
     }
 
     /**
-     * Tests the performance of the convertSignupsToPlayerResults with a large
-     * number of entries.
+     * Tests the performance of the convertSignupsToPlayerResults method with a
+     * large
+     * number of entries, ensuring that it handles high input volume efficiently.
      */
     @Test
     public void testConvertSignupsToPlayerResults_LargeInput() {
@@ -105,7 +116,8 @@ public class ConversionUtilTest {
     }
 
     /**
-     * Tests the conversion with negative Elo values.
+     * Tests that the convertSignupsToPlayerResults method correctly handles
+     * Signups entries with negative Elo values.
      */
     @Test
     public void testConvertSignupsToPlayerResults_NegativeElo() {
@@ -120,7 +132,13 @@ public class ConversionUtilTest {
     }
 
     /**
-     * Helper method to create a Signups object for testing.
+     * Helper method to create a Signups object with the specified UUID and Elo
+     * rating
+     * for testing purposes.
+     *
+     * @param uuid The UUID to set for the Signup object.
+     * @param elo  The Elo rating to set for the Signup object.
+     * @return A new Signups object with the specified UUID and Elo rating.
      */
     private Signups createSignup(String uuid, int elo) {
         Signups signup = new Signups()

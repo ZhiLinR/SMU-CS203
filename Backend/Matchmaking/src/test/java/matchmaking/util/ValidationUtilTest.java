@@ -1,10 +1,6 @@
 package matchmaking.util;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,16 +14,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import matchmaking.dto.PlayerResults;
-import matchmaking.dto.PlayerWins;
-import matchmaking.exception.InvalidRoundException;
-import matchmaking.exception.ResultsNotFoundException;
-import matchmaking.model.Matchups;
-import matchmaking.model.MatchupsId;
-import matchmaking.model.Signups;
-import matchmaking.repository.MatchupsRepository;
-import matchmaking.repository.SignupsRepository;
+import matchmaking.dto.*;
+import matchmaking.exception.*;
+import matchmaking.model.*;
+import matchmaking.repository.*;
 
+/**
+ * A test class for validating utility methods in the {@code ValidationUtil}
+ * class.
+ * Tests various validation scenarios related to tournaments, player matchups,
+ * and player signups.
+ */
 public class ValidationUtilTest {
 
     /** ID of the tournament being tested. */
@@ -36,31 +33,32 @@ public class ValidationUtilTest {
     /** Set of played pairs to track match history. */
     private Set<String> playedPairs;
 
-    /** Players participating in the tournament. */
+    /** Player objects representing participants in the tournament. */
     private Signups player1;
     private Signups player2;
     private Signups player3;
     private Signups player4;
 
+    /** Sample matchups for testing different validation scenarios. */
     private Matchups matchup;
     private Matchups matchupWonLoss;
 
-    /** Utilities for player sorting and tournament information. */
+    /** Utility objects for player sorting and tournament information. */
     private PlayerSorter playerSorter;
     private TournamentInfoUtil tournamentInfoUtil;
 
-    /** Repositories for accessing matchups and signups. */
+    /** Repositories for accessing matchups and signups data. */
     private MatchupsRepository matchupsRepository;
     private SignupsRepository signupsRepository;
 
     /**
-     * Sets up the test environment before each test case.
+     * Sets up the test environment before each test case, initializing
+     * player objects, mock repositories, and other dependencies.
      */
     @BeforeEach
     public void setUp() {
         tournamentId = "Tournament123";
         playedPairs = new HashSet<>();
-
         initializeRepositories();
         initializeUtilities();
         initializePlayers();
@@ -68,7 +66,7 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Initializes the mock repositories for testing.
+     * Initializes mock repositories for testing repository-dependent utilities.
      */
     private void initializeRepositories() {
         matchupsRepository = mock(MatchupsRepository.class);
@@ -76,7 +74,7 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Initializes the utility classes and injects dependencies.
+     * Initializes utility classes and injects mock dependencies into them.
      */
     private void initializeUtilities() {
         tournamentInfoUtil = new TournamentInfoUtil();
@@ -87,7 +85,7 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Initializes player objects for testing.
+     * Initializes player objects with predefined UUIDs and ELO ratings for testing.
      */
     private void initializePlayers() {
         player1 = createPlayer("Player1", 1100);
@@ -97,22 +95,21 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Helper method to create a player with a given UUID and ELO.
+     * Creates a player for testing with a given UUID and ELO rating.
      *
      * @param uuid the unique identifier for the player.
      * @param elo  the ELO rating of the player.
-     * @return a new Signups object.
+     * @return a new {@code Signups} object representing the player.
      */
     private Signups createPlayer(String uuid, int elo) {
-        Signups player = new Signups()
+        return new Signups()
                 .setUuid(uuid)
                 .setElo(elo)
                 .setTournamentId(tournamentId);
-        return player;
     }
 
     /**
-     * Initializes mock responses for the tournament information utility.
+     * Initializes mock responses for tournament utilities to simulate real data.
      */
     private void initializeMockResponses() {
         // Sample player wins data
@@ -156,12 +153,13 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Helper method to create PlayerWins objects for testing.
+     * Creates a {@code PlayerWins} object for testing with a specified UUID, wins,
+     * and draws.
      *
      * @param uuid  the UUID of the player.
-     * @param wins  the number of wins.
-     * @param draws the number of draws.
-     * @return a new PlayerWins object.
+     * @param wins  the number of wins the player has achieved.
+     * @param draws the number of draws the player has.
+     * @return a new {@code PlayerWins} object representing the player's results.
      */
     private PlayerWins createPlayerWins(String uuid, int wins, int draws) {
         PlayerWins win = new PlayerWins();
@@ -171,6 +169,11 @@ public class ValidationUtilTest {
         return win;
     }
 
+    // Test methods
+
+    /**
+     * Tests that validateNotEmpty throws an exception when given an empty value.
+     */
     @Test
     public void testValidateNotEmptyThrowsExceptionWhenEmpty() {
         Exception exception = assertThrows(IllegalArgumentException.class,
@@ -178,12 +181,14 @@ public class ValidationUtilTest {
         assertEquals("TestField must not be null or empty.", exception.getMessage());
     }
 
+    /** Tests that isValidPair returns true for a new pair of players. */
     @Test
     public void testIsValidPairReturnsTrueForNewPair() {
         boolean result = ValidationUtil.isValidPair("Player1", "Player2", playedPairs);
         assertTrue(result);
     }
 
+    /** Tests that isValidPair returns false for an existing pair of players. */
     @Test
     public void testIsValidPairReturnsFalseForExistingPair() {
         playedPairs.add("Player1-Player2");
@@ -191,12 +196,18 @@ public class ValidationUtilTest {
         assertFalse(result);
     }
 
+    /**
+     * Tests that isValidRoundNum throws an exception for an invalid round number.
+     */
     @Test
     public void testIsValidRoundNumThrowsExceptionForInvalidRound() {
         int playerCount = 3;
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isValidRoundNum(4, playerCount));
     }
 
+    /**
+     * Tests that isPrevRoundOver throws an exception when winner is not allocated.
+     */
     @Test
     public void testIsPrevRoundOverThrowsExceptionWhenWinnerNotAllocated() {
         Matchups unfinishedMatchup = new Matchups();
@@ -206,27 +217,37 @@ public class ValidationUtilTest {
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isPrevRoundOver(unfinishedMatchup));
     }
 
+    /**
+     * Tests that isAllPlayersMatched throws an exception when not all players are
+     * matched.
+     */
     @Test
     public void testIsAllPlayersMatchedThrowsExceptionWhenNotAllMatched() {
         List<Matchups> matchups = List.of(matchup);
-
         List<Signups> playersList = List.of(player1, player2, new Signups());
 
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isAllPlayersMatched(matchups, playersList));
     }
 
+    /** Tests that isValidPair throws an exception when the pair is null. */
     @Test
     public void testIsValidPairThrowsExceptionWhenPairIsNull() {
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isValidPair(null));
     }
 
+    /**
+     * Tests that isValidSignups throws an exception when signups list is too small.
+     */
     @Test
     public void testIsValidSignupsThrowsExceptionWhenNotEnoughSignups() {
         List<Signups> signups = List.of(player1);
-
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isValidSignups(signups));
     }
 
+    /**
+     * Tests that isValidMatchup throws an exception when players in a matchup are
+     * identical.
+     */
     @Test
     public void testIsValidMatchupThrowsExceptionWhenPlayersAreSame() {
         MatchupsId invalidMatchupId = new MatchupsId()
@@ -240,8 +261,8 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that validatePlayerResults throws ResultsNotFoundException
-     * when the player results list is empty.
+     * Tests that validatePlayerResults throws ResultsNotFoundException for empty
+     * results list.
      */
     @Test
     public void testValidatePlayerResults_ThrowsException_WhenEmptyList() {
@@ -256,8 +277,8 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that validatePlayerResults throws ResultsNotFoundException
-     * when the player results do not contain the specified UUID.
+     * Tests that validatePlayerResults throws ResultsNotFoundException when UUID is
+     * not found.
      */
     @Test
     public void testValidatePlayerResults_ThrowsException_WhenUuidNotFound() {
@@ -274,7 +295,7 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that validatePlayerResults passes when the UUID exists in the list.
+     * Tests that validatePlayerResults succeeds when the specified UUID is found.
      */
     @Test
     public void testValidatePlayerResults_Succeeds_WhenUuidFound() {
@@ -287,8 +308,8 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that validateMatchups throws ResultsNotFoundException
-     * when a player in the matchups cannot be found in player results.
+     * Tests that validateMatchups throws ResultsNotFoundException when player
+     * results are missing.
      */
     @Test
     public void testValidateMatchups_ThrowsException_WhenPlayerNotFound() {
@@ -303,8 +324,8 @@ public class ValidationUtilTest {
     }
 
     /**
-     * Tests that validateMatchups passes when all players in the matchups
-     * can be found in player results.
+     * Tests that validateMatchups succeeds when all players in matchups are found
+     * in results.
      */
     @Test
     public void testValidateMatchups_Succeeds_WhenPlayersFound() {
@@ -318,41 +339,42 @@ public class ValidationUtilTest {
 
         List<Matchups> matchups = Collections.singletonList(matchupWonLoss);
 
-        System.out.println(matchups);
-
         assertDoesNotThrow(() -> ValidationUtil.validateMatchups(matchups, playerResults));
     }
 
+    /**
+     * Tests that validateListNotEmpty throws an exception when the signups list is
+     * null.
+     */
     @Test
     void validateListNotEmpty_ShouldThrowException_WhenSignupsIsNull() {
-        // Arrange
         List<Signups> signups = null;
-
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             ValidationUtil.validateListNotEmpty(signups, "Signups");
         });
         assertEquals("Missing Signups.", exception.getMessage());
     }
 
+    /**
+     * Tests that validateListNotEmpty throws an exception when the signups list is
+     * empty.
+     */
     @Test
     void validateListNotEmpty_ShouldNotThrowException_WhenSignupsIsEmpty() {
-        // Arrange
         List<Signups> signups = Collections.emptyList();
-
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             ValidationUtil.validateListNotEmpty(signups, "Signups");
         });
         assertEquals("Missing Signups.", exception.getMessage());
     }
 
+    /**
+     * Tests that validateListNotEmpty does not throw an exception when signups list
+     * is not empty.
+     */
     @Test
     void validateListNotEmpty_ShouldNotThrowException_WhenSignupsIsNotEmpty() {
-        // Arrange
         List<Signups> signups = List.of(new Signups(), new Signups());
-
-        // Act & Assert
         assertDoesNotThrow(() -> {
             ValidationUtil.validateListNotEmpty(signups, "Signups");
         });

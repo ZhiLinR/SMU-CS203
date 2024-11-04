@@ -17,7 +17,7 @@ import matchmaking.util.MatchupUtil;
 
 /**
  * Utility class for managing matchups in a tournament.
- * 
+ *
  * It helps generate matchups while avoiding duplicate pairs, handles scenarios
  * with an odd number of players by granting auto-wins (bye), and manages
  * previous match history to avoid rematches.
@@ -66,6 +66,7 @@ public class MatchupManager {
 
             // Double check valid matchup
             System.out.println("Matchup: ");
+            System.out.println(matchup);
             ValidationUtil.isValidMatchup(matchup);
             matchups.add(matchup);
         }
@@ -80,6 +81,7 @@ public class MatchupManager {
 
             // Double check valid matchup
             System.out.println("Matchup: ");
+            System.out.println(byeMatchup);
             ValidationUtil.isValidMatchup(byeMatchup);
             matchups.add(byeMatchup);
         }
