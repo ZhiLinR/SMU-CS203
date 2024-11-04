@@ -9,6 +9,7 @@ import java.util.List;
 
 import matchmaking.dto.PlayerWins;
 import matchmaking.model.Matchups;
+import matchmaking.model.MatchupsId;
 
 /**
  * Repository interface for managing {@link Matchups} entities.
@@ -28,7 +29,7 @@ import matchmaking.model.Matchups;
  * </p>
  */
 @Repository
-public interface MatchupsRepository extends JpaRepository<Matchups, String> {
+public interface MatchupsRepository extends JpaRepository<Matchups, MatchupsId> {
 
         /**
          * Retrieves the current round number for the specified tournament.
