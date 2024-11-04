@@ -1,6 +1,8 @@
 package matchmaking.util;
 
+import matchmaking.dto.PlayerResults;
 import matchmaking.exception.InvalidRoundException;
+import matchmaking.exception.ResultsNotFoundException;
 import matchmaking.model.Matchups;
 import matchmaking.model.MatchupsId;
 import matchmaking.model.Signups;
@@ -141,5 +143,55 @@ public class ValidationUtil {
         if (id.getPlayer1().equals(id.getPlayer2())) {
             throw new InvalidRoundException("Invalid matchup: Player1 and Player2 cannot be the same.");
         }
+    }
+
+    /**
+     * Validates that player results are not null and exist in the provided list.
+     *
+     * @param playerResults A list of PlayerResults to check against.
+     * @param uuid          The UUID of the player whose results need to be
+     *                      validated.
+     * @throws ResultsNotFoundException if the player results cannot be found.
+     */
+    public static void validatePlayerResults(List<PlayerResults> playerResults, String uuid)
+            throws ResultsNotFoundException {
+        if (findPlayerResultsByUUID(playerResults, uuid) == null) {
+            throw new ResultsNotFoundException("Player results not found for UUID: " + uuid);
+        }
+    }
+
+    /**
+     * Validates that matchups contain valid players.
+     *
+     * @param matchups      A list of Matchups to validate.
+     * @param playerResults A list of PlayerResults to check against.
+     * @throws ResultsNotFoundException if any player in the matchups cannot be
+     *                                  found in player results.
+     */
+    public static void validateMatchups(List<Matchups> matchups, List<PlayerResults> playerResults)
+            throws ResultsNotFoundException {
+        for (Matchups matchup : matchups) {
+            String playerWon = matchup.getPlayerWon();
+            String playerLost = playerWon.equals(matchup.getId().getPlayer1())
+                    ? matchup.getId().getPlayer2()
+                    : matchup.getId().getPlayer1();
+
+            validatePlayerResults(playerResults, playerWon);
+            validatePlayerResults(playerResults, playerLost);
+        }
+    }
+
+    /**
+     * Finds a PlayerResults instance by its UUID.
+     *
+     * @param playerResults A list of PlayerResults to search.
+     * @param uuid          The UUID of the player to find.
+     * @return The PlayerResults instance if found, or null if not found.
+     */
+    private static PlayerResults findPlayerResultsByUUID(List<PlayerResults> playerResults, String uuid) {
+        return playerResults.stream()
+                .filter(result -> result.getUuid().equals(uuid))
+                .findFirst()
+                .orElse(null); // Return null if not found
     }
 }

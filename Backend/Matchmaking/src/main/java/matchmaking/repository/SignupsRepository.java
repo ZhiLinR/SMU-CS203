@@ -28,17 +28,22 @@ import matchmaking.model.Signups;
 @Repository
 public interface SignupsRepository extends JpaRepository<Signups, String> {
 
-    /**
-     * Retrieves a list of signups for a specified tournament.
-     *
-     * This method calls the stored procedure "GetSignupsByTournamentId" to
-     * fetch all signups associated with the given tournament ID.
-     *
-     * @param tournamentId the ID of the tournament for which signups are requested.
-     * @return a list of {@link Signups} objects representing the users who signed
-     *         up for the tournament.
-     */
-    @Procedure(procedureName = "GetSignupsByTournamentId")
-    List<Signups> getSignupsByTournamentId(
-            @Param("p_tournamentId") String tournamentId);
+        /**
+         * Retrieves a list of signups for a specified tournament.
+         *
+         * This method calls the stored procedure "GetSignupsByTournamentId" to
+         * fetch all signups associated with the given tournament ID.
+         *
+         * @param tournamentId the ID of the tournament for which signups are requested.
+         * @return a list of {@link Signups} objects representing the users who signed
+         *         up for the tournament.
+         */
+        @Procedure(procedureName = "GetSignupsByTournamentId")
+        List<Signups> getSignupsByTournamentId(
+                        @Param("p_tournamentId") String tournamentId);
+
+        @Procedure(procedureName = "UpdateElo")
+        void updateElo(
+                        @Param("p_uuid") String uuid,
+                        @Param("p_elo") Integer elo);
 }

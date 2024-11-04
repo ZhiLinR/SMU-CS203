@@ -42,7 +42,8 @@ public interface MatchupsRepository extends JpaRepository<Matchups, String> {
          *         found.
          */
         @Procedure(procedureName = "GetRoundNumByTournamentId")
-        Integer getCurrentRoundByTournamentId(@Param("p_tournamentId") String tournamentId);
+        Integer getCurrentRoundByTournamentId(
+                        @Param("p_tournamentId") String tournamentId);
 
         /**
          * Retrieves the list of player wins for a specified tournament.
@@ -57,7 +58,8 @@ public interface MatchupsRepository extends JpaRepository<Matchups, String> {
          *         information.
          */
         @Procedure(procedureName = "GetPlayerWinsByTournamentId")
-        List<Object[]> getPlayerWinsByTournamentId(@Param("p_tournamentId") String tournamentId);
+        List<Object[]> getPlayerWinsByTournamentId(
+                        @Param("p_tournamentId") String tournamentId);
 
         /**
          * Retrieves a list of matchups for a specified tournament.
@@ -71,7 +73,8 @@ public interface MatchupsRepository extends JpaRepository<Matchups, String> {
          *         tournament.
          */
         @Procedure(procedureName = "GetMatchupsByTournamentId")
-        List<Matchups> getMatchupsByTournamentId(@Param("p_tournamentId") String tournamentId);
+        List<Matchups> getMatchupsByTournamentId(
+                        @Param("p_tournamentId") String tournamentId);
 
         /**
          * Inserts a new matchup into the database.

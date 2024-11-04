@@ -155,6 +155,25 @@ public class TournamentInfoUtil {
     }
 
     /**
+     * Updates the Elo rating for a player in the signups repository.
+     *
+     * @param uuid the unique identifier of the player whose Elo rating is to be
+     *             updated
+     * @param elo  the new Elo rating to assign to the player
+     * @throws IllegalArgumentException if the UUID is null or empty, or if the Elo
+     *                                  rating is non-positive
+     */
+    public void updateSignupsPlayerElo(String uuid, int elo) {
+        ValidationUtil.validateNotEmpty(uuid, "UUID");
+
+        if (elo <= 0) {
+            throw new IllegalArgumentException("Elo must not be null or empty");
+        }
+
+        signupsRepository.updateElo(uuid, elo);
+    }
+
+    /**
      * Maps the result set from the database to a {@link PlayerWins} object.
      *
      * @param result the result array from the database query.
