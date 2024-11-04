@@ -170,6 +170,10 @@ public class ValidationUtil {
      */
     public static void validateMatchups(List<Matchups> matchups, List<PlayerResults> playerResults)
             throws ResultsNotFoundException {
+        if (playerResults == null || playerResults.isEmpty()) {
+            throw new ResultsNotFoundException("Missing results.");
+        }
+
         for (Matchups matchup : matchups) {
             String playerWon = matchup.getPlayerWon();
             String playerLost = playerWon.equals(matchup.getId().getPlayer1())

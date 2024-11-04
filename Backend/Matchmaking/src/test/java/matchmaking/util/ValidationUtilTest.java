@@ -1,5 +1,6 @@
 package matchmaking.util;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -10,13 +11,17 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import matchmaking.dto.PlayerResults;
 import matchmaking.dto.PlayerWins;
 import matchmaking.exception.InvalidRoundException;
+import matchmaking.exception.ResultsNotFoundException;
 import matchmaking.model.Matchups;
 import matchmaking.model.MatchupsId;
 import matchmaking.model.Signups;
@@ -38,6 +43,7 @@ public class ValidationUtilTest {
     private Signups player4;
 
     private Matchups matchup;
+    private Matchups matchupWonLoss;
 
     /** Utilities for player sorting and tournament information. */
     private PlayerSorter playerSorter;
@@ -129,6 +135,17 @@ public class ValidationUtilTest {
         matchup.setId(matchId1);
         matchup.setRoundNum(1);
         matchup.setPlayerWon("Player1");
+
+        MatchupsId matchupsIdWonLoss = new MatchupsId();
+        matchupsIdWonLoss.setPlayer1("player-won");
+        matchupsIdWonLoss.setPlayer2("player-lost");
+        matchupsIdWonLoss.setTournamentId(tournamentId);
+
+        matchupWonLoss = new Matchups();
+        matchupWonLoss.setPlayerWon("player-won");
+        matchupWonLoss.setId(matchupsIdWonLoss);
+
+        // System.out.println(matchupWonLoss);
 
         when(matchupsRepository.getMatchupsByTournamentId(tournamentId)).thenReturn(List.of(matchup));
 
@@ -222,5 +239,89 @@ public class ValidationUtilTest {
         invalidMatchup.setId(invalidMatchupId);
 
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isValidMatchup(invalidMatchup));
+    }
+
+    /**
+     * Tests that validatePlayerResults throws ResultsNotFoundException
+     * when the player results list is empty.
+     */
+    @Test
+    public void testValidatePlayerResults_ThrowsException_WhenEmptyList() {
+        List<PlayerResults> playerResults = Collections.emptyList();
+        String uuid = "some-uuid";
+
+        ResultsNotFoundException exception = assertThrows(
+                ResultsNotFoundException.class,
+                () -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+
+        assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
+    }
+
+    /**
+     * Tests that validatePlayerResults throws ResultsNotFoundException
+     * when the player results do not contain the specified UUID.
+     */
+    @Test
+    public void testValidatePlayerResults_ThrowsException_WhenUuidNotFound() {
+        PlayerResults result1 = new PlayerResults();
+        result1.setUuid("uuid1");
+        List<PlayerResults> playerResults = Arrays.asList(result1);
+        String uuid = "some-other-uuid";
+
+        ResultsNotFoundException exception = assertThrows(
+                ResultsNotFoundException.class,
+                () -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+
+        assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
+    }
+
+    /**
+     * Tests that validatePlayerResults passes when the UUID exists in the list.
+     */
+    @Test
+    public void testValidatePlayerResults_Succeeds_WhenUuidFound() {
+        PlayerResults result1 = new PlayerResults();
+        result1.setUuid("uuid1");
+        List<PlayerResults> playerResults = Arrays.asList(result1);
+        String uuid = "uuid1"; // Matching UUID
+
+        assertDoesNotThrow(() -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+    }
+
+    /**
+     * Tests that validateMatchups throws ResultsNotFoundException
+     * when a player in the matchups cannot be found in player results.
+     */
+    @Test
+    public void testValidateMatchups_ThrowsException_WhenPlayerNotFound() {
+        List<Matchups> matchups = Collections.singletonList(matchupWonLoss);
+        List<PlayerResults> playerResults = Collections.emptyList(); // No results available
+
+        ResultsNotFoundException exception = assertThrows(
+                ResultsNotFoundException.class,
+                () -> ValidationUtil.validateMatchups(matchups, playerResults));
+
+        assertEquals("Missing results.", exception.getMessage());
+    }
+
+    /**
+     * Tests that validateMatchups passes when all players in the matchups
+     * can be found in player results.
+     */
+    @Test
+    public void testValidateMatchups_Succeeds_WhenPlayersFound() {
+        PlayerResults player1Results = new PlayerResults();
+        player1Results.setUuid("player-won");
+
+        PlayerResults player2Results = new PlayerResults();
+        player2Results.setUuid("player-lost");
+
+        List<PlayerResults> playerResults = Arrays.asList(player1Results, player2Results);
+
+        List<Matchups> matchups = Collections.singletonList(matchupWonLoss);
+
+        System.out.println(matchups);
+
+        assertDoesNotThrow(() -> ValidationUtil.validateMatchups(matchups, playerResults));
     }
 }
