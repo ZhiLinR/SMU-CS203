@@ -324,4 +324,39 @@ public class ValidationUtilTest {
 
         assertDoesNotThrow(() -> ValidationUtil.validateMatchups(matchups, playerResults));
     }
+
+    @Test
+    void validateListNotEmpty_ShouldThrowException_WhenSignupsIsNull() {
+        // Arrange
+        List<Signups> signups = null;
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ValidationUtil.validateListNotEmpty(signups, "Signups");
+        });
+        assertEquals("Missing Signups.", exception.getMessage());
+    }
+
+    @Test
+    void validateListNotEmpty_ShouldNotThrowException_WhenSignupsIsEmpty() {
+        // Arrange
+        List<Signups> signups = Collections.emptyList();
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            ValidationUtil.validateListNotEmpty(signups, "Signups");
+        });
+        assertEquals("Missing Signups.", exception.getMessage());
+    }
+
+    @Test
+    void validateListNotEmpty_ShouldNotThrowException_WhenSignupsIsNotEmpty() {
+        // Arrange
+        List<Signups> signups = List.of(new Signups(), new Signups());
+
+        // Act & Assert
+        assertDoesNotThrow(() -> {
+            ValidationUtil.validateListNotEmpty(signups, "Signups");
+        });
+    }
 }

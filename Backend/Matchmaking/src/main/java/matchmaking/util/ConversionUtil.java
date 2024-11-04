@@ -21,6 +21,7 @@ public class ConversionUtil {
      *         Buchholz and rank.
      */
     public static List<PlayerResults> convertSignupsToPlayerResults(List<Signups> signups) {
+        ValidationUtil.validateListNotEmpty(signups, "Signups");
         return signups.stream()
                 .map(signup -> new PlayerResults()
                         .setUuid(signup.getUuid())
@@ -37,6 +38,7 @@ public class ConversionUtil {
      * @return A list of UUIDs sorted by rank in ascending order.
      */
     public static List<String> getUuidsOrderedByRank(List<PlayerResults> playerResults) {
+        ValidationUtil.validateListNotEmpty(playerResults, "Player Results");
         return playerResults.stream()
                 .sorted(Comparator.comparingInt(PlayerResults::getRank)) // Sort by rank
                 .map(PlayerResults::getUuid) // Extract UUIDs
