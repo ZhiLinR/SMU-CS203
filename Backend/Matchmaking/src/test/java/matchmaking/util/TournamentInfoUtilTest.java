@@ -282,4 +282,61 @@ public class TournamentInfoUtilTest {
                 () -> tournamentInfoUtil.insertMatchups(new ArrayList<>(), tournamentId, 1),
                 "Expected IllegalArgumentException when matchups list is empty.");
     }
+
+    /**
+     * Tests updating Elo rating with valid parameters.
+     */
+    @Test
+    public void testUpdateSignupsPlayerElo_ValidInput() {
+        String uuid = "Player1";
+        int newElo = 1500;
+
+        // Call the method under test
+        tournamentInfoUtil.updateSignupsPlayerElo(uuid, newElo);
+
+        // Verify that the updateElo method was called with the correct parameters
+        verify(signupsRepository).updateElo(uuid, newElo);
+    }
+
+    /**
+     * Tests updating Elo rating with a null UUID.
+     */
+    @Test
+    public void testUpdateSignupsPlayerElo_NullUuid() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.updateSignupsPlayerElo(null, 1500);
+        });
+    }
+
+    /**
+     * Tests updating Elo rating with an empty UUID.
+     */
+    @Test
+    public void testUpdateSignupsPlayerElo_EmptyUuid() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.updateSignupsPlayerElo("", 1500);
+        });
+    }
+
+    /**
+     * Tests updating Elo rating with a zero Elo value.
+     */
+    @Test
+    public void testUpdateSignupsPlayerElo_ZeroElo() {
+        String uuid = "Player1";
+        assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.updateSignupsPlayerElo(uuid, 0);
+        });
+    }
+
+    /**
+     * Tests updating Elo rating with a negative Elo value.
+     */
+    @Test
+    public void testUpdateSignupsPlayerElo_NegativeElo() {
+        String uuid = "Player1";
+        assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.updateSignupsPlayerElo(uuid, -100);
+        });
+    }
 }

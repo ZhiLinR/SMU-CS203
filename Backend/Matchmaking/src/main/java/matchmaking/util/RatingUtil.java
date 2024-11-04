@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Comparator;
 
 import matchmaking.dto.*;
 import matchmaking.model.Matchups;
@@ -44,6 +43,7 @@ public class RatingUtil {
 
         // Calculate ranks
         calculateRanks(playerWins, playerResults);
+        System.out.println(playerResults);
     }
 
     /**
@@ -124,8 +124,14 @@ public class RatingUtil {
         }
 
         // Sort rankings by points (descending) and then by Buchholz (descending)
-        rankings.sort(Comparator.comparingDouble(PlayerRanking::getPoints).reversed()
-                .thenComparingInt(PlayerRanking::getBuchholz).reversed());
+        rankings.sort((r1, r2) -> {
+            if (Double.compare(r1.getPoints(), r2.getPoints()) == 0) {
+                return Integer.compare(r1.getPlayerResult().getBuchholz(), r2.getPlayerResult().getBuchholz());
+            }
+            return Double.compare(r2.getPoints(), r1.getPoints());
+        });
+
+        System.out.println(rankings);
 
         // Update the rank in PlayerResults based on sorted order
         for (int i = 0; i < rankings.size(); i++) {
