@@ -1,6 +1,7 @@
 package matchmaking.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import jakarta.persistence.Embeddable;
  */
 @Data
 @Embeddable
+@Accessors(chain = true)
 public class MatchupsId implements Serializable {
 
     /**

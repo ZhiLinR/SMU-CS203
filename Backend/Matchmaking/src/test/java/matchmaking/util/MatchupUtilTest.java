@@ -95,10 +95,10 @@ public class MatchupUtilTest {
      * @return a new Signups object.
      */
     private Signups createPlayer(String uuid, int elo) {
-        Signups player = new Signups();
-        player.setUuid(uuid);
-        player.setElo(elo);
-        player.setTournamentId(tournamentId);
+        Signups player = new Signups()
+                .setUuid(uuid)
+                .setElo(elo)
+                .setTournamentId(tournamentId);
         return player;
     }
 
@@ -117,15 +117,15 @@ public class MatchupUtilTest {
         when(tournamentInfoUtil.getPlayerWinsByTournamentId(tournamentId)).thenReturn(playerWins);
 
         // Mock matchups
-        MatchupsId matchId1 = new MatchupsId();
-        matchId1.setPlayer1(player1.getUuid());
-        matchId1.setPlayer2(player2.getUuid());
-        matchId1.setTournamentId(tournamentId);
+        MatchupsId matchId1 = new MatchupsId()
+                .setPlayer1(player1.getUuid())
+                .setPlayer2(player2.getUuid())
+                .setTournamentId(tournamentId);
 
-        match1 = new Matchups(); // Properly initialize match1
-        match1.setId(matchId1);
-        match1.setRoundNum(1);
-        match1.setPlayerWon("Player1");
+        match1 = new Matchups() // Properly initialize match1
+                .setId(matchId1)
+                .setRoundNum(1)
+                .setPlayerWon("Player1");
 
         when(matchupsRepository.getMatchupsByTournamentId(tournamentId)).thenReturn(List.of(match1));
 
@@ -146,10 +146,10 @@ public class MatchupUtilTest {
      * @return a new PlayerWins object.
      */
     private PlayerWins createPlayerWins(String uuid, int wins, int draws) {
-        PlayerWins win = new PlayerWins();
-        win.setUuid(uuid);
-        win.setWins(wins);
-        win.setDraws(draws);
+        PlayerWins win = new PlayerWins()
+                .setUuid(uuid)
+                .setWins(wins)
+                .setDraws(draws);
         return win;
     }
 
@@ -185,14 +185,14 @@ public class MatchupUtilTest {
     @Test
     public void testGetPlayedPairsRetrievesCorrectPairs() {
         // Set up additional players and matchups for this test
-        MatchupsId matchId2 = new MatchupsId();
-        matchId2.setPlayer1(player3.getUuid());
-        matchId2.setPlayer2(player4.getUuid());
-        matchId2.setTournamentId(tournamentId);
+        MatchupsId matchId2 = new MatchupsId()
+                .setPlayer1(player3.getUuid())
+                .setPlayer2(player4.getUuid())
+                .setTournamentId(tournamentId);
 
-        Matchups match2 = new Matchups();
-        match2.setId(matchId2);
-        match2.setRoundNum(1);
+        Matchups match2 = new Matchups()
+                .setId(matchId2)
+                .setRoundNum(1);
 
         List<Matchups> previousMatchups = List.of(match1, match2);
         Set<String> result = MatchupUtil.getPlayedPairs(previousMatchups);
@@ -221,14 +221,14 @@ public class MatchupUtilTest {
     @Test
     public void testGetPlayedPairsHandlesDuplicates() {
         // Creating duplicate matchup with swapped players for duplicate test
-        MatchupsId duplicateMatchId = new MatchupsId();
-        duplicateMatchId.setPlayer1(player2.getUuid());
-        duplicateMatchId.setPlayer2(player1.getUuid());
-        duplicateMatchId.setTournamentId(tournamentId);
+        MatchupsId duplicateMatchId = new MatchupsId()
+                .setPlayer1(player2.getUuid())
+                .setPlayer2(player1.getUuid())
+                .setTournamentId(tournamentId);
 
-        Matchups duplicateMatch = new Matchups();
-        duplicateMatch.setId(duplicateMatchId);
-        duplicateMatch.setRoundNum(2);
+        Matchups duplicateMatch = new Matchups()
+                .setId(duplicateMatchId)
+                .setRoundNum(2);
 
         List<Matchups> previousMatchups = List.of(match1, duplicateMatch);
         Set<String> result = MatchupUtil.getPlayedPairs(previousMatchups);

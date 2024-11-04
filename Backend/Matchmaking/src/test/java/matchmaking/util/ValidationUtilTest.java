@@ -104,10 +104,10 @@ public class ValidationUtilTest {
      * @return a new Signups object.
      */
     private Signups createPlayer(String uuid, int elo) {
-        Signups player = new Signups();
-        player.setUuid(uuid);
-        player.setElo(elo);
-        player.setTournamentId(tournamentId);
+        Signups player = new Signups()
+                .setUuid(uuid)
+                .setElo(elo)
+                .setTournamentId(tournamentId);
         return player;
     }
 
@@ -126,26 +126,24 @@ public class ValidationUtilTest {
         when(tournamentInfoUtil.getPlayerWinsByTournamentId(tournamentId)).thenReturn(playerWins);
 
         // Mock matchups
-        MatchupsId matchId1 = new MatchupsId();
-        matchId1.setPlayer1(player1.getUuid());
-        matchId1.setPlayer2(player2.getUuid());
-        matchId1.setTournamentId(tournamentId);
+        MatchupsId matchId1 = new MatchupsId()
+                .setPlayer1(player1.getUuid())
+                .setPlayer2(player2.getUuid())
+                .setTournamentId(tournamentId);
 
-        matchup = new Matchups(); // Fixed: Use instance variable 'matchup' instead of local variable
-        matchup.setId(matchId1);
-        matchup.setRoundNum(1);
-        matchup.setPlayerWon("Player1");
+        matchup = new Matchups()
+                .setId(matchId1)
+                .setRoundNum(1)
+                .setPlayerWon("Player1");
 
-        MatchupsId matchupsIdWonLoss = new MatchupsId();
-        matchupsIdWonLoss.setPlayer1("player-won");
-        matchupsIdWonLoss.setPlayer2("player-lost");
-        matchupsIdWonLoss.setTournamentId(tournamentId);
+        MatchupsId matchupsIdWonLoss = new MatchupsId()
+                .setPlayer1("player-won")
+                .setPlayer2("player-lost")
+                .setTournamentId(tournamentId);
 
-        matchupWonLoss = new Matchups();
-        matchupWonLoss.setPlayerWon("player-won");
-        matchupWonLoss.setId(matchupsIdWonLoss);
-
-        // System.out.println(matchupWonLoss);
+        matchupWonLoss = new Matchups()
+                .setPlayerWon("player-won")
+                .setId(matchupsIdWonLoss);
 
         when(matchupsRepository.getMatchupsByTournamentId(tournamentId)).thenReturn(List.of(matchup));
 
@@ -231,9 +229,9 @@ public class ValidationUtilTest {
 
     @Test
     public void testIsValidMatchupThrowsExceptionWhenPlayersAreSame() {
-        MatchupsId invalidMatchupId = new MatchupsId();
-        invalidMatchupId.setPlayer1("Player1");
-        invalidMatchupId.setPlayer2("Player1");
+        MatchupsId invalidMatchupId = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player1");
 
         Matchups invalidMatchup = new Matchups();
         invalidMatchup.setId(invalidMatchupId);
@@ -263,8 +261,8 @@ public class ValidationUtilTest {
      */
     @Test
     public void testValidatePlayerResults_ThrowsException_WhenUuidNotFound() {
-        PlayerResults result1 = new PlayerResults();
-        result1.setUuid("uuid1");
+        PlayerResults result1 = new PlayerResults()
+                .setUuid("uuid1");
         List<PlayerResults> playerResults = Arrays.asList(result1);
         String uuid = "some-other-uuid";
 
@@ -280,8 +278,8 @@ public class ValidationUtilTest {
      */
     @Test
     public void testValidatePlayerResults_Succeeds_WhenUuidFound() {
-        PlayerResults result1 = new PlayerResults();
-        result1.setUuid("uuid1");
+        PlayerResults result1 = new PlayerResults()
+                .setUuid("uuid1");
         List<PlayerResults> playerResults = Arrays.asList(result1);
         String uuid = "uuid1"; // Matching UUID
 
@@ -310,11 +308,11 @@ public class ValidationUtilTest {
      */
     @Test
     public void testValidateMatchups_Succeeds_WhenPlayersFound() {
-        PlayerResults player1Results = new PlayerResults();
-        player1Results.setUuid("player-won");
+        PlayerResults player1Results = new PlayerResults()
+                .setUuid("player-won");
 
-        PlayerResults player2Results = new PlayerResults();
-        player2Results.setUuid("player-lost");
+        PlayerResults player2Results = new PlayerResults()
+                .setUuid("player-lost");
 
         List<PlayerResults> playerResults = Arrays.asList(player1Results, player2Results);
 

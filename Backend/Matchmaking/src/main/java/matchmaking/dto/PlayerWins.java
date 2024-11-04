@@ -1,12 +1,14 @@
 package matchmaking.dto;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * Represents a player's performance in a tournament,
  * storing their UUID and the number of rounds they have won and drawed.
  */
 @Data
+@Accessors(chain = true)
 public class PlayerWins {
     private String uuid;
     private Integer wins;

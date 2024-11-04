@@ -44,10 +44,10 @@ public class MatchupManagerTest {
     }
 
     private MatchupsId setUpMatchupId(String player1, String player2) {
-        MatchupsId matchupsId = new MatchupsId();
-        matchupsId.setPlayer1(player1);
-        matchupsId.setPlayer2(player2);
-        matchupsId.setTournamentId(tournamentId);
+        MatchupsId matchupsId = new MatchupsId()
+                .setPlayer1(player1)
+                .setPlayer2(player2)
+                .setTournamentId(tournamentId);
 
         return matchupsId;
     }
@@ -59,8 +59,14 @@ public class MatchupManagerTest {
     public void testCreateUniqueMatchupsWithEvenPlayers() {
         System.out.println("CreateUniqueMatchupsWithEvenPlayers");
         List<Signups> players = new ArrayList<>();
-        players.add(new Signups().setUuid("Player1").setTournamentId(tournamentId).setElo(1500));
-        players.add(new Signups().setUuid("Player2").setTournamentId(tournamentId).setElo(1400));
+        players.add(new Signups()
+                .setUuid("Player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500));
+        players.add(new Signups()
+                .setUuid("Player2")
+                .setTournamentId(tournamentId)
+                .setElo(1400));
 
         Set<String> playedPairs = new HashSet<>();
         when(playerSorter.sortPlayersForRound(players, tournamentId, roundNum)).thenReturn(players);
@@ -68,8 +74,8 @@ public class MatchupManagerTest {
                 .thenAnswer(invocation -> {
                     Signups player1 = invocation.getArgument(0);
                     Signups player2 = invocation.getArgument(1);
-                    Matchups match1 = new Matchups();
-                    match1.setId(setUpMatchupId(player1.getUuid(), player2.getUuid()));
+                    Matchups match1 = new Matchups()
+                            .setId(setUpMatchupId(player1.getUuid(), player2.getUuid()));
                     return match1;
                 });
 
@@ -89,13 +95,127 @@ public class MatchupManagerTest {
     public void testCreateUniqueMatchupsValidationError() {
         System.out.println("CreateUniqueMatchupsValidationError");
         List<Signups> players = new ArrayList<>();
-        players.add(new Signups().setUuid("Player1").setTournamentId(tournamentId).setElo(1500));
-        players.add(new Signups().setUuid("Player2").setTournamentId(tournamentId).setElo(1400));
+        players.add(new Signups()
+                .setUuid("Player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500));
+        players.add(new Signups()
+                .setUuid("Player2")
+                .setTournamentId(tournamentId)
+                .setElo(1400));
 
         Set<String> playedPairs = new HashSet<>();
         when(playerSorter.sortPlayersForRound(players, tournamentId, roundNum)).thenReturn(players);
         when(tournamentInfoUtil.createMatchup(any(Signups.class), any(Signups.class), eq(tournamentId), eq(roundNum)))
                 .thenThrow(new IllegalArgumentException("Invalid matchup"));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            matchupManager.createUniqueMatchups(players, tournamentId, roundNum, playedPairs);
+        });
+    }
+
+    /**
+     * Tests creating unique matchups with an odd number of players, ensuring a bye
+     * is handled.
+     */
+    @Test
+    public void testCreateUniqueMatchupsWithOddPlayers() {
+        System.out.println("CreateUniqueMatchupsWithOddPlayers");
+        List<Signups> players = new ArrayList<>();
+        players.add(new Signups()
+                .setUuid("Player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500));
+        players.add(new Signups()
+                .setUuid("Player2")
+                .setTournamentId(tournamentId)
+                .setElo(1400));
+        players.add(new Signups()
+                .setUuid("Player3")
+                .setTournamentId(tournamentId)
+                .setElo(1300)); // Odd player
+
+        Set<String> playedPairs = new HashSet<>();
+        when(playerSorter.sortPlayersForRound(players, tournamentId, roundNum)).thenReturn(players);
+        when(tournamentInfoUtil.createMatchup(any(Signups.class), any(Signups.class), eq(tournamentId), eq(roundNum)))
+                .thenAnswer(invocation -> {
+                    Signups player1 = invocation.getArgument(0);
+                    Signups player2 = invocation.getArgument(1);
+                    Matchups match1 = new Matchups()
+                            .setId(setUpMatchupId(player1.getUuid(), player2.getUuid()));
+                    return match1;
+                });
+
+        List<Matchups> matchups = matchupManager.createUniqueMatchups(players, tournamentId, roundNum, playedPairs);
+
+        assertNotNull(matchups);
+        assertEquals(2, matchups.size()); // Two matchups, one bye
+        assertTrue(matchups.stream().anyMatch(m -> m.getId().getPlayer2().equals("null"))); // Check for bye
+        verify(tournamentInfoUtil, times(1)).insertMatchups(matchups, tournamentId, roundNum);
+    }
+
+    /**
+     * Tests creating matchups with played pairs to ensure duplicates are avoided.
+     */
+    @Test
+    public void testCreateUniqueMatchupsWithPlayedPairs() {
+        System.out.println("CreateUniqueMatchupsWithPlayedPairs");
+        List<Signups> players = new ArrayList<>();
+        players.add(new Signups()
+                .setUuid("Player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500));
+        players.add(new Signups()
+                .setUuid("Player2")
+                .setTournamentId(tournamentId)
+                .setElo(1400));
+        players.add(new Signups()
+                .setUuid("Player3")
+                .setTournamentId(tournamentId)
+                .setElo(1300));
+
+        Set<String> playedPairs = new HashSet<>();
+        playedPairs.add("Player1_Player2"); // Already played
+
+        when(playerSorter.sortPlayersForRound(players, tournamentId, roundNum)).thenReturn(players);
+        when(tournamentInfoUtil.createMatchup(any(Signups.class), any(Signups.class), eq(tournamentId), eq(roundNum)))
+                .thenAnswer(invocation -> {
+                    Signups player1 = invocation.getArgument(0);
+                    Signups player2 = invocation.getArgument(1);
+                    Matchups match1 = new Matchups()
+                            .setId(setUpMatchupId(player1.getUuid(), player2.getUuid()));
+                    return match1;
+                });
+
+        List<Matchups> matchups = matchupManager.createUniqueMatchups(players, tournamentId, roundNum, playedPairs);
+
+        assertNotNull(matchups);
+        assertEquals(1, matchups.size()); // Should only create one valid matchup
+        assertEquals("Player3", matchups.get(0).getId().getPlayer1());
+        assertEquals("Player2", matchups.get(0).getId().getPlayer2()); // Player2 paired with Player3
+    }
+
+    /**
+     * Tests for handling cases where no valid matchup is found.
+     */
+    @Test
+    public void testCreateUniqueMatchupsNoValidMatchup() {
+        System.out.println("CreateUniqueMatchupsNoValidMatchup");
+        List<Signups> players = new ArrayList<>();
+        players.add(new Signups()
+                .setUuid("Player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500));
+        players.add(new Signups()
+                .setUuid("Player2")
+                .setTournamentId(tournamentId)
+                .setElo(1400));
+
+        Set<String> playedPairs = new HashSet<>();
+        // Simulate that players can't be matched
+        when(playerSorter.sortPlayersForRound(players, tournamentId, roundNum)).thenReturn(players);
+        when(tournamentInfoUtil.createMatchup(any(Signups.class), any(Signups.class), eq(tournamentId), eq(roundNum)))
+                .thenThrow(new IllegalArgumentException("No valid matchups available"));
 
         assertThrows(IllegalArgumentException.class, () -> {
             matchupManager.createUniqueMatchups(players, tournamentId, roundNum, playedPairs);

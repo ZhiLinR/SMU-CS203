@@ -21,15 +21,15 @@ public class MatchupsTest {
      */
     @BeforeEach
     public void setUp() {
-        MatchupsId matchupId = new MatchupsId();
-        matchupId.setPlayer1("Player1");
-        matchupId.setPlayer2("Player2");
-        matchupId.setTournamentId("Tournament123");
+        MatchupsId matchupId = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId("Tournament123");
 
-        matchups = new Matchups();
-        matchups.setId(matchupId);
-        matchups.setPlayerWon("Player1");
-        matchups.setRoundNum(1);
+        matchups = new Matchups()
+                .setId(matchupId)
+                .setPlayerWon("Player1")
+                .setRoundNum(1);
     }
 
     /**
@@ -50,10 +50,10 @@ public class MatchupsTest {
      */
     @Test
     public void testSetAndGetId() {
-        MatchupsId id = new MatchupsId();
-        id.setPlayer1("Player1");
-        id.setPlayer2("Player2");
-        id.setTournamentId("Tournament123");
+        MatchupsId id = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId("Tournament123");
         matchups.setId(id);
         assertEquals(id, matchups.getId());
     }
@@ -81,15 +81,15 @@ public class MatchupsTest {
      */
     @Test
     public void testEqualsWithDifferentPlayers() {
-        MatchupsId id1 = new MatchupsId();
-        id1.setPlayer1("Player1");
-        id1.setPlayer2("Player2");
-        id1.setTournamentId("Tournament123");
+        MatchupsId id1 = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId("Tournament123");
 
-        MatchupsId id2 = new MatchupsId();
-        id2.setPlayer1("Player3");
-        id2.setPlayer2("Player4");
-        id2.setTournamentId("Tournament123");
+        MatchupsId id2 = new MatchupsId()
+                .setPlayer1("Player3")
+                .setPlayer2("Player4")
+                .setTournamentId("Tournament123");
 
         Matchups matchups1 = new Matchups();
         matchups1.setId(id1);
@@ -106,20 +106,20 @@ public class MatchupsTest {
      */
     @Test
     public void testEqualsWithSameAttributes() {
-        MatchupsId id = new MatchupsId();
-        id.setPlayer1("Player1");
-        id.setPlayer2("Player2");
-        id.setTournamentId("Tournament123");
+        MatchupsId id = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId("Tournament123");
 
-        Matchups matchups1 = new Matchups();
-        matchups1.setId(id);
-        matchups1.setPlayerWon("Player1");
-        matchups1.setRoundNum(1);
+        Matchups matchups1 = new Matchups()
+                .setId(id)
+                .setPlayerWon("Player1")
+                .setRoundNum(1);
 
-        Matchups matchups2 = new Matchups();
-        matchups2.setId(id);
-        matchups2.setPlayerWon("Player1");
-        matchups2.setRoundNum(1);
+        Matchups matchups2 = new Matchups()
+                .setId(id)
+                .setPlayerWon("Player1")
+                .setRoundNum(1);
 
         assertEquals(matchups1, matchups2);
         assertEquals(matchups1.hashCode(), matchups2.hashCode());
@@ -130,13 +130,14 @@ public class MatchupsTest {
      */
     @Test
     public void testToString() {
-        MatchupsId id = new MatchupsId();
-        id.setPlayer1("Player1");
-        id.setPlayer2("Player2");
-        id.setTournamentId("Tournament123");
-        matchups.setId(id);
-        matchups.setPlayerWon("Player1");
-        matchups.setRoundNum(1);
+        MatchupsId id = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId("Tournament123");
+
+        matchups.setId(id)
+                .setPlayerWon("Player1")
+                .setRoundNum(1);
 
         String expectedString = "Matchups(id=" + id + ", playerWon=Player1, roundNum=1)";
         assertEquals(expectedString, matchups.toString());
@@ -174,20 +175,20 @@ public class MatchupsTest {
      */
     @Test
     public void testMatchupsIdEqualsAndHashCode() {
-        MatchupsId id1 = new MatchupsId();
-        id1.setPlayer1("Player1");
-        id1.setPlayer2("Player2");
-        id1.setTournamentId("Tournament123");
+        MatchupsId id1 = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId("Tournament123");
 
-        MatchupsId id2 = new MatchupsId();
-        id2.setPlayer1("Player1");
-        id2.setPlayer2("Player2");
-        id2.setTournamentId("Tournament123");
+        MatchupsId id2 = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId("Tournament123");
 
-        MatchupsId id3 = new MatchupsId();
-        id3.setPlayer1("Player3");
-        id3.setPlayer2("Player4");
-        id3.setTournamentId("Tournament123");
+        MatchupsId id3 = new MatchupsId()
+                .setPlayer1("Player3")
+                .setPlayer2("Player4")
+                .setTournamentId("Tournament123");
 
         assertEquals(id1, id2);
         assertNotEquals(id1, id3);

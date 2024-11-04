@@ -37,18 +37,18 @@ public class RatingUtilTest {
     private void setupMockResults(String[] uuids, int[] elos, int[] buchholz, Integer[] wins, Integer[] draws) {
         for (int i = 0; i < uuids.length; i++) {
             // Set up PlayerResults
-            PlayerResults playerResults = new PlayerResults();
-            playerResults.setUuid(uuids[i]);
-            playerResults.setElo(elos[i]);
-            playerResults.setBuchholz(buchholz[i]);
-            playerResults.setRank(0); // Initial rank
+            PlayerResults playerResults = new PlayerResults()
+                    .setUuid(uuids[i])
+                    .setElo(elos[i])
+                    .setBuchholz(buchholz[i])
+                    .setRank(0); // Initial rank
             this.playerResults.add(playerResults);
 
             // Set up PlayerWins
-            PlayerWins playerWins = new PlayerWins();
-            playerWins.setUuid(uuids[i]);
-            playerWins.setWins(wins[i]);
-            playerWins.setDraws(draws[i]);
+            PlayerWins playerWins = new PlayerWins()
+                    .setUuid(uuids[i])
+                    .setWins(wins[i])
+                    .setDraws(draws[i]);
             this.playerWins.add(playerWins);
         }
     }
@@ -59,12 +59,12 @@ public class RatingUtilTest {
     @Test
     public void testUpdateRatings_Success() throws ResultsNotFoundException {
         // Setup mock matchups
-        Matchups matchup1 = new Matchups();
-        matchup1.setPlayerWon("Player1");
-        MatchupsId id1 = new MatchupsId();
-        id1.setPlayer1("Player1");
-        id1.setPlayer2("Player2");
-        matchup1.setId(id1);
+        MatchupsId id1 = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2");
+        Matchups matchup1 = new Matchups()
+                .setPlayerWon("Player1")
+                .setId(id1);
         matchups.add(matchup1);
 
         // Setup mock results
@@ -88,24 +88,25 @@ public class RatingUtilTest {
      */
     @Test
     public void testUpdateRatings_MissingPlayerResults() {
-        Matchups matchup1 = new Matchups();
-        matchup1.setPlayerWon("Player1");
-        MatchupsId id1 = new MatchupsId();
-        id1.setPlayer1("Player1");
-        id1.setPlayer2("Player2");
-        matchup1.setId(id1);
+        MatchupsId id1 = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2");
+
+        Matchups matchup1 = new Matchups()
+                .setPlayerWon("Player1")
+                .setId(id1);
         matchups.add(matchup1);
 
         // Setup mock result only for Player1
-        PlayerResults player1Results = new PlayerResults();
-        player1Results.setUuid("Player1");
+        PlayerResults player1Results = new PlayerResults()
+                .setUuid("Player1");
         playerResults.add(player1Results);
 
         // Setup mock results for PlayerWins, missing Player2
-        PlayerWins playerWins = new PlayerWins();
-        playerWins.setUuid("Player1");
-        playerWins.setWins(3);
-        playerWins.setDraws(0);
+        PlayerWins playerWins = new PlayerWins()
+                .setUuid("Player1")
+                .setWins(3)
+                .setDraws(0);
         this.playerWins.add(playerWins);
 
         // Expect exception
@@ -120,12 +121,13 @@ public class RatingUtilTest {
     @Test
     public void testCalculateBuchholzScore() throws ResultsNotFoundException {
         // Setup mock matchups
-        Matchups matchup1 = new Matchups();
-        matchup1.setPlayerWon("Player1");
-        MatchupsId id1 = new MatchupsId();
-        id1.setPlayer1("Player1");
-        id1.setPlayer2("Player2");
-        matchup1.setId(id1);
+        MatchupsId id1 = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2");
+
+        Matchups matchup1 = new Matchups()
+                .setPlayerWon("Player1")
+                .setId(id1);
         matchups.add(matchup1);
 
         // Setup mock results
@@ -145,12 +147,13 @@ public class RatingUtilTest {
     @Test
     public void testUpdateEloRatings() throws ResultsNotFoundException {
         // Setup mock matchups
-        Matchups matchup1 = new Matchups();
-        matchup1.setPlayerWon("Player1");
-        MatchupsId id1 = new MatchupsId();
-        id1.setPlayer1("Player1");
-        id1.setPlayer2("Player2");
-        matchup1.setId(id1);
+        MatchupsId id1 = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2");
+
+        Matchups matchup1 = new Matchups()
+                .setPlayerWon("Player1")
+                .setId(id1);
         matchups.add(matchup1);
 
         // Setup mock results

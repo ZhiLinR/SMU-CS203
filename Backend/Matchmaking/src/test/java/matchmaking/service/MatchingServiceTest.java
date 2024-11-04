@@ -55,10 +55,22 @@ public class MatchingServiceTest {
         previousMatchups = new ArrayList<>();
 
         // Mocking signups and previous matchups
-        Signups player1 = new Signups().setUuid("player1").setTournamentId(tournamentId).setElo(1500);
-        Signups player2 = new Signups().setUuid("player2").setTournamentId(tournamentId).setElo(1600);
-        Signups player3 = new Signups().setUuid("player3").setTournamentId(tournamentId).setElo(1700);
-        Signups player4 = new Signups().setUuid("player4").setTournamentId(tournamentId).setElo(1800);
+        Signups player1 = new Signups()
+                .setUuid("player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500);
+        Signups player2 = new Signups()
+                .setUuid("player2")
+                .setTournamentId(tournamentId)
+                .setElo(1600);
+        Signups player3 = new Signups()
+                .setUuid("player3")
+                .setTournamentId(tournamentId)
+                .setElo(1700);
+        Signups player4 = new Signups()
+                .setUuid("player4")
+                .setTournamentId(tournamentId)
+                .setElo(1800);
 
         signups.add(player1);
         signups.add(player2);
@@ -66,16 +78,16 @@ public class MatchingServiceTest {
         signups.add(player4);
 
         // Create and set up a MatchupsId instance
-        MatchupsId mockMatchupsId = new MatchupsId();
-        mockMatchupsId.setPlayer1("player1");
-        mockMatchupsId.setPlayer2("player2");
-        mockMatchupsId.setTournamentId(tournamentId);
+        MatchupsId mockMatchupsId = new MatchupsId()
+                .setPlayer1("player1")
+                .setPlayer2("player2")
+                .setTournamentId(tournamentId);
 
         // Create and set up a Matchups instance
-        Matchups mockMatchup = new Matchups();
-        mockMatchup.setId(mockMatchupsId);
-        mockMatchup.setPlayerWon("player1");
-        mockMatchup.setRoundNum(1);
+        Matchups mockMatchup = new Matchups()
+                .setId(mockMatchupsId)
+                .setPlayerWon("player1")
+                .setRoundNum(1);
 
         previousMatchups.add(mockMatchup);
     }
@@ -123,9 +135,18 @@ public class MatchingServiceTest {
     @Test
     public void testGenerateUniqueMatchups_OddNumberOfPlayers() {
         // Arrange
-        Signups player1 = new Signups().setUuid("player1").setTournamentId(tournamentId).setElo(1500);
-        Signups player2 = new Signups().setUuid("player2").setTournamentId(tournamentId).setElo(1600);
-        Signups player3 = new Signups().setUuid("player3").setTournamentId(tournamentId).setElo(1700); // Odd player
+        Signups player1 = new Signups()
+                .setUuid("player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500);
+        Signups player2 = new Signups()
+                .setUuid("player2")
+                .setTournamentId(tournamentId)
+                .setElo(1600);
+        Signups player3 = new Signups()
+                .setUuid("player3")
+                .setTournamentId(tournamentId)
+                .setElo(1700); // Odd player
         signups.addAll(Arrays.asList(player1, player2, player3));
 
         when(tournamentInfoUtil.getCurrentRoundByTournamentId(tournamentId)).thenReturn(roundNum);
@@ -178,8 +199,14 @@ public class MatchingServiceTest {
     @Test
     public void testGenerateUniqueMatchups_DuplicatePlayerIDs() {
         // Arrange
-        Signups player1 = new Signups().setUuid("player1").setTournamentId(tournamentId).setElo(1500);
-        Signups duplicatePlayer1 = new Signups().setUuid("player1").setTournamentId(tournamentId).setElo(1600);
+        Signups player1 = new Signups()
+                .setUuid("player1")
+                .setTournamentId(tournamentId)
+                .setElo(1500);
+        Signups duplicatePlayer1 = new Signups()
+                .setUuid("player1")
+                .setTournamentId(tournamentId)
+                .setElo(1600);
         signups.addAll(Arrays.asList(player1, duplicatePlayer1));
 
         when(tournamentInfoUtil.getCurrentRoundByTournamentId(tournamentId)).thenReturn(roundNum);

@@ -72,17 +72,17 @@ public class ConversionUtilTest {
      */
     @Test
     public void testGetUuidsOrderedByRank_DuplicateRanks() {
-        PlayerResults player1 = new PlayerResults();
-        player1.setUuid("uuid1");
-        player1.setRank(1);
+        PlayerResults player1 = new PlayerResults()
+                .setUuid("uuid1")
+                .setRank(1);
 
-        PlayerResults player2 = new PlayerResults();
-        player2.setUuid("uuid2");
-        player2.setRank(1); // Same rank as player1
+        PlayerResults player2 = new PlayerResults()
+                .setUuid("uuid2")
+                .setRank(1); // Same rank as player1
 
-        PlayerResults player3 = new PlayerResults();
-        player3.setUuid("uuid3");
-        player3.setRank(2);
+        PlayerResults player3 = new PlayerResults()
+                .setUuid("uuid3")
+                .setRank(2);
 
         List<PlayerResults> playerResults = Arrays.asList(player1, player2, player3);
 
@@ -123,9 +123,9 @@ public class ConversionUtilTest {
      * Helper method to create a Signups object for testing.
      */
     private Signups createSignup(String uuid, int elo) {
-        Signups signup = new Signups();
-        signup.setUuid(uuid);
-        signup.setElo(elo);
+        Signups signup = new Signups()
+                .setUuid(uuid)
+                .setElo(elo);
         return signup;
     }
 }

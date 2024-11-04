@@ -69,15 +69,15 @@ public class TournamentInfoUtilTest {
      */
     private List<Matchups> createMockMatchups() {
         List<Matchups> matchups = new ArrayList<>();
-        MatchupsId matchId = new MatchupsId();
-        matchId.setPlayer1("Player1");
-        matchId.setPlayer2("Player2");
-        matchId.setTournamentId(tournamentId);
+        MatchupsId matchId = new MatchupsId()
+                .setPlayer1("Player1")
+                .setPlayer2("Player2")
+                .setTournamentId(tournamentId);
 
-        Matchups matchup = new Matchups();
-        matchup.setId(matchId);
-        matchup.setRoundNum(1);
-        matchup.setPlayerWon(null); // No winner set
+        Matchups matchup = new Matchups()
+                .setId(matchId)
+                .setRoundNum(1)
+                .setPlayerWon(null); // No winner set
         matchups.add(matchup);
         return matchups;
     }
@@ -89,12 +89,12 @@ public class TournamentInfoUtilTest {
      */
     private List<Signups> createMockSignups() {
         List<Signups> signups = new ArrayList<>();
-        Signups player1 = new Signups();
-        player1.setUuid("Player1");
+        Signups player1 = new Signups()
+                .setUuid("Player1");
         signups.add(player1);
 
-        Signups player2 = new Signups();
-        player2.setUuid("Player2");
+        Signups player2 = new Signups()
+                .setUuid("Player2");
         signups.add(player2);
 
         return signups;
@@ -214,10 +214,10 @@ public class TournamentInfoUtilTest {
      */
     @Test
     public void testCreateMatchupWithoutWinner() {
-        Signups player1 = new Signups();
-        player1.setUuid("Player1");
-        Signups player2 = new Signups();
-        player2.setUuid("Player2");
+        Signups player1 = new Signups()
+                .setUuid("Player1");
+        Signups player2 = new Signups()
+                .setUuid("Player2");
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, tournamentId, 1);
 
@@ -234,10 +234,10 @@ public class TournamentInfoUtilTest {
      */
     @Test
     public void testCreateMatchupWithWinner() {
-        Signups player1 = new Signups();
-        player1.setUuid("Player1");
-        Signups player2 = new Signups();
-        player2.setUuid("Player2");
+        Signups player1 = new Signups()
+                .setUuid("Player1");
+        Signups player2 = new Signups()
+                .setUuid("Player2");
         Signups winner = player1;
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, winner, tournamentId, 1);
@@ -256,10 +256,10 @@ public class TournamentInfoUtilTest {
      */
     @Test
     public void testInsertMatchups() {
-        Signups player1 = new Signups();
-        player1.setUuid("Player1");
-        Signups player2 = new Signups();
-        player2.setUuid("Player2");
+        Signups player1 = new Signups()
+                .setUuid("Player1");
+        Signups player2 = new Signups()
+                .setUuid("Player2");
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, tournamentId, 1);
         tournamentInfoUtil.insertMatchups(List.of(matchup), tournamentId, 1);

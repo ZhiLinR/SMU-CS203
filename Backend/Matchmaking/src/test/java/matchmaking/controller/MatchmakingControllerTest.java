@@ -90,16 +90,16 @@ public class MatchmakingControllerTest {
                 String tournamentId = "123";
 
                 // Create and set up a MatchupsId instance
-                MatchupsId mockMatchupsId = new MatchupsId();
-                mockMatchupsId.setPlayer1("player1");
-                mockMatchupsId.setPlayer2("player2");
-                mockMatchupsId.setTournamentId(tournamentId);
+                MatchupsId mockMatchupsId = new MatchupsId()
+                                .setPlayer1("player1")
+                                .setPlayer2("player2")
+                                .setTournamentId(tournamentId);
 
                 // Create and set up a Matchups instance
-                Matchups mockMatchup = new Matchups();
-                mockMatchup.setId(mockMatchupsId);
-                mockMatchup.setPlayerWon("player1");
-                mockMatchup.setRoundNum(1);
+                Matchups mockMatchup = new Matchups()
+                                .setId(mockMatchupsId)
+                                .setPlayerWon("player1")
+                                .setRoundNum(1);
 
                 // Use Collections.singletonList to create a list with the mock Matchups
                 // instance
