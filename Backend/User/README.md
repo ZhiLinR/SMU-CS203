@@ -44,7 +44,7 @@ mvn spring-boot:run
 | `POST`      | [/profile](#post-profile) | Retrieves a user profile by UUID.               |
 | `PUT`       | [/profile](#put-profile) | Updates user profile data.                   |
 | `PUT`       | [/profile/elo](#put-profileelo) | Updates a user's ELO rating.              |
-| `POST`      | [/profile/namelist](#post-profilenamelist) | Retrieves a list of user names by UUIDs. |
+| `POST`      | [/namelist](#post-namelist) | Retrieves a list of user names by UUIDs. |
 
 
 
@@ -318,7 +318,7 @@ Sample Failed 404 Response:
 }
 ```
 
-### POST /profile/namelist
+### POST /namelist
 
 ---
 Retrieves the namelist of all users in a list given an array of UUIDs. Returns a dictionary where the key is UUID and value is name.

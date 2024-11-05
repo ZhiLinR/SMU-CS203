@@ -170,7 +170,7 @@ public class ProfileController {
      * @return a {@link ResponseEntity} with a dictionary of the users' uuid and
      *         names or an error message
      */
-    @PostMapping("/profile/namelist")
+    @PostMapping("/namelist")
     public ResponseEntity<Map<String, Object>> getNamesByUUIDList(@RequestBody NamelistRequest request) {
         try {
             List<String> uuids = request.getData();
