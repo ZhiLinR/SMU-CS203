@@ -35,19 +35,22 @@ mvn spring-boot:run
 
 **Response:**
 ```json
-[
-    {
-        "tournamentID": "01433c4a-87aa-11ef-8c7b-0242ac110003",
-        "startDate": "2024-10-10",
-        "endDate": "2024-10-12",
-        "location": "Pungul",
-        "playerLimit": 10,
-        "status": "Completed",
-        "descOID": "ID073",
-        "name": "NorthEastSlummers"
-    },
-    ...
-]
+{
+    "message": "Tournaments retrieved successfully",
+    "success": true,
+    "content": [
+        {
+            "tournamentID": "01433c4a-87aa-11ef-8c7b-0242ac110003",
+            "startDate": "2024-10-10",
+            "endDate": "2024-10-12",
+            "location": "Pungul",
+            "playerLimit": 10,
+            "status": "Completed",
+            "descOID": "ID073",
+            "name": "NorthEastSlummers"
+        }
+    ]
+}
 ```
 
 ### 2. Get tournament by tournament ID
@@ -58,11 +61,10 @@ mvn spring-boot:run
 
 **Response:**
 ```json
-
 {
-    "message": "Successfully retrieved tournament.",
+    "message": "Tournament retrieved successfully",
     "success": true,
-    "data": {
+    "content": {
         "tournamentID": "0e6e34ea-8a02-11ef-8c7b-0242ac110003",
         "startDate": "2024-10-30",
         "endDate": "2024-11-15",
@@ -83,11 +85,10 @@ mvn spring-boot:run
 
 **Response:**
 ```json
-
 {
-    "message": "Successfully updated tournament.",
+    "message": "Tournament updated successfully",
     "success": true,
-    "data": {
+    "content": {
         "tournamentID": "0e6e34ea-8a02-11ef-8c7b-0242ac110003",
         "startDate": "2024-10-30",
         "endDate": "2024-11-15",
@@ -108,54 +109,56 @@ mvn spring-boot:run
 
 **Response:**
 ```json
-
 {
-    "message": "Successfully deleted tournament.",
+    "message": "Tournament deleted successfully",
     "success": true,
+    "content": null
 }
 ```
 
-### 4. Creates a tournament
+### 5. Create a tournament
 
 **Endpoint:** `POST /api/tournaments`
 
 **Description:** Create a tournament
 
-- **Request:**
-  ``json
+**Request:**
+```json
+{
+    "name": "Championship",
+    "startDate": "2024-10-10",
+    "endDate": "2024-10-12",
+    "location": "Stadium A",
+    "playerLimit": 10,
+    "isActive": true,
+    "descOID": "Description of the Championship"
+}
+```
 
-  {
-  "name": "Championship",
-  "startDate": "2024-10-10",
-  "endDate": "2024-10-12",
-  "location": "Stadium A",
-  "playerLimit": 10,
-  "isActive": true,
-  "descOID": "Description of the Championship"
-  }
-    ```
+**Response:**
+```json
+{
+    "message": "Tournament created successfully",
+    "success": true,
+    "content": null
+}
+```
 
-#### Retrieve results for a specific tournament
-- **Response:**
-    ```json
-    {
-        "message": "Successfully created tournament",
-        "success": true
-    }
-    ```
-### 5. Health checkpoint
+### 6. Health check
 
 **Endpoint:** `GET /api/tournaments/health`
 
-**Description:** Checks if the application is running successfully
+**Description:** Checks if the service is healthy
 
-- **Response:**
+**Response:**
 ```json
-    {
-      "message": "Application running successfully",
-      "success": true
-    }
+{
+    "message": "Application running successfully",
+    "success": true,
+    "content": null
+}
 ```
+
 ### Game Results Endpoints
 
 | HTTP Method | Endpoint                                    | Description                                        |
@@ -177,126 +180,130 @@ mvn spring-boot:run
 
 **Description:** Creates a new game result for a tournament
 
--**Request:**
+**Request:**
 ```json
-    {
-      "playerWon": "John Doe",
-      "tournamentID": "123",
-      "roundNum": 1
-    }
+{
+    "playerWon": "John Doe",
+    "tournamentID": "123",
+    "roundNum": 1
+}
 ```
 
-- **Response:**
+**Response:**
 ```json
-    {
-      "message": "Successfully created tournament result",
-      "success": true
-    }
+{
+    "message": "Game result created successfully",
+    "success": true,
+    "content": null
+}
 ```
 
 ### 2. Get player list
 
-**Endpoint:** `GET /api/matchups/participats/{tournamentId}`
+**Endpoint:** `GET /api/matchups/participants/{tournamentId}`
 
-**Description:** Retrieve player list  for a specific tournament.
+**Description:** Retrieve player list for a specific tournament.
 
-- **Response:**
+**Response:**
 ```json
-    {
-      "message": "Successfully found participants for the tournament",
-      "success": true,
-      "data": [
+{
+    "message": "Participants retrieved successfully",
+    "success": true,
+    "content": [
         "John Doe",
         "Jane Smith",
         "Alice",
         "Bob"
-      ]
-    }
+    ]
+}
 ```
 
 ### 3. Get game results for a particular tournament
 
 **Endpoint:** `GET /api/matchups/results/{tournamentId}`
 
-**Description:** Checks if the application is running successfully
+**Description:** Retrieve game results for a specific tournament
 
-- **Response:**
+**Response:**
 ```json
-    {
-      "message": "Successfully found game results for the tournament",
-      "success": true,
-      "data": [
+{
+    "message": "Game results retrieved successfully",
+    "success": true,
+    "content": [
         {
-          "tournamentID": 1,
-          "playerWon": "John Doe",
-          "roundNum": 1
+            "tournamentID": 1,
+            "playerWon": "John Doe",
+            "roundNum": 1
         },
         {
-          "tournamentID": 2,
-          "playerWon": "Alice",
-          "roundNum": 2
+            "tournamentID": 2,
+            "playerWon": "Alice",
+            "roundNum": 2
         }
-      ]
-    }
-
+    ]
+}
 ```
 
 ### 4. Update game results
 
-**Endpoint:** `PUT /api/matchups`
+**Endpoint:** `PUT /api/matchups/results`
 
 **Description:** Updates game results
 
-- **Request:**
+**Request:**
 ```json
-    {
-      "playerWon": "Jane Doe",
-      "tournamentID": "123",
-      "roundNum": 1
-    }
+{
+    "playerWon": "Jane Doe",
+    "tournamentID": "123",
+    "roundNum": 1
+}
 ```
-- **Response:**
+
+**Response:**
 ```json
-    {
-      "message": "Successfully updated tournament result.",
-      "success": true
-    }
+{
+    "message": "Game result updated successfully",
+    "success": true,
+    "content": null
+}
 ```
 
 ### 5. Delete game results
 
-**Endpoint:** `DELETE /api/matchups`
+**Endpoint:** `DELETE /api/matchups/results`
 
 **Description:** Deletes a game result
 
-- **Request:**
+**Request:**
 ```json
-    {
-      "playerWon": "John Doe",
-      "tournamentID": "123",
-      "roundNum": 1
-    }
+{
+    "playerWon": "John Doe",
+    "tournamentID": "123",
+    "roundNum": 1
+}
 ```
 
-- **Response:**
+**Response:**
 ```json
-    {
-      "message": "Successfully deleted tournament result",
-      "success": true
-    }
+{
+    "message": "Game result deleted successfully",
+    "success": true,
+    "content": null
+}
 ```
 
-
-### 6. Health checkpoint
+### 6. Health check
 
 **Endpoint:** `GET /api/matchups/health`
 
-**Description:** Checks if the application is running successfully
+**Description:** Checks if the service is healthy
 
-- **Response:**
+**Response:**
 ```json
-    {
-      "message": "Application running successfully",
-      "success": true
-    }
+{
+    "message": "Service is running",
+    "success": true,
+    "content": null
+}
 ```
+

@@ -11,16 +11,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ApiResponse {
+public class StandardApiResponse<T> {
     private String message;
-    private boolean isSuccessful;
-    private Object data;
-
-    public ApiResponse(String message, boolean isSucessful) {
-        this.message = message;
-        this.isSuccessful = isSucessful;
-    }
-    
+    private boolean success;
+    private T content;
 }
 
 

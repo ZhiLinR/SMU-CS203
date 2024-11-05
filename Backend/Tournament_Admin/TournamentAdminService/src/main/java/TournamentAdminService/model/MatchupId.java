@@ -1,6 +1,9 @@
 package TournamentAdminService.model;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -8,7 +11,8 @@ import java.util.Objects;
  * Represents the composite key for the {@link Matchup} entity.
  * Consists of the tournament ID and the round number.
  */
-
+@Getter
+@Setter
 @Embeddable
 public class MatchupId implements Serializable {
 
