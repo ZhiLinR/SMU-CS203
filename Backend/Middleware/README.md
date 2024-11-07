@@ -12,7 +12,7 @@ mvn spring-boot:run
 
 ### Quick Reference API Endpoints
 
-### POST /middleware/checkjwt
+### POST /jwt
 
 ---
 Checks validity of JWT and values and returns the UUID and Role stored in the JWT.
