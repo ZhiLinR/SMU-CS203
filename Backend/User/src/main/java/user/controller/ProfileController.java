@@ -44,8 +44,7 @@ import org.springframework.http.HttpStatus;
  * </ul>
  *
  * <p>
- * This controller is configured with
- * {@code @CrossOrigin(origins = "http://localhost:5173")}
+ * This controller is configured with {@code @CrossOrigin(origins="${ORIGIN}")}
  * to allow cross-origin requests from the specified origin. This is typically
  * necessary for web applications running on a different domain or port, such as
  * a frontend client running locally on a separate server, to make requests to

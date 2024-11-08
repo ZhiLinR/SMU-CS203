@@ -14,11 +14,15 @@ import org.springframework.stereotype.Component;
 /**
  * Utility class for handling JSON Web Tokens (JWT).
  *
- * <p>This class provides methods for extracting claims,
+ * <p>
+ * This class provides methods for extracting claims,
  * and validating JWTs. The tokens are signed using a secret key and
- * contain information about the user, such as username, UUID, and admin status.</p>
+ * contain information about the user, such as username, UUID, and admin status.
+ * </p>
  *
- * <p>Tokens are set to expire after a specified duration (24 hours in this case).</p>
+ * <p>
+ * Tokens are set to expire after a specified duration (24 hours in this case).
+ * </p>
  */
 @Component
 public class JwtUtil {
@@ -26,7 +30,7 @@ public class JwtUtil {
     @Value("${security.jwt.secret-key}")
     private String secretKey; // Default for testing
 
-        /**
+    /**
      * Decrypts and validates a JWT token and extracts the claims.
      *
      * @param token the JWT token to decrypt and validate
@@ -51,4 +55,3 @@ public class JwtUtil {
         }
     }
 }
-

@@ -11,9 +11,8 @@ import jakarta.persistence.Embeddable;
 /**
  * Represents the composite primary key for the {@code Matchups} entity.
  * This class is marked as {@code Embeddable}, meaning it can be used as a
- * composite key
- * within an entity class. It contains the players and the tournament ID as key
- * components.
+ * composite key within an entity class. It contains the players and the
+ * tournament ID as key components.
  */
 @Data
 @Embeddable

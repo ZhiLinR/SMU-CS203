@@ -4,7 +4,8 @@ import java.util.regex.Pattern;
 
 /**
  * Utility class for common validation operations.
- * Provides methods to validate fields such as email, UUID, role, and required fields.
+ * Provides methods to validate fields such as email, UUID, role, and required
+ * fields.
  */
 public class ValidationUtil {
 
@@ -14,7 +15,7 @@ public class ValidationUtil {
     /**
      * Validates if the provided string is not null or empty.
      *
-     * @param value the string to validate
+     * @param value        the string to validate
      * @param errorMessage the error message to throw if the validation fails
      * @throws IllegalArgumentException if the string is null or empty
      */
@@ -37,7 +38,8 @@ public class ValidationUtil {
     }
 
     /**
-     * Validates if the provided email has a valid format using a regular expression.
+     * Validates if the provided email has a valid format using a regular
+     * expression.
      *
      * @param email the email to validate
      * @return {@code true} if the email is valid, {@code false} otherwise

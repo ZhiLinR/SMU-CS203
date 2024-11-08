@@ -3,6 +3,7 @@ package matchmaking.enums;
 /**
  * Enumeration representing the K values used in Elo rating calculations based
  * on a player's Elo rating.
+ *
  * <p>
  * The K value determines the sensitivity of the rating adjustments based on
  * match outcomes,
@@ -24,8 +25,7 @@ public enum EloKFactor {
      * K value for players with Elo ratings between 1200 and 1800.
      * <p>
      * This indicates a moderate sensitivity to match outcomes for intermediate
-     * players,
-     * balancing the need for adjustments as they become more experienced.
+     * players, balancing the need for adjustments as they become more experienced.
      * </p>
      */
     INTERMEDIATE(1200, 1800, 20),

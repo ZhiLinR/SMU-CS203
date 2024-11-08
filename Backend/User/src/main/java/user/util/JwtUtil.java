@@ -11,11 +11,15 @@ import java.util.Date;
 /**
  * Utility class for handling JSON Web Tokens (JWT).
  *
- * <p>This class provides methods for generating, extracting claims,
+ * <p>
+ * This class provides methods for generating, extracting claims,
  * and validating JWTs. The tokens are signed using a secret key and
- * contain information about the user, such as username, UUID, and admin status.</p>
+ * contain information about the user, such as username, UUID, and admin status.
+ * </p>
  *
- * <p>Tokens are set to expire after a specified duration (24 hours in this case).</p>
+ * <p>
+ * Tokens are set to expire after a specified duration (24 hours in this case).
+ * </p>
  */
 @Component
 public class JwtUtil {
@@ -27,8 +31,8 @@ public class JwtUtil {
      * Generates a JWT token for the specified username, UUID, and admin status.
      *
      * @param username the username to include in the token (email)
-     * @param uuid the UUID to include as a claim in the token
-     * @param isAdmin the admin status to include as a claim in the token
+     * @param uuid     the UUID to include as a claim in the token
+     * @param isAdmin  the admin status to include as a claim in the token
      * @return a JWT token as a String
      */
     public String generateToken(String username, String uuid, Byte isAdmin) {

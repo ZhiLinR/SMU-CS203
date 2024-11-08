@@ -16,8 +16,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * MiddlewareController is a REST controller that handles HTTP requests related
- * to middleware services.
- * It provides endpoints for validating JWT tokens.
+ * to middleware services. It provides endpoints for validating JWT tokens.
  *
  * <p>
  * This controller is mapped to the base URL "/api".

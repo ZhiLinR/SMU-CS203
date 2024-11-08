@@ -9,9 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * <p>
  * This class contains the main method which serves as the starting point for
- * the Spring Boot application.
- * It loads environment variables from a .env file to configure database and JWT
- * settings.
+ * the Spring Boot application. It loads environment variables from a .env file
+ * to configure database and JWT settings.
  * </p>
  */
 @SpringBootApplication
