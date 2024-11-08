@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="grid align-items-center justify-content-center">
     <div class="col-12 md:col-12 lg:col-10">
