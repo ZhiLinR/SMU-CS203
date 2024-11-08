@@ -7,7 +7,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn clean install
+RUN mvn clean package
 
 # Use an official OpenJDK image as the base image
 FROM openjdk:17-jdk-alpine
@@ -22,5 +22,4 @@ COPY --from=build /app/target/user-msvc-1.0.0.jar .
 EXPOSE 8080
 
 # Set the entry point to run the JAR file
-ENTRYPOINT ["java", "-jar", "user-msvc-1.0.jar"]
-
+ENTRYPOINT ["java", "-jar", "user-msvc-1.0.0.jar"]
