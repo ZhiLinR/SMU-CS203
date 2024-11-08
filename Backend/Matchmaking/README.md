@@ -6,12 +6,12 @@
 2. [Quick Reference API Endpoints](#quick-reference-api-endpoints)
 3. [API Endpoints with Requests and Responses](#api-endpoints-with-requests-and-responses)
 
-## Workspace for Middleware Management Microservice
+## Workspace for Matchmaking Microservice
 
 To start the microservice, run the commands below in order
 
 ```console
-cd Backend\Middleware
+cd Backend\Matchmaking
 mvn clean install
 mvn spring-boot:run
 ```
@@ -28,7 +28,8 @@ mvn spring-boot:run
 
 | HTTP Method | Endpoint                             | Description                                            |
 |-------------|-------------------------------------|--------------------------------------------------------|
-| `POST`       | [/jwt](#post-jwt) | Matchmake users for the most recent round of the tournament with the given Tournament ID. |
+| `GET`       | [/matchmaking/{TournamentID}](#get-matchmakingtournamentid) | Matchmake users for the most recent round of the tournament with the given Tournament ID. |
+| `GET`       | [/ranking/{TournamentID}](#get-rankingtournamentid) | Generate and return rankings of a tournament and update participants' Elo given Tournament ID. |
 
 ## API Endpoints with Requests and Responses
 
@@ -57,38 +58,27 @@ Sample Success 500 Response:
 }
 ```
 
-### POST /jwt
+### GET /matchmaking/{TournamentID}
 
 ---
-Checks validity of JWT and values and returns the UUID and Role stored in the JWT.
-
-Sample Request Body:
-
-```json
-{
-    "jwt": "jwt-value"
-}
-```
+Matchmake users for the most recent round for the tournament with the given Tournament ID.
 
 Sample Success 200 Response:
 
 ```json
 {
     "success": true,
-    "message": "JWT validation successful.",
-    "content": {
-        "uuid": "uuid-value",
-        "isAdmin": "0"
-    }
+    "message": "Players matched successfully",
+    "content": null
 }
 ```
 
-Sample Failed 401 Response:
+Sample Failed 400 Response:
 
 ```json
 {
     "success": false,
-    "message": "Invalid JWT or session expired.",
+    "message": "TournamentID must not be null or empty.",
     "content": null
 }
 ```
@@ -98,17 +88,48 @@ Sample Failed 404 Response:
 ```json
 {
     "success": false,
-    "message": "User not found for the provided UUID.",
+    "message": "Tournament not found.",
     "content": null
 }
 ```
 
-Sample Failed 500 Response:
+### GET /ranking/{TournamentID}
+
+---
+Generate and return rankings of a tournament and update participants' Elo given Tournament ID.
+
+Sample Success 200 Response:
+
+```json
+{
+    "success": true,
+    "message": "Players ranked successfully",
+    "content": {
+        "results": [
+            "uuid-1",
+            "uuid-2",
+            "uuid-3"
+        ]
+    }
+}
+```
+
+Sample Failed 400 Response:
 
 ```json
 {
     "success": false,
-    "message": "An unexpected error occurred.",
+    "message": "TournamentID must not be null or empty.",
+    "content": null
+}
+```
+
+Sample Failed 404 Response:
+
+```json
+{
+    "success": false,
+    "message": "Tournament not found.",
     "content": null
 }
 ```
