@@ -27,6 +27,8 @@ public class JwtUtil {
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
+    private final int TOKEN_EXPIRY_TIME = (1000 * 60 * 60 * 24);
+
     /**
      * Generates a JWT token for the specified username, UUID, and admin status.
      *
@@ -41,7 +43,7 @@ public class JwtUtil {
                 .claim("uuid", uuid)
                 .claim("isAdmin", isAdmin)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // Token valid for 24 hours
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRY_TIME)) // Token valid for 24 hours
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
