@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,15 +7,26 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('../views/Home.vue')
     },
     {
-      path: '/about',
-      name: 'about',
-    
-      component: () => import('../views/AboutView.vue'),
+      path: '/admin',
+      name: 'admin',
+      component: () => import('../views/admin/Admin.vue')
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // If the hash exists in the URL, scroll to the hash
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+      };
+    }
+
+    // Otherwise, scroll to top
+    return { top: 0, behavior: 'smooth' };
+  },
 })
 
 export default router
