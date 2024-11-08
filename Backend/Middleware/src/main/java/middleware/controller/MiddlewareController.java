@@ -2,6 +2,7 @@ package middleware.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,12 @@ import org.springframework.http.HttpStatus;
 @RestController
 @RequestMapping("/api")
 public class MiddlewareController {
+
+    /**
+     * Origin URL, set via `ORIGIN` property.
+     */
+    @Value("${ORIGIN}")
+    private String origin;
 
     @Autowired
     private MiddlewareService middlewareService;

@@ -60,6 +60,9 @@ import org.springframework.http.HttpStatus;
 @RequestMapping("/api")
 public class ProfileController {
 
+    /**
+     * Origin URL, set via `ORIGIN` property.
+     */
     @Value("${ORIGIN}")
     private String origin;
 

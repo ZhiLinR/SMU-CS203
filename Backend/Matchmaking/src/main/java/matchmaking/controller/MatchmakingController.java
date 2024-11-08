@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,12 @@ import org.springframework.http.HttpStatus;
 @RestController
 @RequestMapping("/api")
 public class MatchmakingController {
+
+    /**
+     * Origin URL, set via `ORIGIN` property.
+     */
+    @Value("${ORIGIN}")
+    private String origin;
 
     @Autowired
     private MatchingService matchingService;
