@@ -1,7 +1,7 @@
 package matchmaking;
 
 import org.springframework.boot.SpringApplication;
-import io.github.cdimascio.dotenv.Dotenv; // For mvn run
+// import io.github.cdimascio.dotenv.Dotenv; // For mvn run
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -24,12 +24,13 @@ public class MatchmakingApplication {
     public static void main(String[] args) {
 
         // Load the .env file (For mvn run)
-        Dotenv dotenv = Dotenv.configure()
-                .load();
-        System.setProperty("DB_URL", dotenv.get("DB_URL"));
-        System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
-        System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
-        System.setProperty("USERMSVC_URL", dotenv.get("USERMSVC_URL"));
+        // Dotenv dotenv = Dotenv.configure()
+        // .load();
+        // System.setProperty("DB_URL", dotenv.get("DB_URL"));
+        // System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
+        // System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
+        // System.setProperty("USERMSVC_URL", dotenv.get("USERMSVC_URL"));
+        // System.setProperty("ORIGIN", dotenv.get("ORIGIN"));
 
         SpringApplication.run(MatchmakingApplication.class, args);
     }

@@ -5,8 +5,9 @@ import middleware.exception.UnauthorizedException;
 import middleware.model.JWToken;
 
 /**
- * ValidationUtil provides utility methods for validating JWT session data, UUIDs, and user roles.
- * These methods are used to ensure that the JWT and its claims are consistent with the data stored in the database.
+ * ValidationUtil provides utility methods for validating JWT session data,
+ * UUIDs, and user roles. These methods are used to ensure that the JWT and its
+ * claims are consistent with the data stored in the database.
  */
 public class ValidationUtil {
 
@@ -14,7 +15,8 @@ public class ValidationUtil {
      * Validates the JWT session by checking if the JWT exists in the database.
      *
      * @param retrievedJWT the JWT object retrieved from the database.
-     * @throws UnauthorizedException if the JWT is invalid or the session has expired.
+     * @throws UnauthorizedException if the JWT is invalid or the session has
+     *                               expired.
      */
     public static void validateJwtSession(JWToken retrievedJWT) {
         if (retrievedJWT == null) {
@@ -23,9 +25,10 @@ public class ValidationUtil {
     }
 
     /**
-     * Validates the UUID by comparing the UUID extracted from the JWT with the one stored in the database.
+     * Validates the UUID by comparing the UUID extracted from the JWT with the one
+     * stored in the database.
      *
-     * @param dbUuid the UUID stored in the database.
+     * @param dbUuid        the UUID stored in the database.
      * @param extractedUuid the UUID extracted from the JWT.
      * @throws UnauthorizedException if the UUIDs do not match.
      */
@@ -36,10 +39,11 @@ public class ValidationUtil {
     }
 
     /**
-     * Validates the user's role by checking if the role from the database matches the role specified in the JWT.
+     * Validates the user's role by checking if the role from the database matches
+     * the role specified in the JWT.
      *
      * @param dbIsAdmin the admin status (role) stored in the database.
-     * @param isAdmin the admin status (role) extracted from the JWT.
+     * @param isAdmin   the admin status (role) extracted from the JWT.
      * @throws UserNotFoundException if the user is not found for the provided UUID.
      * @throws UnauthorizedException if the roles do not match.
      */

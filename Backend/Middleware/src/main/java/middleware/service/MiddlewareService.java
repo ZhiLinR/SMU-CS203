@@ -16,8 +16,9 @@ import middleware.util.*;
 import java.util.Map;
 
 /**
- * MiddlewareService handles the business logic for validating JWT tokens and checking user roles.
- * It interacts with repositories to validate JWT sessions, user roles, and extract claims from the token.
+ * MiddlewareService handles the business logic for validating JWT tokens and
+ * checking user roles. It interacts with repositories to validate JWT sessions,
+ * user roles, and extract claims from the token.
  */
 @Service
 public class MiddlewareService {
@@ -32,17 +33,21 @@ public class MiddlewareService {
     private JwtUtil jwtUtil;
 
     /**
-     * Validates the provided JWT by extracting claims, checking its validity in the database,
-     * and comparing user role information.
+     * Validates the provided JWT by extracting claims, checking its validity in the
+     * database, and comparing user role information.
      *
-     * <p>This method decrypts the JWT to extract claims such as user UUID and admin status.
-     * It then validates the session by checking if the token exists in the database and matches
-     * the extracted information.</p>
+     * <p>
+     * This method decrypts the JWT to extract claims such as user UUID and admin
+     * status. It then validates the session by checking if the token exists in the
+     * database and matches the extracted information.
+     * </p>
      *
      * @param jwtRequest the request object containing the JWT to be validated.
      * @return a Map containing the user's UUID and admin status ("isAdmin").
-     * @throws UnauthorizedException if the JWT is invalid or session validation fails.
-     * @throws UserNotFoundException if the user UUID associated with the JWT is not found.
+     * @throws UnauthorizedException if the JWT is invalid or session validation
+     *                               fails.
+     * @throws UserNotFoundException if the user UUID associated with the JWT is not
+     *                               found.
      */
     @Transactional
     public Map<String, String> checkJwt(JWTRequest jwtRequest) {

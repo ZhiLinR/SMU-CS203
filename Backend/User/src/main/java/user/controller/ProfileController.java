@@ -3,6 +3,7 @@ package user.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,13 +44,27 @@ import org.springframework.http.HttpStatus;
  * </ul>
  *
  * <p>
+ * This controller is configured with {@code @CrossOrigin(origins="${ORIGIN}")}
+ * to allow cross-origin requests from the specified origin. This is typically
+ * necessary for web applications running on a different domain or port, such as
+ * a frontend client running locally on a separate server, to make requests to
+ * this API.
+ *
+ * <p>
  * Each endpoint uses {@link ResponseManager} to generate structured success or
  * error responses
  * with appropriate HTTP status codes.
  */
+@CrossOrigin(origins = "${ORIGIN}")
 @RestController
 @RequestMapping("/api")
 public class ProfileController {
+
+    /**
+     * Origin URL, set via `ORIGIN` property.
+     */
+    @Value("${ORIGIN}")
+    private String origin;
 
     @Autowired
     private ProfileService profileService;

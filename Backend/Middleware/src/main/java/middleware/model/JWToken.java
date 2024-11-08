@@ -10,10 +10,12 @@ import java.time.LocalDateTime;
  *
  * <h3>Jakarta Bean ORM Mapping:</h3>
  * <ul>
- *   <li><strong>@Entity</strong>: Declares this class as a JPA entity.</li>
- *   <li><strong>@Table(name = "JWToken")</strong>: Maps this class to the "JWToken" database table.</li>
- *   <li><strong>@Id</strong>: Marks the primary key of the entity.</li>
- *   <li><strong>@Column</strong>: Maps each field to a corresponding column in the database.</li>
+ * <li><strong>@Entity</strong>: Declares this class as a JPA entity.</li>
+ * <li><strong>@Table(name = "JWToken")</strong>: Maps this class to the
+ * "JWToken" database table.</li>
+ * <li><strong>@Id</strong>: Marks the primary key of the entity.</li>
+ * <li><strong>@Column</strong>: Maps each field to a corresponding column in
+ * the database.</li>
  * </ul>
  *
  * <p>

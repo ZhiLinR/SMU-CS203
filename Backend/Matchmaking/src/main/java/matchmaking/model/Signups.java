@@ -10,9 +10,9 @@ import lombok.experimental.Accessors;
  *
  * <p>
  * Each signup corresponds to a player participating in a tournament, with
- * fields
- * representing the player's unique identifier, the associated tournament ID,
- * and the player's Elo rating. These attributes are persisted in the database.
+ * fields representing the player's unique identifier, the associated tournament
+ * ID, and the player's Elo rating. These attributes are persisted in the
+ * database.
  * </p>
  */
 @Entity

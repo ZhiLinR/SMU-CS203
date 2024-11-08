@@ -30,6 +30,9 @@ import matchmaking.util.ValidationUtil;
 @Service
 public class RatingService {
 
+    /**
+     * URL for the User Microservice, set via `USERMSVC_URL` property.
+     */
     @Value("${USERMSVC_URL}")
     private String usermsvcUrl;
 

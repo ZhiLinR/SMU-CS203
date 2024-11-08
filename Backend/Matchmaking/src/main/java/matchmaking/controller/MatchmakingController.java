@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +21,24 @@ import org.springframework.http.HttpStatus;
  * The {@code MatchmakingController} class is responsible for handling
  * matchmaking requests
  * related to tournaments. It provides endpoints for registering user profiles
- * and generating
- * matchups based on the specified tournament ID.
+ * and generating matchups based on the specified tournament ID.
+ *
  * <p>
  * This class is annotated with {@link RestController} and
- * {@link RequestMapping}, making it a
- * Spring REST controller that handles requests to the "/api" endpoint.
+ * {@link RequestMapping}, making it a Spring REST controller that handles
+ * requests to the "/api" endpoint.
  * </p>
  */
+@CrossOrigin(origins = "${ORIGIN}")
 @RestController
 @RequestMapping("/api")
 public class MatchmakingController {
+
+    /**
+     * Origin URL, set via `ORIGIN` property.
+     */
+    @Value("${ORIGIN}")
+    private String origin;
 
     @Autowired
     private MatchingService matchingService;
@@ -62,11 +70,9 @@ public class MatchmakingController {
      * Generates unique matchups for the specified tournament.
      *
      * This method retrieves the matchups associated with a given tournament ID and
-     * prints
-     * each matchup to the console. It returns a success response if the matchups
-     * are generated
-     * successfully, or an error response if there are any issues during the
-     * process.
+     * prints each matchup to the console. It returns a success response if the
+     * matchups are generated successfully, or an error response if there are any
+     * issues during the process.
      *
      * @param tournamentId the ID of the tournament for which matchups are to be
      *                     generated
@@ -148,14 +154,12 @@ public class MatchmakingController {
      *
      * <p>
      * This endpoint is triggered when the {@code /api/matchmaking/} URL is accessed
-     * without
-     * a tournament ID. It returns a {@code BAD_REQUEST} response with an error
-     * message
-     * indicating that the tournament ID must not be null or empty.
+     * without a tournament ID. It returns a {@code BAD_REQUEST} response with an
+     * error message indicating that the tournament ID must not be null or empty.
      *
      * @return a {@link ResponseEntity} containing an error response with status
-     *         {@code BAD_REQUEST}
-     *         and a message specifying that the tournament ID is required.
+     *         {@code BAD_REQUEST} and a message specifying that the tournament ID
+     *         is required.
      */
     @GetMapping("/matchmaking/")
     public ResponseEntity<Map<String, Object>> missingTournamentIdMatchmaking() {
@@ -168,14 +172,12 @@ public class MatchmakingController {
      *
      * <p>
      * This endpoint is triggered when the {@code /api/ranking/} URL is accessed
-     * without
-     * a tournament ID. It returns a {@code BAD_REQUEST} response with an error
-     * message
-     * indicating that the tournament ID must not be null or empty.
+     * without a tournament ID. It returns a {@code BAD_REQUEST} response with an
+     * error message indicating that the tournament ID must not be null or empty.
      *
      * @return a {@link ResponseEntity} containing an error response with status
-     *         {@code BAD_REQUEST}
-     *         and a message specifying that the tournament ID is required.
+     *         {@code BAD_REQUEST} and a message specifying that the tournament ID
+     *         is required.
      */
     @GetMapping("/ranking/")
     public ResponseEntity<Map<String, Object>> missingTournamentIdRanking() {

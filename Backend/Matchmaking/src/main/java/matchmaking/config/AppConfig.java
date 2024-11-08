@@ -48,10 +48,8 @@ public class AppConfig {
      * <p>
      * The {@link RestTemplate} bean is commonly used for synchronous REST calls,
      * enabling easy communication with other services in a microservices
-     * architecture.
-     * The bean is managed by Spring's application context, allowing it to be
-     * autowired
-     * into any service class where HTTP requests are needed.
+     * architecture. The bean is managed by Spring's application context, allowing
+     * it to be autowired into any service class where HTTP requests are needed.
      *
      * @return a {@link RestTemplate} instance for making HTTP requests
      */
