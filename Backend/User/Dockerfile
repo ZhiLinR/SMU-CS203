@@ -23,4 +23,3 @@ EXPOSE 8080
 
 # Set the entry point to run the JAR file
 ENTRYPOINT ["java", "-jar", "user-msvc-1.0.0.jar"]
-
