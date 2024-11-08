@@ -126,6 +126,10 @@
           <label for="location">Location</label>
           <InputText id="location" v-model="editingTournament.location" required />
         </div>
+        <div class="p-field">
+          <label for="descOID">Description</label>
+          <InputText id="descOID" v-model="editingTournament.descOID" required />
+        </div>
       </div>
       <template #footer>
         <Button label="Cancel" icon="pi pi-times" @click="closeEditDialog" class="p-button-text" />

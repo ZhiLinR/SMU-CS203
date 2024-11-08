@@ -78,6 +78,7 @@ import AdNavbar from '../../components/AdNavbar.vue';
   // State
   const tournament = ref({})
   const participants = ref([])
+  const list = ref([])
   
   // Fetch tournament details
   const fetchTournamentDetails = async (tournamentId) => {
@@ -95,9 +96,14 @@ import AdNavbar from '../../components/AdNavbar.vue';
   // Fetch participants
   const fetchParticipants = async (tournamentId) => {
     try {
-      const response = await axios.get( import.meta.env.VITE_API_URL_PUBLIC_USER + `/tournaments/players/${tournamentId}`)
+      const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/matchups/participants/${tournamentId}`)
       if (response.data.success) {
-        participants.value = response.data.content
+        list.value = response.data.content
+        const participantsResponse = await axios.post(import.meta.env.VITE_API_URL_USERS + `/namelist`, list)
+        if (participantsResponse.data.success){
+            console.log(participantsResponse)
+            participants.value = response.data.content
+        }
       }
     } catch (error) {
       toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch participants' })

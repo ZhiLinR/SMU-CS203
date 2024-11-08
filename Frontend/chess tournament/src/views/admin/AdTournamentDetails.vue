@@ -33,6 +33,10 @@
             <span class="label">End Date:</span>
             <span class="value">{{ formatDate(tournament.endDate) }}</span>
           </div>
+          <div class="detail-row">
+            <span class="label">Description:</span>
+            <span class="value">{{ tournament.descOID }}</span>
+          </div>
         </div>
   
         <!-- Participants section -->
@@ -99,7 +103,7 @@
       const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/matchups/participants/${tournamentId}`)
       if (response.data.success) {
         list.value = response.data.content
-        const participantsResponse = await axios.post(`http://localhost:8080/api/profile/all/names-only`, list)
+        const participantsResponse = await axios.post(import.meta.env.VITE_API_URL_USERS + `/namelist`, list)
         if (participantsResponse.data.success){
             console.log(participantsResponse)
             participants.value = response.data.content
