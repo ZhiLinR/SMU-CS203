@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
  * This controller is mapped to the base URL "/api".
  * </p>
  */
+@CrossOrigin(origins = "${ORIGIN}")
 @RestController
 @RequestMapping("/api")
 public class MiddlewareController {

@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
  * Spring REST controller that handles requests to the "/api" endpoint.
  * </p>
  */
+@CrossOrigin(origins = "${ORIGIN}")
 @RestController
 @RequestMapping("/api")
 public class MatchmakingController {
