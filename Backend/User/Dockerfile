@@ -10,7 +10,7 @@ COPY src ./src
 RUN mvn clean install
 
 # Use an official OpenJDK image as the base image
-FROM openjdk:11-jre-slim
+FROM openjdk:17-jdk-alpine
 
 # Set the working directory in the container
 WORKDIR /app
