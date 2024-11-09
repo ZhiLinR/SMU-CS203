@@ -15,10 +15,25 @@ const router = createRouter({
       component: () => import('../views/admin/Admin.vue')
     },
     {
+      path: '/user',
+      name: 'user',
+      component: () => import('../views/user/UserTournaments.vue')
+    },
+    {
+      path: '/admin/tournaments/:tournamentId',
+      name: 'adminTournamentDetails',
+      component: () => import('../views/admin/AdTournamentDetails.vue')
+    },
+    {
+      path: '/user/tournaments/:tournamentId',
+      name: 'userTournamentDetails',
+      component: () => import('../views/user/UserJoinTournament.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/login/Login.vue')
-    },
+    }
   ],
   scrollBehavior(to, from, savedPosition) {
     // If the hash exists in the URL, scroll to the hash
