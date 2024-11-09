@@ -32,8 +32,8 @@ exports.getUpcomingTournaments = () => {
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of in-progress tournaments.
  */
-exports.getInProgressTournaments = () => {
-    return TournamentModel.getInProgressTournaments();  // Call the model
+exports.getOngoingTournaments = () => {
+    return TournamentModel.getOngoingTournaments();  // Call the model
 };
 
 

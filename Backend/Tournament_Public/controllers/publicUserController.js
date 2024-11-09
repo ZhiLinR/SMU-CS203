@@ -1,4 +1,9 @@
 const TournamentUserService = require('../userService/userService');
+const { sendSuccessResponse } = require('../middlewares/successHandler');
+const { errorHandler } = require('../middlewares/errorHandler');
+const { validationResult } = require('express-validator');
+const { validateTournamentId } = require('../middlewares/validationHandler'); // Import the validation
+
 
 
 
@@ -15,16 +20,12 @@ exports.getAllTournaments = async (req, res, next) => {
     try {
         const allTournaments = await TournamentUserService.getAllTournaments();
         if (!allTournaments || allTournaments.length === 0) {
-            const error = new Error('No tournaments retrieved');
+            const error = new Error('No tournaments found');
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved all tournaments",
-            "content": allTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved all tournaments', allTournaments);
+
     } catch (err) {
         console.error('Error retrieving tournaments:', err);
         next(err);  // Pass the error to the middleware
@@ -48,19 +49,15 @@ exports.getUpcomingTournaments = async (req, res, next) => {
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved upcoming tournaments",
-            "content": upcomingTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved upcoming tournamentst', upcomingTournaments);
+
     } catch (err) {
         console.error('Error retrieving upcoming tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
 };
 
-/**  Controller to get in-progress tournaments
+/**  Controller to get ongoing tournaments
  * @async
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
@@ -69,22 +66,18 @@ exports.getUpcomingTournaments = async (req, res, next) => {
  * @throws {error} If input invalid or missing fields.
  */
 
-exports.getInProgressTournaments = async (req, res, next) => {
+exports.getOngoingTournaments = async (req, res, next) => {
     try {
-        const inProgressTournaments = await TournamentUserService.getInProgressTournaments();
-        if (!inProgressTournaments || inProgressTournaments.length === 0) {
-            const error = new Error('No in-progress tournaments');
+        const ongoingTournaments = await TournamentUserService.getOngoingTournaments();
+        if (!ongoingTournaments || ongoingTournaments.length === 0) {
+            const error = new Error('No ongoing tournaments');
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved in-progress tournaments",
-            "content": inProgressTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved ongoing tournaments', ongoingTournaments);
+ 
     } catch (err) {
-        console.error('Error retrieving in-progress tournaments:', err);
+        console.error('Error retrieving ongoing tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
 };
@@ -104,12 +97,8 @@ exports.getCompletedTournaments = async (req, res, next) => {
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved completed tournaments",
-            "content": completedTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved completed tournaments', completedTournaments);
+
     } catch (err) {
         console.error('Error retrieving completed tournaments:', err);
         next(err);  // Pass the error to the middleware
@@ -121,31 +110,45 @@ exports.getCompletedTournaments = async (req, res, next) => {
  * 
  * @param {Object} req - The request object.
  * @param {Object} req.params - The parameters from the request URL.
- * @param {string} req.params.id - The ID of the tournament to retrieve.
+ * @param {string} req.params.tournamentId - The ID of the tournament to retrieve.
  * @param {Object} res - The response object.
  * @returns {Promise<void>} A promise that resolves to sending a JSON response with the tournament details.
  */
 
-// Controller to get a specific tournament (example)
-exports.getTournamentById = async (req, res, next) => {
-    const {tournamentId} = req.params;
-    try {
-        const specificTournament = await TournamentUserService.getTournamentByID(tournamentId);
-         // If no tournament is found, return a 404 response
-         if (!specificTournament) {
-            const error = new Error('No tournament with that id is found');
-            error.statusCode = 404;
-            return next(error);  // Pass error to middleware
-        }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved tournament based on tournament ID",
-            "content": specificTournament
-        });
-    } catch (err) {
-        console.error('Error retrieving completed tournaments:', err);
-        next(err);  // Pass the error to the middleware
-    }
-};
+exports.getTournamentById = [
+   // First, use the validation middleware
+   validateTournamentId,
 
+   // Then, handle the logic for the controller
+   async (req, res, next) => {
+       // Check if validation failed
+       const errors = validationResult(req);
+       if (!errors.isEmpty()) {
+           // If validation fails, return a 400 response with the errors
+           const error = new Error('Invalid Tournament ID');
+           error.statusCode = 400;
+           return next(error);
+       }
+
+       const { tournamentId } = req.params;
+
+       try {
+           // Query your database or service to retrieve the tournament
+           const specificTournament = await TournamentUserService.getTournamentByID(tournamentId);
+
+           // If no tournament is found, return a 404 response
+           if (!specificTournament) {
+               const error = new Error('No tournament with that id is found');
+               error.statusCode = 404;
+               return next(error);  // Pass error to the middleware
+           }
+
+           // Send the success response
+           sendSuccessResponse(res, 200, 'successfully retrieved tournament based on tournament ID', specificTournament);
+
+       } catch (err) {
+           console.error('Error retrieving tournament:', err);
+           next(err);  // Pass the error to the middleware
+       }
+   },
+];

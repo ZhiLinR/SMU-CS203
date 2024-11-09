@@ -150,7 +150,7 @@ describe('Tournament Model', () => {
     });
   });
 
-  describe('getInProgressTournaments', () => {
+  describe('getOngoingTournaments', () => {
     it('should return all event tournaments when successful', async () => {
       const mockTournaments = [
         { 
@@ -168,12 +168,12 @@ describe('Tournament Model', () => {
         callback(null, mockTournaments);
       });
 
-      const result = await tournamentModel.getInProgressTournaments();
+      const result = await tournamentModel.getOngoingTournaments();
       
       expect(result).toEqual(mockTournaments);
       expect(db.query).toHaveBeenCalledTimes(1);
       expect(db.query).toHaveBeenCalledWith(
-        'CALL GetInProgressTournament()',
+        'CALL GetOngoingTournaments()',
         expect.any(Function)
       );
     });
@@ -186,7 +186,7 @@ describe('Tournament Model', () => {
         callback(dbError, null);
       });
 
-      await expect(tournamentModel.getInProgressTournaments())
+      await expect(tournamentModel.getOngoingTournaments())
         .rejects
         .toEqual(dbError);
       

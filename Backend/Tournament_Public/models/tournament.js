@@ -58,9 +58,9 @@ exports.getUpcomingTournaments = () => {
  * @returns {Promise<Array>} A promise that resolves to an array of in-progress tournaments.
  * @throws {Error} If the database query fails.
  */
-exports.getInProgressTournaments = () => {
+exports.getOngoingTournaments = () => {
     return new Promise((resolve, reject) => {
-        const query = 'CALL GetInProgressTournament()';  // Stored procedure to get in-progress tournaments
+        const query = 'CALL GetOngoingTournaments()';  // Stored procedure to get in-progress tournaments
         db.query(query, (err, results) => {
             if (err) {
                 return reject(err);  // Return the error to the service layer
