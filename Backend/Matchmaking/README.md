@@ -52,7 +52,7 @@ Sample Success 500 Response:
 
 ```json
 {
-    "success": true,
+    "success": false,
     "message": "Error: <Error Message>",
     "content": null
 }
