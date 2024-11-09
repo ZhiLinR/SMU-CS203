@@ -65,9 +65,7 @@ List the required environment variables here. For example:
 
 | Variable          | Description                 | Default       |
 |-------------------|-----------------------------|---------------|
-| `PORT`            | Port for the server         | `32781`        |
-| `User`	    | Username			  | `TournamentAccess`|
-| `Password`	    |Password for database	  | `aaV22EsNZggD3gkaR9CE`|
+
 
 ---
 

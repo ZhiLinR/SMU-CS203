@@ -4,7 +4,6 @@ const TournamentService = require('../services/tournamentService');  // Import s
 
 /**
  * Get participated tournament history for a user
- * @async
  * @param {Object} req.params - The request parameters TournamentID
  * @param {string} req.params.UUID - The ID of the User.
  * @returns {Json} Returns a list of tournament names.
@@ -52,7 +51,6 @@ exports.getTournaments = async (req, res, next) => {
 
 /**
  * Get tournament matchups for a user
- * @async
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
@@ -93,7 +91,6 @@ exports.getTournamentMatchups = async (req, res, next) => {
 
 /**
  * Sign up for a tournament
- * @async
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
@@ -145,7 +142,6 @@ exports.signUpForTournament =  async (req, res, next) => {
 
 /**
  * Quit tournament
- * @async
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
@@ -157,11 +153,13 @@ exports.quitTournament = async (req, res, next) => {
     const { UUID } = req.params;
     const { tournamentID } = req.body;
 
-    if (!UUID || !tournamentID) {
-        throw new Error('Missing required fields (UUID or tournamentID)');
-    }
+   
 
     try {
+        if (!UUID || !tournamentID) {
+            throw new Error('Missing required fields (UUID or tournamentID)');
+        }
+
         let result = await TournamentUserService.quitTournament(UUID, tournamentID);
         if (result.affectedRows === 0) {
             throw new Error('No signup found for the provided UUID and tournamentID');
@@ -191,7 +189,6 @@ exports.quitTournament = async (req, res, next) => {
 };
 /**
  * Get upcoming tournaments
- * @async
  * @param {Object} req.params - The request parameters
  * @returns {Json} Return Upcoming tournament based on upcoming dates.
  * @throws {error} If input invalid or missing fields.
@@ -230,7 +227,6 @@ exports.getUpcomingTournaments = async (req, res, next) => {
 
 /**
  * Get in-progress tournaments
- * @async
  * @param {Object} req.params - The request parameters
  * @returns {Json} Return incoming tournament based on upcoming dates.
  * @throws {error} If input invalid or missing fields.
@@ -265,7 +261,6 @@ exports.getInProgressTournaments = async (req, res, next) => {
 
 /**
  * Get UserTournamentGameResult 
- * @async
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
@@ -315,7 +310,6 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
 
 /**
  * Get the list of UUID players in the specified tournament.
- * @async
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.tournamentId - The ID of the tournament.
  * @returns {Json} Returns a list of UUIDs participating in the tournament.
@@ -323,14 +317,16 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
  */
 
 
-// Get upcoming tournaments
+// Get list of players in tournament
 exports.getPlayersInTournament = async (req, res, next) => {
     const { tournamentId } = req.params;
 
-    if (!tournamentId) {
-        throw new Error('Missing required fields tournamentID');
-    }
+
     try {
+        //if tournament ID is missing then throw error and go to catch
+        if (!tournamentId) {
+            throw new Error('Missing required fields tournamentID');
+        }
         //Check if tournament exist else return relavant error message.
         const tournamentExists = await TournamentService.checkTournamentExists(tournamentId);
 
@@ -348,7 +344,7 @@ exports.getPlayersInTournament = async (req, res, next) => {
             content: []  // Return an empty array
         };
         // Pass to success handler
-        next();
+        return next();
         
         }
 
@@ -459,3 +455,5 @@ exports.getCompletedTournaments = async  (req, res, next) => {
         next(err);  // Pass the error to the error-handling middleware
     }
 };
+
+
