@@ -46,6 +46,9 @@ public class ValidationUtil {
      * @throws UnauthorizedException if UUIDs do not match.
      */
     public static void validateUuid(String dbUuid, String extractedUuid) throws UnauthorizedException {
+        validateNotEmpty(dbUuid, "UUID");
+        validateNotEmpty(extractedUuid, "UUID");
+
         if (!dbUuid.equals(extractedUuid)) {
             // Throw an exception if the UUIDs do not match
             throw new UnauthorizedException("JWT UUID mismatch.");

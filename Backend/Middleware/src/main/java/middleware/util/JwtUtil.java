@@ -38,6 +38,7 @@ public class JwtUtil {
      *                               invalid signature.
      */
     public Claims decryptToken(String token) throws UnauthorizedException {
+        ValidationUtil.validateNotEmpty(token, "JWT");
         try {
             // Use the parser to validate and parse the JWT
             Claims claims = Jwts.parser()

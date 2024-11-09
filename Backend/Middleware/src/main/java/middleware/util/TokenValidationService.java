@@ -50,6 +50,8 @@ public class TokenValidationService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public JWToken checkValiditySync(String jwt) {
+        ValidationUtil.validateNotEmpty(jwt, "JWT");
+
         // Validate the JWT by checking its presence and validity in the database
         JWToken dbJwt = jwTokenRepository.checkValidity(jwt); // Apply necessary locking if required
         ValidationUtil.validateJwtSession(dbJwt);
@@ -78,6 +80,21 @@ public class TokenValidationService {
         return userRepository.getRoleByUUID(uuid); // Apply necessary locking if required
     }
 
+    /**
+     * Synchronously invalidates the specified JSON Web Token (JWT).
+     * This method is annotated with {@code @Transactional} with propagation set to
+     * {@code REQUIRES_NEW} to ensure a new transaction is started for each
+     * invocation.
+     *
+     * <p>
+     * Validates that the provided JWT is not empty, then marks it as invalid in the
+     * {@code jwTokenRepository}.
+     * </p>
+     *
+     * @param jwt the JSON Web Token (JWT) to be invalidated; must not be null or
+     *            empty.
+     * @throws IllegalArgumentException if the provided JWT is null or empty.
+     */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void invalidateJwt(String jwt) {
         ValidationUtil.validateNotEmpty(jwt, "JWT");

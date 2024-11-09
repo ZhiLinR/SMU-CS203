@@ -69,6 +69,8 @@ public class MiddlewareService {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String jwt = jwtRequest.getJwt();
+                ValidationUtil.validateNotEmpty(jwt, "JWT");
+
                 Claims claims = jwtUtil.decryptToken(jwt);
 
                 String extractedUuid = claims.get("uuid", String.class);
@@ -85,6 +87,8 @@ public class MiddlewareService {
                 // Return validated user data
                 return Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString());
 
+            } catch (IllegalArgumentException e) {
+                throw e;
             } catch (UnauthorizedException | UserNotFoundException e) {
                 tokenValidationService.invalidateJwt(jwtRequest.getJwt());
                 throw e; // Propagate known exceptions

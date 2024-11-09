@@ -90,6 +90,8 @@ public class MiddlewareController {
                         return ResponseManager.error(HttpStatus.NOT_FOUND, cause.getMessage());
                     } else if (cause instanceof UnauthorizedException) {
                         return ResponseManager.error(HttpStatus.UNAUTHORIZED, cause.getMessage());
+                    } else if (cause instanceof IllegalArgumentException) {
+                        return ResponseManager.error(HttpStatus.BAD_REQUEST, cause.getMessage());
                     } else {
                         // For unexpected errors, provide a generic message
                         return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR,
