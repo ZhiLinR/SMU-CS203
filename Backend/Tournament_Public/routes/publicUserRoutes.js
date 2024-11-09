@@ -15,34 +15,34 @@ router.get('/health', healthController.getHealth);
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of all tournaments.
  */
-router.get('/view/tournaments', publicUserController.getAllTournaments);
+router.get('/tournaments', publicUserController.getAllTournaments);
 
 /**
  * Route to get a list of upcoming tournaments.
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of upcoming tournaments.
  */
-router.get('/view/upcoming-events', publicUserController.getUpcomingTournaments);
+router.get('/upcoming-events', publicUserController.getUpcomingTournaments);
 
 /**
  * Route to get a list of in-progress tournaments.
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of in-progress tournaments.
  */
-router.get('/view/events', publicUserController.getOngoingTournaments);
+router.get('/events', publicUserController.getOngoingTournaments);
 
 /**
  * Route to get a list of completed tournaments.
  *
  * @returns {Promise<Array<Object>>} A promise that resolves to an array of completed tournaments.
  */
-router.get('/view/past-events', publicUserController.getCompletedTournaments);
+router.get('/past-events', publicUserController.getCompletedTournaments);
 
 /**
  * Route to get a tournament by its ID.
  *
  * @returns {Promise<Object>} A promise that resolves to the tournament object.
  */
-router.get('/view/:tournamentId', publicUserController.getTournamentById);
+router.get('/:tournamentId', publicUserController.getTournamentById);
 
 module.exports = router;

@@ -21,12 +21,16 @@ node server.js
 |-------------|-----------------------|-------------------------------------------------|
 | `GET`       |  [/health](#get-health) | Check the health of the application.            |
 
-### Matchmaking Endpoint
+### Public Tournament Endpoint
 
 | HTTP Method | Endpoint                             | Description                                            |
 |-------------|-------------------------------------|--------------------------------------------------------|
-| `GET`       | [/matchmaking/{TournamentID}](#get-matchmakingtournamentid) | Matchmake users for the most recent round of the tournament with the given Tournament ID. |
-| `GET`       | [/ranking/{TournamentID}](#get-rankingtournamentid) | Generate and return rankings of a tournament and update participants' Elo given Tournament ID. |
+| `GET`       | [/tournaments](#get-tournaments) | Retrieves all tournaments|
+| `GET`       | [/upcoming-events](#get-upcomingevents) | Fetches upcoming tournaments that haven't started |
+| `GET`       | [/events](#get-events) | Returns currently ongoing tournaments|
+| `GET`       | [/past-events](#get-pastevents) | Retrieves tournaments that have been completed|
+| `GET`       | [/{tournamentID}](#get-tournamentid) | Fetches a specific tournament by its ID |
+
 
 ## API Endpoints with Requests and Responses
 
@@ -61,7 +65,7 @@ Sample Failed 500 Response:
 }
 ```
 
-### GET /view/tournaments
+### GET  /tournaments
 
 ---
 Retrieves all tournaments in the system.
@@ -99,7 +103,7 @@ Sample Failed 404 Response:
 }
 ```
 
-### GET /view/upcoming-events
+### GET  /upcoming-events
 
 ---
 Fetches upcoming tournaments that haven't started.
@@ -137,7 +141,7 @@ Sample Failed 404 Response:
 ```
 
 
-### GET /view/events
+### GET  /events
 
 ---
 Returns currently ongoing tournaments.
@@ -175,7 +179,7 @@ Sample Failed 404 Response:
     "content": null,
 }
 ```
-### GET /view/past-events
+### GET  /past-events
 
 ---
 Retrieves tournaments that have been completed.
@@ -213,7 +217,7 @@ Sample Failed 404 Response:
     "content": null,
 }
 ```
-### GET /view/{TournamentID}
+### GET  /{TournamentID}
 
 ---
 Fetches a specific tournament by its ID.
