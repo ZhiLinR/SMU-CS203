@@ -5,6 +5,7 @@ import matchmaking.model.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,10 @@ public class ConversionUtil {
      */
     public static List<String> getRankedNames(List<String> rankedUuids, Map<String, String> uuidNameMap) {
         // Use the rankedUuids list to fetch corresponding names from uuidNameMap
+        ValidationUtil.validateListNotEmpty(rankedUuids, "UUID List");
+        if (uuidNameMap.size() == 0) {
+            throw new IllegalArgumentException("Missing Name List.");
+        }
         return rankedUuids.stream()
                 .map(uuid -> uuidNameMap.get(uuid)) // Get name for each UUID
                 .collect(Collectors.toList()); // Collect the names into a list

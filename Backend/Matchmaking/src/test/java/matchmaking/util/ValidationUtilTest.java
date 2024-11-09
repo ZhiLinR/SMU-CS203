@@ -171,7 +171,6 @@ public class ValidationUtilTest {
     }
 
     // Test methods
-
     /**
      * Tests that validateNotEmpty throws an exception when given an empty value.
      */
@@ -182,14 +181,18 @@ public class ValidationUtilTest {
         assertEquals("TestField must not be null or empty.", exception.getMessage());
     }
 
-    /** Tests that isValidPair returns true for a new pair of players. */
+    /**
+     * Tests that isValidPair returns true for a new pair of players.
+     */
     @Test
     public void testIsValidPairReturnsTrueForNewPair() {
         boolean result = ValidationUtil.isValidPair("Player1", "Player2", playedPairs);
         assertTrue(result);
     }
 
-    /** Tests that isValidPair returns false for an existing pair of players. */
+    /**
+     * Tests that isValidPair returns false for an existing pair of players.
+     */
     @Test
     public void testIsValidPairReturnsFalseForExistingPair() {
         playedPairs.add("Player1-Player2");
@@ -230,7 +233,9 @@ public class ValidationUtilTest {
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isAllPlayersMatched(matchups, playersList));
     }
 
-    /** Tests that isValidPair throws an exception when the pair is null. */
+    /**
+     * Tests that isValidPair throws an exception when the pair is null.
+     */
     @Test
     public void testIsValidPairThrowsExceptionWhenPairIsNull() {
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isValidPair(null));
@@ -274,7 +279,7 @@ public class ValidationUtilTest {
                 ResultsNotFoundException.class,
                 () -> ValidationUtil.validatePlayerResult(playerResults, uuid));
 
-        assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
+        assertEquals("Player result not found for UUID: " + uuid, exception.getMessage());
     }
 
     /**
@@ -292,7 +297,7 @@ public class ValidationUtilTest {
                 ResultsNotFoundException.class,
                 () -> ValidationUtil.validatePlayerResult(playerResults, uuid));
 
-        assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
+        assertEquals("Player result not found for UUID: " + uuid, exception.getMessage());
     }
 
     /**

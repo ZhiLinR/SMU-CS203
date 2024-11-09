@@ -38,8 +38,7 @@ public class SignupsTest {
     public void testDefaultConstructor() {
         Signups defaultSignups = new Signups();
         assertNotNull(defaultSignups);
-        assertNull(defaultSignups.getId().getUuid());
-        assertNull(defaultSignups.getId().getTournamentId());
+        assertNull(defaultSignups.getId());
         assertEquals(0, defaultSignups.getElo());
     }
 
@@ -122,7 +121,7 @@ public class SignupsTest {
      */
     @Test
     public void testToString() {
-        String expectedString = "Signups(uuid=Player1, tournamentId=Tournament123, elo=1500)";
+        String expectedString = "Signups(id=PlayerTournamentId(uuid=player1, tournamentId=Tournament123), elo=1500)";
         assertEquals(expectedString, signups.toString());
     }
 

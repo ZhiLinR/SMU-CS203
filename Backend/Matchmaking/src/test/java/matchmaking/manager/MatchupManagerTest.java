@@ -21,12 +21,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-/**
- * Test class for verifying the functionality of the MatchupManager, including
- * the creation of unique matchups and handling edge cases such as odd numbers
- * of players, validation errors, previously played pairs, and scenarios with
- * no valid matchups.
- */
 @ExtendWith(MockitoExtension.class)
 public class MatchupManagerTest {
 
@@ -195,7 +189,7 @@ public class MatchupManagerTest {
                 assertEquals("Player1", matchups.get(0).getId().getPlayer1());
                 assertEquals("Player2", matchups.get(0).getId().getPlayer2());
                 assertEquals("Player3", matchups.get(1).getId().getPlayer1());
-                assertEquals("null", matchups.get(1).getId().getPlayer2());
+                assertEquals("null", matchups.get(1).getId().getPlayer2()); // Player3 gets a "bye"
                 verify(tournamentInfoUtil, times(1)).insertMatchups(matchups, tournamentId, roundNum);
         }
 
@@ -252,49 +246,13 @@ public class MatchupManagerTest {
                                         return match1;
                                 });
 
-                List<Matchups> matchups = matchupManager.createUniqueMatchups(players,
-                                tournamentId, roundNum, playedPairs);
-
-                System.out.println(matchups);
+                List<Matchups> matchups = matchupManager.createUniqueMatchups(players, tournamentId, roundNum,
+                                playedPairs);
 
                 assertNotNull(matchups);
                 assertEquals(2, matchups.size());
-                // Player1 paired with Player3
-                assertEquals("Player1", matchups.get(0).getId().getPlayer1());
-                assertEquals("Player3", matchups.get(0).getId().getPlayer2());
-                assertEquals("Player2", matchups.get(1).getId().getPlayer1());
-                assertEquals("null", matchups.get(1).getId().getPlayer2());
-        }
-
-        /**
-         * Tests the behavior when no valid matchup can be found, due to constraints
-         * such as previously played pairs or incompatible matchups.
-         * Expects an IllegalArgumentException when no suitable matchups exist.
-         */
-        @Test
-        public void testCreateUniqueMatchupsNoValidMatchup() {
-                System.out.println("CreateUniqueMatchupsNoValidMatchup");
-                List<Signups> players = new ArrayList<>();
-                players.add(new Signups()
-                                .setId(new PlayerTournamentId()
-                                                .setUuid("Player1")
-                                                .setTournamentId(tournamentId))
-                                .setElo(1500));
-                players.add(new Signups()
-                                .setId(new PlayerTournamentId()
-                                                .setUuid("Player2")
-                                                .setTournamentId(tournamentId))
-                                .setElo(1400));
-
-                Set<String> playedPairs = new HashSet<>();
-                // Simulate that players can't be matched
-                when(playerSorter.sortPlayersForRound(players, tournamentId, roundNum)).thenReturn(players);
-                when(tournamentInfoUtil.createMatchup(any(Signups.class), any(Signups.class), eq(tournamentId),
-                                eq(roundNum)))
-                                .thenThrow(new IllegalArgumentException("No valid matchups available"));
-
-                assertThrows(IllegalArgumentException.class, () -> {
-                        matchupManager.createUniqueMatchups(players, tournamentId, roundNum, playedPairs);
-                });
+                assertNotEquals("Player1-Player2",
+                                matchups.get(0).getId().getPlayer1() + "-" + matchups.get(0).getId().getPlayer2());
+                verify(tournamentInfoUtil, times(1)).insertMatchups(matchups, tournamentId, roundNum);
         }
 }

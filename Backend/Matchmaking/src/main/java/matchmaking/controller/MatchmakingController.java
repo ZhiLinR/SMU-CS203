@@ -143,6 +143,8 @@ public class MatchmakingController {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (TournamentNotFoundException e) {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }
