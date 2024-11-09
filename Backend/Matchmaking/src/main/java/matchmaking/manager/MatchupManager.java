@@ -32,7 +32,7 @@ public class MatchupManager {
     private PlayerSorter playerSorter;
 
     // A placeholder for "no player" in case of odd number of participants
-    private final Signups NO_PLAYER = new Signups()
+    private final Signups NULL_PLAYER = new Signups()
             .setId(new PlayerTournamentId()
                     .setUuid("null")
                     .setTournamentId(null))
@@ -154,20 +154,20 @@ public class MatchupManager {
 
     /**
      * Handles assigning a bye to the last unpaired player if needed.
-     * The player with a bye is paired with {@code NO_PLAYER} and automatically
+     * The player with a bye is paired with {@code NULL_PLAYER} and automatically
      * wins.
      *
      * @param players       the list of players.
      * @param matchups      the list to store matchups.
      * @param pairedPlayers a set to track players already paired.
-     * @return a {@link Pair} of the unpaired player and {@code NO_PLAYER}, or
+     * @return a {@link Pair} of the unpaired player and {@code NULL_PLAYER}, or
      *         {@code null} if all players are paired.
      */
     private Pair<Signups, Signups> handleBye(List<Signups> players, List<Matchups> matchups,
             Set<String> pairedPlayers) {
         for (Signups player : players) {
             if (!pairedPlayers.contains(player.getId().getUuid())) {
-                return Pair.of(player, NO_PLAYER);
+                return Pair.of(player, NULL_PLAYER);
             }
         }
         return null;

@@ -111,7 +111,7 @@ public class ValidationUtil {
      *                               number of matchups is insufficient).
      */
     public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
-        if (matchups.size() < ((players.size() + 1) / 2)) {
+        if (players.size() / matchups.size() != 2) {
             throw new InvalidRoundException("Failed to match up all players uniquely");
         }
     }
@@ -182,9 +182,11 @@ public class ValidationUtil {
                     ? matchup.getId().getPlayer2()
                     : matchup.getId().getPlayer1();
 
-            validatePlayerResult(playerResults, playerWon);
+            if (!isNullPlayer(playerWon)) {
+                validatePlayerResult(playerResults, playerWon);
+            }
 
-            if (!playerLost.equals("null")) {
+            if (!isNullPlayer(playerLost)) {
                 validatePlayerResult(playerResults, playerLost);
             }
         }
@@ -231,5 +233,19 @@ public class ValidationUtil {
         if (findPlayerResultsByUUID(playerResults, uuid) == null) {
             throw new ResultsNotFoundException("Player result not found for UUID: " + uuid);
         }
+    }
+
+    /**
+     * Validates that player is not null or forfeit.
+     *
+     * @param uuid The UUID of the player whose results need to be
+     *             validated.
+     * @return is player null or forfeit as boolean.
+     */
+    public static boolean isNullPlayer(String uuid) {
+        if (uuid.equals("null") || uuid.equals("forfeit")) {
+            return true;
+        }
+        return false;
     }
 }

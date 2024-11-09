@@ -86,8 +86,12 @@ public class RatingUtil {
                     : matchup.getId().getPlayer1();
 
             // Find PlayerResults for both players using the map
-            PlayerResults winResult = playerResultsMap.get(winUuid);
-            PlayerResults loseResult = "null".equals(loseUuid) ? NULL_PLAYER : playerResultsMap.get(loseUuid);
+            PlayerResults winResult = (ValidationUtil.isNullPlayer(winUuid))
+                    ? NULL_PLAYER
+                    : playerResultsMap.get(winUuid);
+            PlayerResults loseResult = (ValidationUtil.isNullPlayer(loseUuid))
+                    ? NULL_PLAYER
+                    : playerResultsMap.get(loseUuid);
 
             // Check results not null
             ValidationUtil.validatePlayerResult(winResult, loseUuid);
@@ -110,7 +114,7 @@ public class RatingUtil {
     private static void calculateRanks(List<PlayerWins> playerWins, List<PlayerResults> playerResults) {
 
         List<PlayerRanking> rankings = new ArrayList<>(playerWins.stream()
-                .filter(playerWin -> !"null".equals(playerWin.getUuid())) // Ignore players with "null" UUID
+                .filter(playerWin -> !ValidationUtil.isNullPlayer(playerWin.getUuid()))
                 .map(playerWin -> {
                     String uuid = playerWin.getUuid();
                     PlayerResults playerResult = findPlayerResultsByUUID(playerResults, uuid);
@@ -158,7 +162,7 @@ public class RatingUtil {
      * @return The PlayerResults instance if found, or NULL_PLAYER if not found.
      */
     private static PlayerResults findPlayerResultsByUUID(List<PlayerResults> playerResults, String uuid) {
-        if ("null".equals(uuid)) {
+        if (ValidationUtil.isNullPlayer(uuid)) {
             return NULL_PLAYER;
         }
         return playerResults.stream()
@@ -183,8 +187,12 @@ public class RatingUtil {
                     : matchup.getId().getPlayer1();
 
             // Find PlayerResults for both players using the map
-            PlayerResults winResult = playerResultsMap.get(winUuid);
-            PlayerResults loseResult = "null".equals(loseUuid) ? NULL_PLAYER : playerResultsMap.get(loseUuid);
+            PlayerResults winResult = (ValidationUtil.isNullPlayer(winUuid))
+                    ? NULL_PLAYER
+                    : playerResultsMap.get(winUuid);
+            PlayerResults loseResult = (ValidationUtil.isNullPlayer(loseUuid))
+                    ? NULL_PLAYER
+                    : playerResultsMap.get(loseUuid);
 
             // Check results not null
             ValidationUtil.validatePlayerResult(loseResult, loseUuid);
