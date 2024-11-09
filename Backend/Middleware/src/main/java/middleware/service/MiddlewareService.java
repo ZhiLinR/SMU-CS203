@@ -85,10 +85,11 @@ public class MiddlewareService {
                 // Return validated user data
                 return Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString());
 
-            } catch (UnauthorizedException | UserNotFoundException ex) {
-                throw ex; // Propagate known exceptions
-            } catch (Exception ex) {
-                throw new RuntimeException("Unexpected error during JWT validation: " + ex.getMessage(), ex);
+            } catch (UnauthorizedException | UserNotFoundException e) {
+                tokenValidationService.invalidateJwt(jwtRequest.getJwt());
+                throw e; // Propagate known exceptions
+            } catch (Exception e) {
+                throw new RuntimeException("Unexpected error during JWT validation: " + e.getMessage());
             }
         });
     }

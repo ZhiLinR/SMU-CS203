@@ -72,7 +72,16 @@ public class TokenValidationService {
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Byte getUserRoleSync(String uuid) {
+        ValidationUtil.validateNotEmpty(uuid, "UUID");
+
         // Retrieve and check the user's role from the database
         return userRepository.getRoleByUUID(uuid); // Apply necessary locking if required
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void invalidateJwt(String jwt) {
+        ValidationUtil.validateNotEmpty(jwt, "JWT");
+
+        jwTokenRepository.invalidateJwt(jwt);
     }
 }

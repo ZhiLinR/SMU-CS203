@@ -12,6 +12,19 @@ import middleware.model.JWToken;
 public class ValidationUtil {
 
     /**
+     * Validates that a string is not null or empty.
+     *
+     * @param value     The string to validate.
+     * @param fieldName The name of the field being validated (for error messages).
+     * @throws IllegalArgumentException if the string is null or empty.
+     */
+    public static void validateNotEmpty(String value, String fieldName) {
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " must not be null or empty.");
+        }
+    }
+
+    /**
      * Validates the JWT session by checking if the JWT exists in the database.
      *
      * @param retrievedJWT the JWT object retrieved from the database.

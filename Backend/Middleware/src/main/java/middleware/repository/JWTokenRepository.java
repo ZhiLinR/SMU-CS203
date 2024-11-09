@@ -34,4 +34,14 @@ public interface JWTokenRepository extends JpaRepository<JWToken, String> {
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Procedure(name = "CheckValidity")
     JWToken checkValidity(@Param("jwtValue") String jwt);
+
+    /**
+     * Updates the logout information for the user identified by the specified UUID.
+     *
+     * @param jwt the compromised jwt
+     * @return the number of rows affected by the update operation
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Procedure(name = "InvalidateJwt")
+    void invalidateJwt(@Param("p_jwt") String jwt);
 }
