@@ -30,9 +30,9 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'Backend/Tournament_Admin/src/**' # Run when there is a push to the source files
-      - 'Backend/Tournament_Admin/Dockerfile'
-      - 'Backend/Tournament_Admin/pom.xml'
+      - 'Backend/Tournament_Admin/TournamentAdminService/**' # Run when there is a push to the source files
+      - 'Backend/Tournament_Admin/TournamentAdminService/Dockerfile'
+      - 'Backend/Tournament_Admin/TournamentAdminService/pom.xml'
   workflow_dispatch:
 
 env:
