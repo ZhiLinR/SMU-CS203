@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Utility class for handling JSON Web Tokens (JWT).
+ *
  * <p>
  * This class provides methods for extracting claims,
  * and validating JWTs. The tokens are signed using a secret key and

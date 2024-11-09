@@ -7,10 +7,10 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn clean install -DskipTests
+RUN mvn clean package -DskipTests
 
 # Use an official OpenJDK image as the base image
-FROM openjdk:11-jre-slim
+FROM openjdk:17-jdk-alpine
 
 # Set the working directory in the container
 WORKDIR /app
@@ -22,5 +22,4 @@ COPY --from=build /app/target/user-msvc-1.0.0.jar .
 EXPOSE 8080
 
 # Set the entry point to run the JAR file
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
+ENTRYPOINT ["java", "-jar", "user-msvc-1.0.0.jar"]

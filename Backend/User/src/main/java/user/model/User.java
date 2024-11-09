@@ -32,7 +32,7 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "isAdmin")  // Ensure this matches your database column name
+    @Column(name = "isAdmin") // Ensure this matches your database column name
     private Byte isAdmin;
 
     @Column(name = "dob")

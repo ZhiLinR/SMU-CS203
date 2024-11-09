@@ -6,9 +6,8 @@ import middleware.model.JWToken;
 
 /**
  * ValidationUtil provides utility methods for validating JWT session data,
- * UUIDs, and user roles.
- * These methods ensure that the JWT and its claims are consistent with the data
- * stored in the database.
+ * UUIDs, and user roles. These methods are used to ensure that the JWT and its
+ * claims are consistent with the data stored in the database.
  */
 public class ValidationUtil {
 
@@ -41,6 +40,8 @@ public class ValidationUtil {
     }
 
     /**
+     * Validates the user's role by checking if the role from the database matches
+     * the role specified in the JWT.
      * Validates the user's role by checking if the role from the database matches
      * the role specified in the JWT.
      *

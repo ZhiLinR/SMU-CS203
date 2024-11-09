@@ -3,6 +3,7 @@ package user.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,23 +38,56 @@ import org.springframework.http.HttpStatus;
  * <li>{@code POST /api/profile}: Retrieves a user profile by UUID.</li>
  * <li>{@code POST /api/profile/all/names-only}: Retrieves names based on a list
  * of UUIDs.</li>
- * <li>{@code PUT /api/profile/update}: Updates user information (email,
- * password, name, etc.).</li>
- * <li>{@code PUT /api/profile/update/elo}: Updates the ELO rating for a
- * user.</li>
+ * <li>{@code PUT /api/profile}: Updates user information (email, password,
+ * name, etc.).</li>
+ * <li>{@code PUT /api/profile/elo}: Updates the ELO rating for a user.</li>
  * </ul>
+ *
+ * <p>
+ * This controller is configured with {@code @CrossOrigin(origins="${ORIGIN}")}
+ * to allow cross-origin requests from the specified origin. This is typically
+ * necessary for web applications running on a different domain or port, such as
+ * a frontend client running locally on a separate server, to make requests to
+ * this API.
  *
  * <p>
  * Each endpoint uses {@link ResponseManager} to generate structured success or
  * error responses
  * with appropriate HTTP status codes.
  */
+@CrossOrigin(origins = "${ORIGIN}")
 @RestController
 @RequestMapping("/api")
 public class ProfileController {
 
+    /**
+     * Origin URL, set via `ORIGIN` property.
+     */
+    @Value("${ORIGIN}")
+    private String origin;
+
     @Autowired
     private ProfileService profileService;
+
+    /**
+     * Performs a health check for the application.
+     *
+     * This method is exposed as a GET endpoint to verify that the application is
+     * running and responsive. It returns a success message if the health check
+     * passes or an error message if an unexpected issue occurs during the check.
+     *
+     * @return a {@link ResponseEntity} containing a map with success or error
+     *         message
+     *         indicating the health status of the application
+     */
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, Object>> healthCheck() {
+        try {
+            return ResponseManager.success("Health Check Success");
+        } catch (Exception e) {
+            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
+        }
+    }
 
     /**
      * Registers a new user profile.

@@ -11,18 +11,15 @@ import user.model.JWToken;
 
 /**
  * Repository interface for performing CRUD operations on {@link JWToken}
- * entities.
- * This interface extends {@link JpaRepository}, providing built-in methods for
- * managing {@link JWToken} objects in the database.
+ * entities. This interface extends {@link JpaRepository}, providing built-in
+ * methods for managing {@link JWToken} objects in the database.
  *
  * Additionally, this repository includes methods for executing stored
- * procedures
- * related to JSON Web Token (JWT) management, such as updating the last login,
- * logging out, and checking JWT validity.
+ * procedures related to JSON Web Token (JWT) management, such as updating the
+ * last login, logging out, and checking JWT validity.
  *
- * The methods in this repository use the {@link Procedure} annotation to
- * specify
- * the corresponding stored procedures in the database.
+ * The methods in this repository use the {@link Procedure} annotation to the
+ * corresponding stored procedures in the database.
  */
 @Repository
 public interface JWTokenRepository extends JpaRepository<JWToken, String> {
