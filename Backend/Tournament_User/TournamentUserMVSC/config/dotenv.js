@@ -1,12 +1,10 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-// Load environment variables based on the current environment
+// Load environment variables from the default .env file
 const loadEnvVariables = () => {
-    const envFilePath = process.env.NODE_ENV === 'production'
-        ? path.resolve(__dirname, '../.env.production')
-        : path.resolve(__dirname, '../.env');
-        
+    const envFilePath = path.resolve(__dirname, '../.env');
+
     const result = dotenv.config({ path: envFilePath });
 
     if (result.error) {
@@ -16,4 +14,4 @@ const loadEnvVariables = () => {
     console.log(`Environment variables loaded from ${envFilePath}`);
 };
 
-module.exports = loadEnvVariables;  // Export function to load environment variables
+module.exports = loadEnvVariables; // Export function to load environment variables
