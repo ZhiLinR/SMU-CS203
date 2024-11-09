@@ -1,5 +1,6 @@
 package matchmaking.util;
 
+import matchmaking.model.PlayerTournamentId;
 import matchmaking.model.Signups;
 import matchmaking.dto.*;
 
@@ -141,8 +142,10 @@ public class ConversionUtilTest {
      * @return A new Signups object with the specified UUID and Elo rating.
      */
     private Signups createSignup(String uuid, int elo) {
+        PlayerTournamentId id = new PlayerTournamentId()
+                .setUuid(uuid);
         Signups signup = new Signups()
-                .setUuid(uuid)
+                .setId(id)
                 .setElo(elo);
         return signup;
     }

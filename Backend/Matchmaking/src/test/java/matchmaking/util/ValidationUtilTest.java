@@ -103,9 +103,10 @@ public class ValidationUtilTest {
      */
     private Signups createPlayer(String uuid, int elo) {
         return new Signups()
-                .setUuid(uuid)
-                .setElo(elo)
-                .setTournamentId(tournamentId);
+                .setId(new PlayerTournamentId()
+                        .setTournamentId(tournamentId)
+                        .setUuid(uuid))
+                .setElo(elo);
     }
 
     /**
@@ -124,8 +125,8 @@ public class ValidationUtilTest {
 
         // Mock matchups
         MatchupsId matchId1 = new MatchupsId()
-                .setPlayer1(player1.getUuid())
-                .setPlayer2(player2.getUuid())
+                .setPlayer1(player1.getId().getUuid())
+                .setPlayer2(player2.getId().getUuid())
                 .setTournamentId(tournamentId);
 
         matchup = new Matchups()

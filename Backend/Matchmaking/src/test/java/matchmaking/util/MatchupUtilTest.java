@@ -95,10 +95,12 @@ public class MatchupUtilTest {
      * @return a new Signups object.
      */
     private Signups createPlayer(String uuid, int elo) {
-        Signups player = new Signups()
+        PlayerTournamentId id = new PlayerTournamentId()
                 .setUuid(uuid)
-                .setElo(elo)
-                .setTournamentId(tournamentId);
+                .setTournamentId(uuid);
+        Signups player = new Signups()
+                .setId(id)
+                .setElo(elo);
         return player;
     }
 
@@ -118,8 +120,8 @@ public class MatchupUtilTest {
 
         // Mock matchups
         MatchupsId matchId1 = new MatchupsId()
-                .setPlayer1(player1.getUuid())
-                .setPlayer2(player2.getUuid())
+                .setPlayer1(player1.getId().getUuid())
+                .setPlayer2(player2.getId().getUuid())
                 .setTournamentId(tournamentId);
 
         match1 = new Matchups() // Properly initialize match1
@@ -158,7 +160,7 @@ public class MatchupUtilTest {
      */
     @Test
     public void testAddPlayedPairAddsBothDirections() {
-        MatchupUtil.addPlayedPair(player1.getUuid(), player2.getUuid(), playedPairs);
+        MatchupUtil.addPlayedPair(player1.getId().getUuid(), player2.getId().getUuid(), playedPairs);
 
         assertTrue(playedPairs.contains("Player1-Player2"), "The pair 'Player1-Player2' should be added.");
         assertTrue(playedPairs.contains("Player2-Player1"), "The pair 'Player2-Player1' should be added.");
@@ -170,10 +172,10 @@ public class MatchupUtilTest {
      */
     @Test
     public void testAddPlayedPairDoesNotDuplicateExistingPairs() {
-        MatchupUtil.addPlayedPair(player1.getUuid(), player2.getUuid(), playedPairs);
+        MatchupUtil.addPlayedPair(player1.getId().getUuid(), player2.getId().getUuid(), playedPairs);
         int initialSize = playedPairs.size();
 
-        MatchupUtil.addPlayedPair(player1.getUuid(), player2.getUuid(), playedPairs);
+        MatchupUtil.addPlayedPair(player1.getId().getUuid(), player2.getId().getUuid(), playedPairs);
 
         assertEquals(initialSize, playedPairs.size(), "Adding the same pair again should not change the size.");
     }
@@ -186,8 +188,8 @@ public class MatchupUtilTest {
     public void testGetPlayedPairsRetrievesCorrectPairs() {
         // Set up additional players and matchups for this test
         MatchupsId matchId2 = new MatchupsId()
-                .setPlayer1(player3.getUuid())
-                .setPlayer2(player4.getUuid())
+                .setPlayer1(player3.getId().getUuid())
+                .setPlayer2(player4.getId().getUuid())
                 .setTournamentId(tournamentId);
 
         Matchups match2 = new Matchups()
@@ -222,8 +224,8 @@ public class MatchupUtilTest {
     public void testGetPlayedPairsHandlesDuplicates() {
         // Creating duplicate matchup with swapped players for duplicate test
         MatchupsId duplicateMatchId = new MatchupsId()
-                .setPlayer1(player2.getUuid())
-                .setPlayer2(player1.getUuid())
+                .setPlayer1(player2.getId().getUuid())
+                .setPlayer2(player1.getId().getUuid())
                 .setTournamentId(tournamentId);
 
         Matchups duplicateMatch = new Matchups()

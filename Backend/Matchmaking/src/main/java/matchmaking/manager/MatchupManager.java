@@ -33,8 +33,9 @@ public class MatchupManager {
 
     // A placeholder for "no player" in case of odd number of participants
     private final Signups NO_PLAYER = new Signups()
-            .setUuid("null")
-            .setTournamentId(null)
+            .setId(new PlayerTournamentId()
+                    .setUuid("null")
+                    .setTournamentId(null))
             .setElo(-1);
 
     /**
@@ -108,7 +109,7 @@ public class MatchupManager {
         for (int i = 0; i < players.size(); i++) {
             Signups player1 = players.get(i);
 
-            if (pairedPlayers.contains(player1.getUuid())) {
+            if (pairedPlayers.contains(player1.getId().getUuid())) {
                 continue; // Skip if already paired
             }
 
@@ -116,9 +117,9 @@ public class MatchupManager {
 
             if (player2 != null) {
                 validPairs.add(Pair.of(player1, player2));
-                pairedPlayers.add(player1.getUuid());
-                pairedPlayers.add(player2.getUuid());
-                MatchupUtil.addPlayedPair(player1.getUuid(), player2.getUuid(), playedPairs);
+                pairedPlayers.add(player1.getId().getUuid());
+                pairedPlayers.add(player2.getId().getUuid());
+                MatchupUtil.addPlayedPair(player1.getId().getUuid(), player2.getId().getUuid(), playedPairs);
             }
         }
         return validPairs;
@@ -140,11 +141,11 @@ public class MatchupManager {
         for (int j = currentIndex + 1; j < players.size(); j++) {
             Signups player2 = players.get(j);
 
-            if (pairedPlayers.contains(player2.getUuid())) {
+            if (pairedPlayers.contains(player2.getId().getUuid())) {
                 continue; // Skip if already paired
             }
 
-            if (ValidationUtil.isValidPair(player1.getUuid(), player2.getUuid(), playedPairs)) {
+            if (ValidationUtil.isValidPair(player1.getId().getUuid(), player2.getId().getUuid(), playedPairs)) {
                 return player2;
             }
         }
@@ -165,7 +166,7 @@ public class MatchupManager {
     private Pair<Signups, Signups> handleBye(List<Signups> players, List<Matchups> matchups,
             Set<String> pairedPlayers) {
         for (Signups player : players) {
-            if (!pairedPlayers.contains(player.getUuid())) {
+            if (!pairedPlayers.contains(player.getId().getUuid())) {
                 return Pair.of(player, NO_PLAYER);
             }
         }

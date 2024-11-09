@@ -25,6 +25,9 @@ public class TournamentInfoUtil {
     @Autowired
     private SignupsRepository signupsRepository;
 
+    @Autowired
+    private ResultsRepository resultsRepository;
+
     /**
      * Retrieves the current round number for a given tournament.
      *
@@ -99,8 +102,8 @@ public class TournamentInfoUtil {
     @Transactional
     public Matchups createMatchup(Signups player1, Signups player2, String tournamentId, int roundNum) {
         MatchupsId matchupsId = new MatchupsId();
-        matchupsId.setPlayer1(player1.getUuid());
-        matchupsId.setPlayer2(player2.getUuid());
+        matchupsId.setPlayer1(player1.getId().getUuid());
+        matchupsId.setPlayer2(player2.getId().getUuid());
         matchupsId.setTournamentId(tournamentId);
 
         Matchups matchup = new Matchups();
@@ -126,14 +129,14 @@ public class TournamentInfoUtil {
     public Matchups createMatchup(Signups player1, Signups player2, Signups playerWon, String tournamentId,
             int roundNum) {
         MatchupsId matchupsId = new MatchupsId();
-        matchupsId.setPlayer1(player1.getUuid());
-        matchupsId.setPlayer2(player2.getUuid());
+        matchupsId.setPlayer1(player1.getId().getUuid());
+        matchupsId.setPlayer2(player2.getId().getUuid());
         matchupsId.setTournamentId(tournamentId);
 
         Matchups matchup = new Matchups();
         matchup.setId(matchupsId);
         matchup.setRoundNum(roundNum);
-        matchup.setPlayerWon(playerWon.getUuid());
+        matchup.setPlayerWon(playerWon.getId().getUuid());
         System.out.println("Matchup created: " + matchup);
         return matchup;
     }
@@ -180,6 +183,59 @@ public class TournamentInfoUtil {
         }
 
         signupsRepository.updateElo(uuid, elo);
+    }
+
+    /**
+     * Retrieves the results of a specific tournament based on the given tournament
+     * ID.
+     * <p>
+     * This method validates that the tournament ID is not empty before retrieving
+     * the tournament results from the {@code resultsRepository}.
+     * </p>
+     *
+     * @param tournamentId The ID of the tournament for which results are requested.
+     *                     Must not be null or empty.
+     * @return A list of {@link Results} objects representing the results of the
+     *         specified tournament.
+     * @throws IllegalArgumentException if the tournament ID is null or empty.
+     */
+    @Transactional
+    public List<Results> getTournamentResults(String tournamentId) {
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+
+        return resultsRepository.getTournamentResults(tournamentId);
+    }
+
+    /**
+     * Inserts the results for a player's participation in a specific tournament.
+     * <p>
+     * This method validates the UUID, tournament ID, and ranking. The ranking must
+     * be greater than zero. If any validation fails, an
+     * {@link IllegalArgumentException}
+     * is thrown. If validation passes, the method inserts the result into the
+     * {@code resultsRepository}.
+     * </p>
+     *
+     * @param uuid         The unique identifier of the player. Must not be null or
+     *                     empty.
+     * @param tournamentId The unique identifier of the tournament. Must not be null
+     *                     or empty.
+     * @param ranking      The player's ranking in the tournament. Must be greater
+     *                     than zero.
+     * @throws IllegalArgumentException if the UUID, tournament ID are null or
+     *                                  empty, or if the ranking is not greater than
+     *                                  zero.
+     */
+    @Transactional
+    public void insertTournamentResults(String uuid, String tournamentId, int ranking) {
+        ValidationUtil.validateNotEmpty(uuid, "UUID");
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+
+        if (ranking <= 0) {
+            throw new IllegalArgumentException("Ranking must not be null or empty");
+        }
+
+        resultsRepository.insertTournamentResult(uuid, tournamentId, ranking);
     }
 
     /**

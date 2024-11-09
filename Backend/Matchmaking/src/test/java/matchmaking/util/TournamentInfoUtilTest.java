@@ -90,11 +90,11 @@ public class TournamentInfoUtilTest {
     private List<Signups> createMockSignups() {
         List<Signups> signups = new ArrayList<>();
         Signups player1 = new Signups()
-                .setUuid("Player1");
-        signups.add(player1);
-
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
+
+        signups.add(player1);
         signups.add(player2);
 
         return signups;
@@ -167,8 +167,8 @@ public class TournamentInfoUtilTest {
         List<Signups> signups = tournamentInfoUtil.getSignupsByTournamentId(tournamentId);
         assertNotNull(signups, "Signups list should not be null.");
         assertEquals(2, signups.size(), "There should be two signups.");
-        assertEquals("Player1", signups.get(0).getUuid(), "First signup should be Player1.");
-        assertEquals("Player2", signups.get(1).getUuid(), "Second signup should be Player2.");
+        assertEquals("Player1", signups.get(0).getId().getUuid(), "First signup should be Player1.");
+        assertEquals("Player2", signups.get(1).getId().getUuid(), "Second signup should be Player2.");
     }
 
     /**
@@ -215,9 +215,9 @@ public class TournamentInfoUtilTest {
     @Test
     public void testCreateMatchupWithoutWinner() {
         Signups player1 = new Signups()
-                .setUuid("Player1");
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, tournamentId, 1);
 
@@ -235,9 +235,9 @@ public class TournamentInfoUtilTest {
     @Test
     public void testCreateMatchupWithWinner() {
         Signups player1 = new Signups()
-                .setUuid("Player1");
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
         Signups winner = player1;
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, winner, tournamentId, 1);
@@ -257,9 +257,9 @@ public class TournamentInfoUtilTest {
     @Test
     public void testInsertMatchups() {
         Signups player1 = new Signups()
-                .setUuid("Player1");
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, tournamentId, 1);
         tournamentInfoUtil.insertMatchups(List.of(matchup), tournamentId, 1);

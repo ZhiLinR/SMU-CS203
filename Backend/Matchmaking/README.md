@@ -29,7 +29,7 @@ mvn spring-boot:run
 | HTTP Method | Endpoint                             | Description                                            |
 |-------------|-------------------------------------|--------------------------------------------------------|
 | `GET`       | [/matchmaking/{TournamentID}](#get-matchmakingtournamentid) | Matchmake users for the most recent round of the tournament with the given Tournament ID. |
-| `GET`       | [/ranking/{TournamentID}](#get-rankingtournamentid) | Generate and return rankings of a tournament and update participants' Elo given Tournament ID. |
+| `GET`       | [/ranking/{TournamentID}](#get-rankingtournamentid) | Generate and return player names in order of rank and update participants' Elo given Tournament ID. |
 
 ## API Endpoints with Requests and Responses
 
@@ -106,9 +106,9 @@ Sample Success 200 Response:
     "message": "Players ranked successfully",
     "content": {
         "results": [
-            "uuid-1",
-            "uuid-2",
-            "uuid-3"
+            "name-1",
+            "name-2",
+            "name-3"
         ]
     }
 }
