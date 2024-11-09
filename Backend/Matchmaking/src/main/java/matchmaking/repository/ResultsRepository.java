@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import matchmaking.model.Results;
+import matchmaking.model.Signups;
 
 /**
  * Repository interface for managing {@link Results} entities.
@@ -28,23 +29,33 @@ import matchmaking.model.Results;
 @Repository
 public interface ResultsRepository extends JpaRepository<Results, String> {
 
-    /**
-     * Retrieves a list of signups for a specified tournament.
-     *
-     * This method calls the stored procedure "GetSignupsByTournamentId" to
-     * fetch all signups associated with the given tournament ID.
-     *
-     * @param tournamentId the ID of the tournament for which signups are requested.
-     * @return a list of {@link Signups} objects representing the users who signed
-     *         up for the tournament.
-     */
-    @Procedure(procedureName = "GetTournamentResult")
-    List<Results> getTournamentResults(
-            @Param("p_tournamentId") String tournamentId);
+        /**
+         * Retrieves a list of signups for a specified tournament.
+         *
+         * This method calls the stored procedure "GetSignupsByTournamentId" to
+         * fetch all signups associated with the given tournament ID.
+         *
+         * @param tournamentId the ID of the tournament for which signups are requested.
+         * @return a list of {@link Signups} objects representing the users who signed
+         *         up for the tournament.
+         */
+        @Procedure(procedureName = "GetTournamentResult")
+        List<Results> getTournamentResults(
+                        @Param("p_tournamentId") String tournamentId);
 
-    @Procedure(procedureName = "InsertTournamentResult")
-    void insertTournamentResult(
-            @Param("p_uuid") String uuid,
-            @Param("p_tournamentId") String tournamentId,
-            @Param("p_ranking") Integer ranking);
+        /**
+         * Calls the stored procedure {@code InsertTournamentResult} to insert a
+         * tournament result
+         * into the database.
+         *
+         * @param uuid         the unique identifier for the user or participant
+         * @param tournamentId the unique identifier for the tournament
+         * @param ranking      the ranking or position achieved by the participant in
+         *                     the tournament
+         */
+        @Procedure(procedureName = "InsertTournamentResult")
+        void insertTournamentResult(
+                        @Param("p_uuid") String uuid,
+                        @Param("p_tournamentId") String tournamentId,
+                        @Param("p_ranking") Integer ranking);
 }
