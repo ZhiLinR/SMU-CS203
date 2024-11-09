@@ -1,0 +1,15 @@
+*{
+    color: #2D2D2D;
+}
+
+.chess-board {
+    margin: 0;
+    justify-content: left;
+    align-items: left;
+  }
+
+.chessboard-img{
+    margin: 0;
+  justify-content: center;
+   max-width: 80%;
+  }

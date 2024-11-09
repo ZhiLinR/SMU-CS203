@@ -20,6 +20,7 @@ import 'swiper/css/navigation';
 
 
 import PrimeVue from 'primevue/config';
+import Aura from '@primevue/themes/aura';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
@@ -131,6 +132,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const app = createApp(App)
+app.use(PrimeVue, {
+  theme: {
+      preset: Aura
+  }
+});
 
 app.use(router);
 app.use(store);
