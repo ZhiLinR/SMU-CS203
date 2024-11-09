@@ -6,6 +6,7 @@ import matchmaking.model.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,7 @@ public class TournamentInfoUtil {
      * @throws IllegalArgumentException if the {@code tournamentId} is null or
      *                                  empty.
      */
+    @Transactional
     public int getCurrentRoundByTournamentId(String tournamentId) {
         ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
 
@@ -46,6 +48,7 @@ public class TournamentInfoUtil {
      * @throws IllegalArgumentException if the {@code tournamentId} is null or
      *                                  empty.
      */
+    @Transactional
     public List<Matchups> getMatchupsByTournamentId(String tournamentId) {
         ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
 
@@ -60,6 +63,7 @@ public class TournamentInfoUtil {
      * @throws IllegalArgumentException if the {@code tournamentId} is null or
      *                                  empty.
      */
+    @Transactional
     public List<Signups> getSignupsByTournamentId(String tournamentId) {
         ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
 
@@ -74,6 +78,7 @@ public class TournamentInfoUtil {
      * @throws IllegalArgumentException if the {@code tournamentId} is null or
      *                                  empty.
      */
+    @Transactional
     public List<PlayerWins> getPlayerWinsByTournamentId(String tournamentId) {
         ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
 
@@ -91,6 +96,7 @@ public class TournamentInfoUtil {
      * @param roundNum     the current round number.
      * @return a new {@link Matchups} object representing the matchup.
      */
+    @Transactional
     public Matchups createMatchup(Signups player1, Signups player2, String tournamentId, int roundNum) {
         MatchupsId matchupsId = new MatchupsId();
         matchupsId.setPlayer1(player1.getUuid());
@@ -116,6 +122,7 @@ public class TournamentInfoUtil {
      * @return a new {@link Matchups} object representing the matchup with the
      *         winner set.
      */
+    @Transactional
     public Matchups createMatchup(Signups player1, Signups player2, Signups playerWon, String tournamentId,
             int roundNum) {
         MatchupsId matchupsId = new MatchupsId();
@@ -140,6 +147,7 @@ public class TournamentInfoUtil {
      * @throws IllegalArgumentException if the {@code matchups} list is null or
      *                                  empty.
      */
+    @Transactional
     public void insertMatchups(List<Matchups> matchups, String tournamentId, int roundNum) {
         if (matchups.size() == 0) {
             throw new IllegalArgumentException("Missing matchup to insert");
@@ -163,6 +171,7 @@ public class TournamentInfoUtil {
      * @throws IllegalArgumentException if the UUID is null or empty, or if the Elo
      *                                  rating is non-positive
      */
+    @Transactional
     public void updateSignupsPlayerElo(String uuid, int elo) {
         ValidationUtil.validateNotEmpty(uuid, "UUID");
 

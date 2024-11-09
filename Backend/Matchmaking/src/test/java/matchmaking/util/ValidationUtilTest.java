@@ -271,7 +271,7 @@ public class ValidationUtilTest {
 
         ResultsNotFoundException exception = assertThrows(
                 ResultsNotFoundException.class,
-                () -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+                () -> ValidationUtil.validatePlayerResult(playerResults, uuid));
 
         assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
     }
@@ -289,7 +289,7 @@ public class ValidationUtilTest {
 
         ResultsNotFoundException exception = assertThrows(
                 ResultsNotFoundException.class,
-                () -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+                () -> ValidationUtil.validatePlayerResult(playerResults, uuid));
 
         assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
     }
@@ -304,7 +304,7 @@ public class ValidationUtilTest {
         List<PlayerResults> playerResults = Arrays.asList(result1);
         String uuid = "uuid1"; // Matching UUID
 
-        assertDoesNotThrow(() -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+        assertDoesNotThrow(() -> ValidationUtil.validatePlayerResult(playerResults, uuid));
     }
 
     /**

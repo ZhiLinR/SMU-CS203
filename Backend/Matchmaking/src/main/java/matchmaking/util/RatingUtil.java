@@ -8,13 +8,18 @@ import java.util.List;
 import matchmaking.dto.*;
 import matchmaking.model.Matchups;
 import matchmaking.enums.*;
-import matchmaking.exception.ResultsNotFoundException;
 
 /**
  * Utility class for calculating Buchholz scores, updating Elo ratings, and
  * determining ranks for players in a tournament.
  */
 public class RatingUtil {
+
+    private static final PlayerResults NULL_PLAYER = new PlayerResults()
+            .setUuid("null")
+            .setElo(0)
+            .setBuchholz(0)
+            .setRank(-1);
 
     /**
      * Updates the Buchholz scores, Elo ratings, and ranks for players based on
@@ -25,25 +30,31 @@ public class RatingUtil {
      *                      information.
      * @param playerResults A list of PlayerResults containing player information to
      *                      be updated.
-     * @throws ResultsNotFoundException if a player's results cannot be found.
      */
     public static void updateRatings(List<Matchups> matchups, List<PlayerWins> playerWins,
-            List<PlayerResults> playerResults) throws ResultsNotFoundException {
+            List<PlayerResults> playerResults) {
+
+        System.out.println("Getting player results map");
         // Use a map for quick lookups of player results by UUID
         Map<String, PlayerResults> playerResultsMap = createPlayerResultsMap(playerResults);
 
+        System.out.println("Validating Matchups");
         // Validate matchups to ensure all player results exist
         ValidationUtil.validateMatchups(matchups, playerResults);
 
         // Calculate Buchholz scores
+        System.out.println("Calculating Buchholz");
         calculateBuchholz(matchups, playerResultsMap);
 
         // Update Elo ratings
+        System.out.println("Updating Ratings");
         updateEloRatings(matchups, playerResultsMap);
 
         // Calculate ranks
+        System.out.println("Calculating Ranks");
         calculateRanks(playerWins, playerResults);
-        System.out.println(playerResults);
+
+        System.out.println("Player Results: " + playerResults);
     }
 
     /**
@@ -66,27 +77,24 @@ public class RatingUtil {
      * @param matchups         A list of matchups in the tournament.
      * @param playerResultsMap A map of PlayerResults keyed by player UUID for quick
      *                         access.
-     * @throws ResultsNotFoundException if a player's results cannot be found.
      */
-    private static void calculateBuchholz(List<Matchups> matchups, Map<String, PlayerResults> playerResultsMap)
-            throws ResultsNotFoundException {
+    private static void calculateBuchholz(List<Matchups> matchups, Map<String, PlayerResults> playerResultsMap) {
         for (Matchups matchup : matchups) {
-            String playerWon = matchup.getPlayerWon();
-            String playerLost = playerWon.equals(matchup.getId().getPlayer1())
+            String winUuid = matchup.getPlayerWon();
+            String loseUuid = winUuid.equals(matchup.getId().getPlayer1())
                     ? matchup.getId().getPlayer2()
                     : matchup.getId().getPlayer1();
 
             // Find PlayerResults for both players using the map
-            PlayerResults winningPlayer = playerResultsMap.get(playerWon);
-            PlayerResults losingPlayer = playerResultsMap.get(playerLost);
+            PlayerResults winResult = playerResultsMap.get(winUuid);
+            PlayerResults loseResult = "null".equals(loseUuid) ? NULL_PLAYER : playerResultsMap.get(loseUuid);
 
-            if (winningPlayer == null || losingPlayer == null) {
-                throw new ResultsNotFoundException(
-                        "Player results not found for UUIDs: " + playerWon + ", " + playerLost);
-            }
+            // Check results not null
+            ValidationUtil.validatePlayerResult(winResult, loseUuid);
+            ValidationUtil.validatePlayerResult(loseResult, winUuid);
 
             // Update the winning player's Buchholz score
-            winningPlayer.setBuchholz(winningPlayer.getBuchholz() + losingPlayer.getElo());
+            winResult.setBuchholz(winResult.getBuchholz() + loseResult.getElo());
         }
     }
 
@@ -98,46 +106,48 @@ public class RatingUtil {
      *                      information.
      * @param playerResults A list of PlayerResults containing player information to
      *                      be updated.
-     * @throws ResultsNotFoundException if a player's results cannot be found.
      */
-    private static void calculateRanks(List<PlayerWins> playerWins, List<PlayerResults> playerResults)
-            throws ResultsNotFoundException {
-        List<PlayerRanking> rankings = new ArrayList<>();
+    private static void calculateRanks(List<PlayerWins> playerWins, List<PlayerResults> playerResults) {
 
-        for (PlayerWins playerWin : playerWins) {
-            String uuid = playerWin.getUuid();
-            PlayerResults playerResult = findPlayerResultsByUUID(playerResults, uuid);
-            if (playerResult == null) {
-                throw new ResultsNotFoundException("Player result not found for UUID: " + uuid);
-            }
+        List<PlayerRanking> rankings = new ArrayList<>(playerWins.stream()
+                .filter(playerWin -> !"null".equals(playerWin.getUuid())) // Ignore players with "null" UUID
+                .map(playerWin -> {
+                    String uuid = playerWin.getUuid();
+                    PlayerResults playerResult = findPlayerResultsByUUID(playerResults, uuid);
 
-            double points = playerWin.getPoints();
-            Integer buchholz = playerResult.getBuchholz();
+                    // Check results not null
+                    ValidationUtil.validatePlayerResult(playerResult, uuid);
 
-            PlayerRanking playerRanking = new PlayerRanking();
-            playerRanking.setUuid(uuid);
-            playerRanking.setPoints(points);
-            playerRanking.setBuchholz(buchholz);
-            playerRanking.setPlayerResult(playerResult);
+                    PlayerRanking playerRanking = new PlayerRanking();
+                    playerRanking.setUuid(uuid);
+                    playerRanking.setPoints(playerWin.getPoints());
+                    playerRanking.setBuchholz(playerResult.getBuchholz());
+                    playerRanking.setPlayerResult(playerResult);
 
-            rankings.add(playerRanking);
-        }
+                    return playerRanking;
+                })
+                .toList());
 
         // Sort rankings by points (descending) and then by Buchholz (descending)
         rankings.sort((r1, r2) -> {
-            if (Double.compare(r1.getPoints(), r2.getPoints()) == 0) {
-                return Integer.compare(r1.getPlayerResult().getBuchholz(), r2.getPlayerResult().getBuchholz());
-            }
-            return Double.compare(r2.getPoints(), r1.getPoints());
-        });
+            // First compare points in descending order
+            int pointsComparison = Double.compare(r2.getPoints(), r1.getPoints());
 
-        System.out.println(rankings);
+            // If points are the same, then compare buchholz in descending order
+            if (pointsComparison == 0) {
+                return Integer.compare(r2.getPlayerResult().getBuchholz(), r1.getPlayerResult().getBuchholz());
+            }
+
+            // Otherwise, return the comparison based on points
+            return pointsComparison;
+        });
 
         // Update the rank in PlayerResults based on sorted order
         for (int i = 0; i < rankings.size(); i++) {
-            PlayerRanking ranking = rankings.get(i);
-            ranking.getPlayerResult().setRank(i + 1); // Assign rank (1-based index)
+            rankings.get(i).getPlayerResult().setRank(i + 1); // Assign rank (1-based index)
         }
+
+        System.out.println("Rankings: " + rankings);
     }
 
     /**
@@ -145,13 +155,16 @@ public class RatingUtil {
      *
      * @param playerResults A list of PlayerResults to search.
      * @param uuid          The UUID of the player to find.
-     * @return The PlayerResults instance if found, or null if not found.
+     * @return The PlayerResults instance if found, or NULL_PLAYER if not found.
      */
     private static PlayerResults findPlayerResultsByUUID(List<PlayerResults> playerResults, String uuid) {
+        if ("null".equals(uuid)) {
+            return NULL_PLAYER;
+        }
         return playerResults.stream()
                 .filter(result -> result.getUuid().equals(uuid))
                 .findFirst()
-                .orElse(null); // Return null if not found
+                .orElse(NULL_PLAYER); // Return NULL_PLAYER if not found
     }
 
     /**
@@ -161,40 +174,37 @@ public class RatingUtil {
      *                         matches.
      * @param playerResultsMap A map of PlayerResults keyed by player UUID for quick
      *                         access.
-     * @throws ResultsNotFoundException if a player's results cannot be found.
      */
-    private static void updateEloRatings(List<Matchups> matchups, Map<String, PlayerResults> playerResultsMap)
-            throws ResultsNotFoundException {
+    private static void updateEloRatings(List<Matchups> matchups, Map<String, PlayerResults> playerResultsMap) {
         for (Matchups matchup : matchups) {
-            String playerWon = matchup.getPlayerWon();
-            String playerLost = playerWon.equals(matchup.getId().getPlayer1())
+            String winUuid = matchup.getPlayerWon();
+            String loseUuid = winUuid.equals(matchup.getId().getPlayer1())
                     ? matchup.getId().getPlayer2()
                     : matchup.getId().getPlayer1();
 
             // Find PlayerResults for both players using the map
-            PlayerResults winningPlayer = playerResultsMap.get(playerWon);
-            PlayerResults losingPlayer = playerResultsMap.get(playerLost);
+            PlayerResults winResult = playerResultsMap.get(winUuid);
+            PlayerResults loseResult = "null".equals(loseUuid) ? NULL_PLAYER : playerResultsMap.get(loseUuid);
 
-            if (winningPlayer == null || losingPlayer == null) {
-                throw new ResultsNotFoundException(
-                        "Player results not found for UUIDs: " + playerWon + ", " + playerLost);
-            }
+            // Check results not null
+            ValidationUtil.validatePlayerResult(loseResult, loseUuid);
+            ValidationUtil.validatePlayerResult(winResult, winUuid);
 
             // Determine K values based on player's Elo ratings using the enum
-            int kForWinner = EloKFactor.getKValue(winningPlayer.getElo());
-            int kForLoser = EloKFactor.getKValue(losingPlayer.getElo());
+            int kForWinner = EloKFactor.getKValue(winResult.getElo());
+            int kForLoser = EloKFactor.getKValue(loseResult.getElo());
 
             // Calculate expected scores
-            double expectedWinningScore = calculateExpectedScore(winningPlayer.getElo(), losingPlayer.getElo());
-            double expectedLosingScore = calculateExpectedScore(losingPlayer.getElo(), winningPlayer.getElo());
+            double expectedWinningScore = calculateExpectedScore(winResult.getElo(), loseResult.getElo());
+            double expectedLosingScore = calculateExpectedScore(loseResult.getElo(), winResult.getElo());
 
             // Update Elo ratings
-            int newWinningElo = (int) Math.round(winningPlayer.getElo() + kForWinner * (1 - expectedWinningScore));
-            int newLosingElo = (int) Math.round(losingPlayer.getElo() + kForLoser * (0 - expectedLosingScore));
+            int newWinningElo = (int) Math.round(winResult.getElo() + kForWinner * (1 - expectedWinningScore));
+            int newLosingElo = (int) Math.round(loseResult.getElo() + kForLoser * (0 - expectedLosingScore));
 
             // Set new Elo ratings
-            winningPlayer.setElo(newWinningElo);
-            losingPlayer.setElo(newLosingElo);
+            winResult.setElo(newWinningElo);
+            loseResult.setElo(newLosingElo);
         }
     }
 

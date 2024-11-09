@@ -112,7 +112,6 @@ public class ValidationUtil {
      */
     public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
         if (matchups.size() < ((players.size() + 1) / 2)) {
-            System.out.println("Error thrown");
             throw new InvalidRoundException("Failed to match up all players uniquely");
         }
     }
@@ -159,21 +158,6 @@ public class ValidationUtil {
     }
 
     /**
-     * Validates that player results are not null and exist in the provided list.
-     *
-     * @param playerResults A list of PlayerResults to check against.
-     * @param uuid          The UUID of the player whose results need to be
-     *                      validated.
-     * @throws ResultsNotFoundException if the player results cannot be found.
-     */
-    public static void validatePlayerResults(List<PlayerResults> playerResults, String uuid)
-            throws ResultsNotFoundException {
-        if (findPlayerResultsByUUID(playerResults, uuid) == null) {
-            throw new ResultsNotFoundException("Player results not found for UUID: " + uuid);
-        }
-    }
-
-    /**
      * Validates that matchups contain valid players.
      *
      * @param matchups      A list of Matchups to validate.
@@ -198,8 +182,11 @@ public class ValidationUtil {
                     ? matchup.getId().getPlayer2()
                     : matchup.getId().getPlayer1();
 
-            validatePlayerResults(playerResults, playerWon);
-            validatePlayerResults(playerResults, playerLost);
+            validatePlayerResult(playerResults, playerWon);
+
+            if (!playerLost.equals("null")) {
+                validatePlayerResult(playerResults, playerLost);
+            }
         }
     }
 
@@ -215,5 +202,34 @@ public class ValidationUtil {
                 .filter(result -> result.getUuid().equals(uuid))
                 .findFirst()
                 .orElse(null); // Return null if not found
+    }
+
+    /**
+     * Validates that the given PlayerResults is not null.
+     *
+     * @param playerResults The PlayerResults object to validate.
+     * @param uuid          The UUID or identifying information for error messages.
+     * @throws ResultsNotFoundException if the PlayerResults is null.
+     */
+    public static void validatePlayerResult(PlayerResults playerResults, String uuid)
+            throws ResultsNotFoundException {
+        if (playerResults == null) {
+            throw new ResultsNotFoundException("Player result not found for UUID: " + uuid);
+        }
+    }
+
+    /**
+     * Validates that player results are not null and exist in the provided list.
+     *
+     * @param playerResults A list of PlayerResults to check against.
+     * @param uuid          The UUID of the player whose results need to be
+     *                      validated.
+     * @throws ResultsNotFoundException if the player results cannot be found.
+     */
+    public static void validatePlayerResult(List<PlayerResults> playerResults, String uuid)
+            throws ResultsNotFoundException {
+        if (findPlayerResultsByUUID(playerResults, uuid) == null) {
+            throw new ResultsNotFoundException("Player result not found for UUID: " + uuid);
+        }
     }
 }
