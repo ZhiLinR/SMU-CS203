@@ -20,8 +20,7 @@ import java.util.concurrent.CompletableFuture;
  * checking user roles. It interacts with the {@link TokenValidationService} to
  * validate JWT sessions, verify user roles, and extract claims from the token.
  * This service provides an asynchronous method for validating JWTs and
- * performing
- * associated checks, such as user verification and role validation.
+ * performing associated checks, such as user verification and role validation.
  *
  * <p>
  * All database-related operations are handled in transactional methods
@@ -44,10 +43,8 @@ public class MiddlewareService {
      *
      * <p>
      * This method decrypts the JWT to extract the user UUID and admin status. It
-     * then
-     * calls synchronous methods to validate the JWT and verify the user's role
-     * against
-     * the stored values in the database.
+     * then calls synchronous methods to validate the JWT and verify the user's role
+     * against the stored values in the database.
      * </p>
      *
      * <p>
