@@ -1,18 +1,18 @@
 <script>
 
-import ChessBoard from '../../components/ChessBoard.vue'
+import HomeComponent from '../../components/Home.vue'
 
 export default {
   name: 'Home',
   components: {
-    ChessBoard,
+    HomeComponent,
 
   }
 }
 </script>
 <template>
     <div id="Home">
-    <ChessBoard />
+    <HomeComponent />
   </div>
   <Divider align="center" style="font-weight: bold;">
     <div class="upcoming-tournament">

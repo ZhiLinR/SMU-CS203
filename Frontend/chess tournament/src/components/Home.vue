@@ -1,8 +1,39 @@
   
   <script>
-  export default {
-    name: 'ChessBoard'
+ import { ref, onMounted } from 'vue'
+
+export default {
+  name: 'Home',
+  setup() {
+    const tournaments = ref([])
+    const stats = ref({
+      totalTournaments: 0,
+      totalUsers: 0
+    })
+
+    const fetchTournaments = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/tournaments')
+        const data = await response.json()
+        if (data.success) {
+          tournaments.value = data.content[0]
+          stats.value.totalTournaments = tournaments.value.length
+        }
+      } catch (error) {
+        console.error('Error fetching tournaments:', error)
+      }
+    }
+
+    onMounted(() => {
+      fetchTournaments()
+    })
+
+    return {
+      tournaments,
+      stats
+    }
   }
+}
   </script>
 
 <template>
