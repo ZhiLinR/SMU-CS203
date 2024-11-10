@@ -85,7 +85,7 @@ public interface UserRepository extends JpaRepository<User, String> {
      * @return a byte representing the user's role, or null if the user does not
      *         exist
      */
-    @Procedure(name = "getRoleByUUID")
+    @Procedure(name = "GetRoleByUUID")
     Byte getRoleByUUID(@Param("p_uuid") String uuid);
 
     /**

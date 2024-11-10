@@ -2,7 +2,7 @@
 
 ## Quick Links
 
-1. [Workspace for Matchmaking Microservice](#workspace-for-matchmaking-microservice)
+1. [Workspace for Middleware Microservice](#workspace-for-middleware-microservice)
 2. [Quick Reference API Endpoints](#quick-reference-api-endpoints)
 3. [API Endpoints with Requests and Responses](#api-endpoints-with-requests-and-responses)
 
@@ -22,17 +22,17 @@ mvn spring-boot:run
 
 | HTTP Method | Endpoint               | Description                                     |
 |-------------|-----------------------|-------------------------------------------------|
-| `GET`       |  [/health](#get-health) | Check the health of the application.            |
+| `GET`       |  [/auth/health](#get-authhealth) | Check the health of the application. |
 
-### Matchmaking Endpoint
+### Middleware Endpoint
 
 | HTTP Method | Endpoint                             | Description                                            |
 |-------------|-------------------------------------|--------------------------------------------------------|
-| `POST`       | [/jwt](#post-jwt) | Matchmake users for the most recent round of the tournament with the given Tournament ID. |
+| `POST`       | [/auth/jwt](#post-authjwt) | Matchmake users for the most recent round of the tournament with the given Tournament ID. |
 
 ## API Endpoints with Requests and Responses
 
-### GET /health
+### GET /auth/health
 
 ---
 Check the health of the application
@@ -57,7 +57,7 @@ Sample Success 500 Response:
 }
 ```
 
-### POST /jwt
+### POST /auth/jwt
 
 ---
 Checks validity of JWT and values and returns the UUID and Role stored in the JWT.
