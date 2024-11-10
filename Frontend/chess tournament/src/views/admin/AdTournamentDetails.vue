@@ -1,5 +1,4 @@
 <template>
-    <AdNavbar/>
     <div class="tournament-details">
       <!-- Left side - Chess board visualization -->
       <div class="chess-board">
@@ -73,7 +72,7 @@
   // Components
   import DataTable from 'primevue/datatable'
   import Column from 'primevue/column'
-  import AdNavbar from '../../components/AdNavbar.vue';
+
   
   const toast = useToast()
   const route = useRoute();
@@ -98,15 +97,18 @@
   }
   
   // Fetch participants
+  // Fetch participants
   const fetchParticipants = async (tournamentId) => {
     try {
       const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/matchups/participants/${tournamentId}`)
       if (response.data.success) {
         list.value = response.data.content
-        const participantsResponse = await axios.post(import.meta.env.VITE_API_URL_USERS + `/namelist`, list)
+        const participantsResponse = await axios.post(import.meta.env.VITE_API_URL_USERS + `/namelist`, { data: list.value })
         if (participantsResponse.data.success){
-            console.log(participantsResponse)
-            participants.value = response.data.content
+          console.log(participantsResponse)
+          participants.value = Object.entries(participantsResponse.data.content).map(([id, name]) => ({
+          name: name 
+        }));
         }
       }
     } catch (error) {

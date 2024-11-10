@@ -1,5 +1,4 @@
 <template>
-    <AdNavbar/>
     <div class="tournament-details">
       <!-- Left side - Chess board visualization -->
       <div class="chess-board">
@@ -70,7 +69,7 @@
   import Button from 'primevue/button'
   import DataTable from 'primevue/datatable'
   import Column from 'primevue/column'
-import AdNavbar from '../../components/AdNavbar.vue';
+
   
   const toast = useToast()
   const route = useRoute();
@@ -79,6 +78,8 @@ import AdNavbar from '../../components/AdNavbar.vue';
   const tournament = ref({})
   const participants = ref([])
   const list = ref([])
+
+
   
   // Fetch tournament details
   const fetchTournamentDetails = async (tournamentId) => {
@@ -86,7 +87,6 @@ import AdNavbar from '../../components/AdNavbar.vue';
       const response = await axios.get( import.meta.env.VITE_API_URL_TOURNAMENT + `/tournaments/${tournamentId}`)
       if (response.data.success) {
         tournament.value = response.data.content
-        console.log(tournament.value)
       }
     } catch (error) {
       toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch tournament details' })
@@ -99,10 +99,12 @@ import AdNavbar from '../../components/AdNavbar.vue';
       const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/matchups/participants/${tournamentId}`)
       if (response.data.success) {
         list.value = response.data.content
-        const participantsResponse = await axios.post(import.meta.env.VITE_API_URL_USERS + `/namelist`, list)
+        const participantsResponse = await axios.post(import.meta.env.VITE_API_URL_USERS + `/namelist`, { data: list.value })
         if (participantsResponse.data.success){
-            console.log(participantsResponse)
-            participants.value = response.data.content
+          console.log(participantsResponse)
+          participants.value = Object.entries(participantsResponse.data.content).map(([id, name]) => ({
+          name: name 
+        }));
         }
       }
     } catch (error) {
@@ -132,7 +134,6 @@ import AdNavbar from '../../components/AdNavbar.vue';
   // Lifecycle
   onMounted(() => {
       const tournamentId = route.params.tournamentId;
-      console.log(tournamentId);
       if (tournamentId) {
         fetchTournamentDetails(tournamentId);
         fetchParticipants(tournamentId);
