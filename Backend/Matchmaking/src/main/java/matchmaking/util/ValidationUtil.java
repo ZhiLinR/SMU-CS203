@@ -38,6 +38,7 @@ public class ValidationUtil {
         }
     }
 
+    @SuppressWarnings("javadoc")
     /**
      * Validates that the provided list is not null or empty.
      *
@@ -135,7 +136,7 @@ public class ValidationUtil {
     /**
      * Checks if there is enough signups for matchmaking.
      *
-     * @param signups a List of Signups objects to be validated
+     * @param signups a List of {@link Signups} objects to be validated
      * @throws IllegalArgumentException if the signups list is null or empty
      */
     public static void isValidSignups(List<Signups> signups) {
@@ -147,7 +148,7 @@ public class ValidationUtil {
     /**
      * Checks if the matchup is valid by ensuring there are no duplicate PlayerIDs.
      *
-     * @param signups a List of Signups objects to be validated
+     * @param matchup matchup to be validatated
      * @throws IllegalArgumentException if the signups list is null or empty
      */
     public static void isValidMatchup(Matchups matchup) {

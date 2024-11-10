@@ -81,7 +81,7 @@ public class MatchmakingController {
      * @throws IllegalArgumentException    if the tournament ID is invalid
      * @throws TournamentNotFoundException if no tournament is found with the given
      *                                     ID
-     * @throws Exception                   for any other unexpected errors that may
+     * @throws RuntimeException            for any other unexpected errors that may
      *                                     occur
      */
     @GetMapping("/matchmaking/{tournamentId}")
@@ -123,7 +123,7 @@ public class MatchmakingController {
      *                                     ID
      * @throws ResultsNotFoundException    if no ranking results are found for the
      *                                     tournament
-     * @throws Exception                   for any other unexpected errors that may
+     * @throws RuntimeException            for any other unexpected errors that may
      *                                     occur
      */
     @GetMapping("/ranking/{tournamentId}")

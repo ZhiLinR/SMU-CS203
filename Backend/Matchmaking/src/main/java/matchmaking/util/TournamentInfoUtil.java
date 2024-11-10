@@ -241,6 +241,19 @@ public class TournamentInfoUtil {
         resultsRepository.insertTournamentResult(uuid, tournamentId, ranking);
     }
 
+    /**
+     * Retrieves a tournament by its unique ID.
+     *
+     * <p>
+     * This method first validates that the provided tournament ID is not empty,
+     * throwing an exception if validation fails. It then queries the repository
+     * to fetch the tournament associated with the given ID.
+     * </p>
+     *
+     * @param tournamentId the unique ID of the tournament to retrieve
+     * @return the {@link Tournament} object associated with the specified ID
+     * @throws IllegalArgumentException if the tournament ID is empty
+     */
     @Transactional
     public Tournament getTournamentById(String tournamentId) {
         ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");

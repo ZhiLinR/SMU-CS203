@@ -42,6 +42,19 @@ public interface SignupsRepository extends JpaRepository<Signups, String> {
         List<Signups> getSignupsByTournamentId(
                         @Param("p_tournamentId") String tournamentId);
 
+        /**
+         * Calls the stored procedure `UpdateElo` to update the Elo rating of a player.
+         *
+         * <p>
+         * This method executes a stored procedure in the database that updates the
+         * Elo rating for a player identified by their unique UUID. The procedure
+         * expects the player's UUID and the new Elo rating as parameters.
+         * </p>
+         *
+         * @param uuid the unique identifier (UUID) of the player whose Elo rating is to
+         *             be updated.
+         * @param elo  the new Elo rating to be set for the player.
+         */
         @Procedure(procedureName = "UpdateElo")
         void updateElo(
                         @Param("p_uuid") String uuid,

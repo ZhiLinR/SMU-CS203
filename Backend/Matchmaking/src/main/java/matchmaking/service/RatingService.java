@@ -67,7 +67,7 @@ public class RatingService {
      *                     rankings
      * @return a list of UUIDs ordered by the updated Elo rankings
      * @throws IllegalArgumentException if the tournament ID is null or empty
-     * @throws Exception                if any unexpected error occurs during
+     * @throws RuntimeException         if any unexpected error occurs during
      *                                  processing
      */
     @Transactional
