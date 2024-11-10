@@ -16,6 +16,15 @@ exports.getUpcomingTournaments = () => {
 };
 
 // Service to get in-progress tournaments
-exports.getInProgressTournaments = () => {
-    return TournamentModel.getInProgressTournaments();  // Call the model
+exports.getOnGoingTournaments = () => {
+    return TournamentModel.getOnGoingTournaments();  // Call the model
+};
+
+exports.getTournamentRanking = (tournamentId) => {
+    return TournamentModel.getTournamentRanking(tournamentId); // Pass tournamentId to the model
+};
+
+
+exports.getAllTournamentMatchups = (tournamentId) => {
+    return TournamentModel.getAllTournamentMatchups(tournamentId); // Pass tournamentId to the model
 };

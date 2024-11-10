@@ -131,7 +131,7 @@ exports.getUpcomingTournaments = () => {
  * @returns {Promise<Array>} A promise that resolves to an array of in-progress tournaments.
  * @throws {Error} If the database query fails.
  */
-exports.getInProgressTournaments = () => {
+exports.getOnGoingTournaments = () => {
     return new Promise((resolve, reject) => {
         const query = 'CALL GetInProgressTournament()';  // Stored procedure to get in-progress tournaments
         db.query(query, (err, results) => {
@@ -152,15 +152,25 @@ exports.getInProgressTournaments = () => {
  */
 exports.getUserTournamentGameRank = (tournamentID, UUID) => {
     return new Promise((resolve, reject) => {
-        const query = 'CALL GetUserTournamentGameRank(?,?)';  // Stored procedure to get in-progress tournaments
-        db.query(query,[tournamentID,UUID], (err, results) => {
+        const query = 'CALL RankPlayersInTournament(?)'; // Use the RankPlayersInTournament stored procedure
+        db.query(query, [tournamentID], (err, results) => {
             if (err) {
-                return reject(err);  // Return the error to the service layer
+                return reject(err); // Return the error to the service layer
             }
-            resolve(results[0]);  // Return the in-progress tournaments to the service layer
+
+            const rankings = results[0]; // Get the ranking data
+            if (!rankings || rankings.length === 0) {
+                return resolve(null); // No rankings available
+            }
+
+            // Filter rankings to find the specific user
+            const userRanking = rankings.find((player) => player.player === UUID);
+
+            resolve(userRanking); // Return the specific user's ranking
         });
     });
 };
+
 
 
 /**
@@ -246,6 +256,52 @@ exports.getCompletedTournaments = () => {
                 return reject(err);  // Return the error to the service layer
             }
             resolve(results);  // Return the in-progress tournaments to the service layer
+        });
+    });
+};
+
+
+/**
+ * Retrieves the tournament history for a given user by their UUID.
+ * @param {string} TournamentID - The UUID of the user.
+* @returns {Promise<Array<{player: string, wins: int, rank: int}>>} 
+ * @throws {Error} If the database query fails.
+ */
+exports.getTournamentRanking = (tournamentId) => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL RankPlayersInTournament(?)';  // Stored procedure to get tournament history
+        db.query(query, [tournamentId], (err, results) => {
+            if (err) {
+                return reject(err);  // Return the error to the service layer
+            }
+
+            // The first result set is the actual data, the second set is metadata
+            const tournamentRanking = results[0];
+
+            // If no tournaments were found, return null
+            if (!tournamentRanking || tournamentRanking.length === 0) {
+                return resolve(null);
+            }
+
+            resolve(tournamentRanking);  // Return the tournaments to the service layer
+        });
+    });
+};
+
+/**
+ * Retrieves the matchups for a given tournament
+ * @param {string} TournamentID - The ID of tournament.
+* @returns {Promise<Array<{player1: string, player2: string,playerWon: string, tournamentID: string,roundNum: int}>>} 
+ * @throws {Error} If the database query fails.
+ */
+exports.getAllTournamentMatchups = (tournamentId) => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetAllTournamentMatchups(?)';  // Stored procedure to get tournament matchups by ID
+        db.query(query, [tournamentId], (err, results) => {
+            if (err) {
+                return reject(err);  //eturn the error to the service layer
+            }
+            resolve(results[0]);  // Return the matchups to the service layer
         });
     });
 };
