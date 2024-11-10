@@ -22,4 +22,5 @@ app.use(errorHandler); // Middleware for error handling
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log('Allowed Origins:', process.env.ALLOWED_ORIGINS?.split(',').map(origin => origin.trim()));
 });
