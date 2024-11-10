@@ -38,6 +38,9 @@ public class MiddlewareController {
     @Autowired
     private MiddlewareService middlewareService;
 
+    @Autowired
+    private TokenValidationService tokenValidationService;
+
     /**
      * Performs a health check for the application.
      *
@@ -89,6 +92,9 @@ public class MiddlewareController {
                     if (cause instanceof UserNotFoundException) {
                         return ResponseManager.error(HttpStatus.NOT_FOUND, cause.getMessage());
                     } else if (cause instanceof UnauthorizedException) {
+                        // Invalidate token if invalid JWT
+                        tokenValidationService.invalidateJwt(jwtRequest.getJwt());
+
                         return ResponseManager.error(HttpStatus.UNAUTHORIZED, cause.getMessage());
                     } else if (cause instanceof IllegalArgumentException) {
                         return ResponseManager.error(HttpStatus.BAD_REQUEST, cause.getMessage());

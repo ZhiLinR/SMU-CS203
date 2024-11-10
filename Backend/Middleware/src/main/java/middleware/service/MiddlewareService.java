@@ -90,8 +90,7 @@ public class MiddlewareService {
             } catch (IllegalArgumentException e) {
                 throw e;
             } catch (UnauthorizedException | UserNotFoundException e) {
-                tokenValidationService.invalidateJwt(jwtRequest.getJwt());
-                throw e; // Propagate known exceptions
+                throw e;
             } catch (Exception e) {
                 throw new RuntimeException("Unexpected error during JWT validation: " + e.getMessage());
             }
