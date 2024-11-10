@@ -1,6 +1,10 @@
 package middleware.util;
 
 import middleware.exception.UserNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import middleware.exception.UnauthorizedException;
 import middleware.model.JWToken;
 
@@ -9,6 +13,7 @@ import middleware.model.JWToken;
  * UUIDs, and user roles. These methods are used to ensure that the JWT and its
  * claims are consistent with the data stored in the database.
  */
+@Component
 public class ValidationUtil {
 
     /**
