@@ -75,7 +75,7 @@ exports.getOngoingTournaments = async (req, res, next) => {
             return next(error);
         }
         sendSuccessResponse(res, 200, 'successfully retrieved ongoing tournaments', ongoingTournaments);
- 
+
     } catch (err) {
         console.error('Error retrieving ongoing tournaments:', err);
         next(err);  // Pass the error to the middleware
@@ -107,7 +107,7 @@ exports.getCompletedTournaments = async (req, res, next) => {
 
 /**
  * Controller to get a specific tournament by ID.
- * 
+ *
  * @param {Object} req - The request object.
  * @param {Object} req.params - The parameters from the request URL.
  * @param {string} req.params.tournamentId - The ID of the tournament to retrieve.

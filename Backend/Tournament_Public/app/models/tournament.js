@@ -19,7 +19,7 @@ exports.getAllTournaments = () => {
 
 /**
  * Fetches the list of completed tournaments from the database.
- * 
+ *
  * @returns {Promise<Array>} A promise that resolves to an array of completed tournaments.
  * @throws {Error} If there is an error executing the query.
  */
@@ -72,13 +72,13 @@ exports.getOngoingTournaments = () => {
 
 /**
  * Fetches a tournament by its ID from the database.
- * 
+ *
  * @param {string} tournamentId - The ID of the tournament to fetch.
  * @returns {Promise<Object|null>} A promise that resolves to the tournament object if found, or null if not found.
  * @throws {Error} Throws an error if there is a database error.
  */
 
-// Function to fetch a specific tournament by ID 
+// Function to fetch a specific tournament by ID
 exports.getTournamentByID = (tournamentId) => {
     return new Promise((resolve, reject) => {
         const query = 'CALL GetTournamentById(?)';

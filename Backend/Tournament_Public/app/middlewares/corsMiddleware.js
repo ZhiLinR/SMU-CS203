@@ -1,7 +1,7 @@
 const getAllowedOrigins = () => {
   // Get origins from environment variable and split into array
   const originsFromEnv = process.env.ALLOWED_ORIGINS?.split(',') || [];
-  
+
   // Filter out empty strings and trim whitespace
   return originsFromEnv
     .filter(origin => origin)
@@ -25,7 +25,7 @@ const corsMiddleware = (req, res, next) => {
     ].join(', '));
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Max-Age', '86400');
-    
+
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
       return res.status(204).end();

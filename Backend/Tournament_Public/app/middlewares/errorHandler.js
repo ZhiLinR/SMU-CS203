@@ -1,6 +1,6 @@
 /**
  * Error-handling middleware for Express.
- * 
+ *
  * @param {Error} err - The error object.
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.

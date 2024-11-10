@@ -1,30 +1,15 @@
 # Use Node.js LTS (Long Term Support) as the base image
 FROM node:20-slim
 
-# Set working directory
-WORKDIR /Backend/Tournament_Public
-
-# Copy package files
-COPY package*.json ./
+COPY app/ /Tournament_Public_App/
+WORKDIR /Tournament_Public_App/
 
 # Install dependencies
 # npm ci is preferred for production as it's more reliable than npm install
-RUN npm ci --only=production
-
-# Copy application source code
-COPY . .
-
-# Create a non-root user for security
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 microservice
-RUN chown -R microservice:nodejs /Backend/Tournament_Public
-USER microservice
+RUN npm ci
 
 # Expose the port your app runs on
-EXPOSE 3000
-
-# Define environment variables
-ENV NODE_ENV=production
+EXPOSE 8080
 
 # Start the application
 CMD ["node", "server.js"]

@@ -6,7 +6,7 @@ const loadEnvVariables = () => {
     const envFilePath = process.env.NODE_ENV === 'production'
         ? path.resolve(__dirname, '../.env.production')
         : path.resolve(__dirname, '../.env');
-        
+
     const result = dotenv.config({ path: envFilePath });
 
     if (result.error) {
