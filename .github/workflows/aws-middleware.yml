@@ -39,7 +39,7 @@ env:
   ECR_REPOSITORY: cs203/middleware          # set this to your Amazon ECR repository name
   ECS_SERVICE: auth-launch                 # set this to your Amazon ECS service name
   ECS_CLUSTER: cs203-middleware          # set this to your Amazon ECS cluster name
-  CONTAINER_NAME: middleware-auth
+  CONTAINER_NAME: 'middleware-auth'
 
 permissions:
   contents: read
