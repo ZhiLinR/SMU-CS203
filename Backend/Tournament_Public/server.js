@@ -9,8 +9,9 @@ const app = express();
 
 // Enable CORS for the specific origin defined in the .env file
 const corsOptions = {
-    origin: process.env.CORS_ORIGIN || '*', // Default to '*' if not set
-    methods: ['GET'],
+    // origin: process.env.CORS_ORIGIN || '*'
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
