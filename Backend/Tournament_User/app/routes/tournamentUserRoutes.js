@@ -13,7 +13,7 @@ router.get('/tournaments/players/:tournamentId',TournamentUserController.getPlay
 router.get('/player/:playerUUID/tournaments', TournamentUserController.getPlayerTournaments);
 router.get('/tournaments/view/completed', TournamentUserController.getCompletedTournaments);
 router.get('/tournaments/view/ranking/:tournamentId', TournamentUserController.getTournamentRanking); //change to name
-router.get('/tournamentusermsvc/health', TournamentUserController.getHealthStatus);
+router.get('/tournaments/player/health', TournamentUserController.getHealthStatus);
 router.get('/tournaments/getAllMatchups/:tournamentId', TournamentUserController.getAllTournamentMatchups);
 
 
