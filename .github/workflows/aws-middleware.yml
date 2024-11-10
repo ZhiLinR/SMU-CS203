@@ -32,13 +32,13 @@ on:
         paths:
         - 'Backend/Middleware/src/**' # Run when there is a push to the path User/src
         - 'Backend/Middleware/Dockerfile'
+        - 'Backend/Middleware/pom.xml'
     workflow_dispatch:
 env:
   AWS_REGION: ap-southeast-1                  # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: cs203/middleware          # set this to your Amazon ECR repository name
   ECS_SERVICE: middleware-launch                 # set this to your Amazon ECS service name
   ECS_CLUSTER: cs203-middleware          # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: middleware:1
   CONTAINER_NAME: middleware
 
 permissions:
@@ -67,7 +67,7 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
-      working-directory: Backend/Middleware
+      working-directory: Backend/Middleware/
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
@@ -79,16 +79,23 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Run User Task from ECS
-      id: run-task
-      working-directory: Backend/Middleware`
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        aws ecs run-task \
-        --cluster ${{ env.ECS_CLUSTER }} \
-        --task-definition ${{env.ECS_TASK_DEFINITION}} \
-        --launch-type FARGATE \
-        --network-configuration "awsvpcConfiguration={subnets=[${{ secrets.AWS_VPC_SUBNETS }}],securityGroups=[${{ secrets.AWS_SG_ID }}],assignPublicIp='ENABLED'}"
+        - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition tournament-admin --query taskDefinition > task-definition.json
 
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
+        enable-ecs-managed-tags: true

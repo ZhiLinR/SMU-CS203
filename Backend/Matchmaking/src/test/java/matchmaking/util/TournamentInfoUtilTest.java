@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +45,9 @@ public class TournamentInfoUtilTest {
 
     @Mock
     private SignupsRepository signupsRepository;
+
+    @Mock
+    private ResultsRepository resultsRepository;
 
     /**
      * Sets up the test environment before each test case.
@@ -90,11 +94,11 @@ public class TournamentInfoUtilTest {
     private List<Signups> createMockSignups() {
         List<Signups> signups = new ArrayList<>();
         Signups player1 = new Signups()
-                .setUuid("Player1");
-        signups.add(player1);
-
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
+
+        signups.add(player1);
         signups.add(player2);
 
         return signups;
@@ -167,8 +171,8 @@ public class TournamentInfoUtilTest {
         List<Signups> signups = tournamentInfoUtil.getSignupsByTournamentId(tournamentId);
         assertNotNull(signups, "Signups list should not be null.");
         assertEquals(2, signups.size(), "There should be two signups.");
-        assertEquals("Player1", signups.get(0).getUuid(), "First signup should be Player1.");
-        assertEquals("Player2", signups.get(1).getUuid(), "Second signup should be Player2.");
+        assertEquals("Player1", signups.get(0).getId().getUuid(), "First signup should be Player1.");
+        assertEquals("Player2", signups.get(1).getId().getUuid(), "Second signup should be Player2.");
     }
 
     /**
@@ -215,9 +219,9 @@ public class TournamentInfoUtilTest {
     @Test
     public void testCreateMatchupWithoutWinner() {
         Signups player1 = new Signups()
-                .setUuid("Player1");
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, tournamentId, 1);
 
@@ -235,9 +239,9 @@ public class TournamentInfoUtilTest {
     @Test
     public void testCreateMatchupWithWinner() {
         Signups player1 = new Signups()
-                .setUuid("Player1");
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
         Signups winner = player1;
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, winner, tournamentId, 1);
@@ -257,9 +261,9 @@ public class TournamentInfoUtilTest {
     @Test
     public void testInsertMatchups() {
         Signups player1 = new Signups()
-                .setUuid("Player1");
+                .setId(new PlayerTournamentId().setUuid("Player1"));
         Signups player2 = new Signups()
-                .setUuid("Player2");
+                .setId(new PlayerTournamentId().setUuid("Player2"));
 
         Matchups matchup = tournamentInfoUtil.createMatchup(player1, player2, tournamentId, 1);
         tournamentInfoUtil.insertMatchups(List.of(matchup), tournamentId, 1);
@@ -338,5 +342,154 @@ public class TournamentInfoUtilTest {
         assertThrows(IllegalArgumentException.class, () -> {
             tournamentInfoUtil.updateSignupsPlayerElo(uuid, -100);
         });
+    }
+
+    /**
+     * Tests the retrieval of tournament results by a valid tournament ID.
+     * Asserts that the returned list of results is not null and matches the
+     * expected results.
+     */
+    @Test
+    void testGetTournamentResults_validId() {
+        String tournamentId = "tournament123";
+        Results result1 = new Results()
+                .setId(new PlayerTournamentId()
+                        .setUuid("Player 1")
+                        .setTournamentId(tournamentId))
+                .setRanking(1);
+        Results result2 = new Results()
+                .setId(new PlayerTournamentId()
+                        .setUuid("Player 2")
+                        .setTournamentId(tournamentId))
+                .setRanking(2);
+        List<Results> expectedResults = Arrays.asList(result1, result2);
+
+        when(resultsRepository.getTournamentResults(tournamentId)).thenReturn(expectedResults);
+
+        List<Results> results = resultsRepository.getTournamentResults(tournamentId);
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        assertEquals(result1, results.get(0)); // Verify first result
+        assertEquals(result2, results.get(1)); // Verify second result
+    }
+
+    /**
+     * Tests the retrieval of tournament results with an empty tournament ID.
+     * Asserts that an {@link IllegalArgumentException} is thrown with the
+     * appropriate message.
+     */
+    @Test
+    void testGetTournamentResults_invalidId_empty() {
+        String tournamentId = "";
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.getTournamentResults(tournamentId);
+        });
+
+        assertEquals("Tournament ID must not be null or empty.", exception.getMessage());
+    }
+
+    /**
+     * Tests the retrieval of tournament results with a null tournament ID.
+     * Asserts that an {@link IllegalArgumentException} is thrown with the
+     * appropriate message.
+     */
+    @Test
+    void testGetTournamentResults_invalidId_null() {
+        String tournamentId = null;
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.getTournamentResults(tournamentId);
+        });
+
+        assertEquals("Tournament ID must not be null or empty.", exception.getMessage());
+    }
+
+    /**
+     * Tests inserting tournament results with valid input.
+     * Asserts that the results are successfully inserted into the repository.
+     */
+    @Test
+    void testInsertTournamentResults_valid() {
+        String uuid = "player123";
+        String tournamentId = "tournament123";
+        int ranking = 1;
+
+        tournamentInfoUtil.insertTournamentResults(uuid, tournamentId, ranking);
+
+        verify(resultsRepository).insertTournamentResult(uuid, tournamentId, ranking); // Verify method was called
+    }
+
+    /**
+     * Tests inserting tournament results with an empty UUID.
+     * Asserts that an {@link IllegalArgumentException} is thrown with the
+     * appropriate message.
+     */
+    @Test
+    void testInsertTournamentResults_invalidUuid_empty() {
+        String uuid = "";
+        String tournamentId = "tournament123";
+        int ranking = 1;
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.insertTournamentResults(uuid, tournamentId, ranking);
+        });
+
+        assertEquals("UUID must not be null or empty.", exception.getMessage());
+    }
+
+    /**
+     * Tests inserting tournament results with an empty tournament ID.
+     * Asserts that an {@link IllegalArgumentException} is thrown with the
+     * appropriate message.
+     */
+    @Test
+    void testInsertTournamentResults_invalidTournamentId_empty() {
+        String uuid = "player123";
+        String tournamentId = "";
+        int ranking = 1;
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.insertTournamentResults(uuid, tournamentId, ranking);
+        });
+
+        assertEquals("Tournament ID must not be null or empty.", exception.getMessage());
+    }
+
+    /**
+     * Tests inserting tournament results with a ranking of zero.
+     * Asserts that an {@link IllegalArgumentException} is thrown with the
+     * appropriate message.
+     */
+    @Test
+    void testInsertTournamentResults_invalidRanking_zero() {
+        String uuid = "player123";
+        String tournamentId = "tournament123";
+        int ranking = 0;
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.insertTournamentResults(uuid, tournamentId, ranking);
+        });
+
+        assertEquals("Ranking must not be null or empty", exception.getMessage());
+    }
+
+    /**
+     * Tests inserting tournament results with a negative ranking.
+     * Asserts that an {@link IllegalArgumentException} is thrown with the
+     * appropriate message.
+     */
+    @Test
+    void testInsertTournamentResults_invalidRanking_negative() {
+        String uuid = "player123";
+        String tournamentId = "tournament123";
+        int ranking = -1;
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            tournamentInfoUtil.insertTournamentResults(uuid, tournamentId, ranking);
+        });
+
+        assertEquals("Ranking must not be null or empty", exception.getMessage());
     }
 }

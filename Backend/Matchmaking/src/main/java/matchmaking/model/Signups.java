@@ -22,17 +22,11 @@ import lombok.experimental.Accessors;
 public class Signups {
 
     /**
-     * The unique identifier (UUID) for the player.
+     * The composite primary key for this Signup, containing the player UUID
+     * and the tournament ID.
      */
-    @Id
-    @Column(name = "UUID")
-    private String uuid;
-
-    /**
-     * The ID of the tournament to which the player is signed up.
-     */
-    @Column(name = "tournamentID")
-    private String tournamentId;
+    @EmbeddedId
+    private PlayerTournamentId id;
 
     /**
      * The Elo rating of the player, representing their skill level.

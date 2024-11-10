@@ -32,9 +32,10 @@ public class MatchupManager {
     private PlayerSorter playerSorter;
 
     // A placeholder for "no player" in case of odd number of participants
-    private final Signups NO_PLAYER = new Signups()
-            .setUuid("null")
-            .setTournamentId(null)
+    private final Signups NULL_PLAYER = new Signups()
+            .setId(new PlayerTournamentId()
+                    .setUuid("null")
+                    .setTournamentId(null))
             .setElo(-1);
 
     /**
@@ -108,7 +109,7 @@ public class MatchupManager {
         for (int i = 0; i < players.size(); i++) {
             Signups player1 = players.get(i);
 
-            if (pairedPlayers.contains(player1.getUuid())) {
+            if (pairedPlayers.contains(player1.getId().getUuid())) {
                 continue; // Skip if already paired
             }
 
@@ -116,9 +117,9 @@ public class MatchupManager {
 
             if (player2 != null) {
                 validPairs.add(Pair.of(player1, player2));
-                pairedPlayers.add(player1.getUuid());
-                pairedPlayers.add(player2.getUuid());
-                MatchupUtil.addPlayedPair(player1.getUuid(), player2.getUuid(), playedPairs);
+                pairedPlayers.add(player1.getId().getUuid());
+                pairedPlayers.add(player2.getId().getUuid());
+                MatchupUtil.addPlayedPair(player1.getId().getUuid(), player2.getId().getUuid(), playedPairs);
             }
         }
         return validPairs;
@@ -140,11 +141,11 @@ public class MatchupManager {
         for (int j = currentIndex + 1; j < players.size(); j++) {
             Signups player2 = players.get(j);
 
-            if (pairedPlayers.contains(player2.getUuid())) {
+            if (pairedPlayers.contains(player2.getId().getUuid())) {
                 continue; // Skip if already paired
             }
 
-            if (ValidationUtil.isValidPair(player1.getUuid(), player2.getUuid(), playedPairs)) {
+            if (ValidationUtil.isValidPair(player1.getId().getUuid(), player2.getId().getUuid(), playedPairs)) {
                 return player2;
             }
         }
@@ -153,20 +154,20 @@ public class MatchupManager {
 
     /**
      * Handles assigning a bye to the last unpaired player if needed.
-     * The player with a bye is paired with {@code NO_PLAYER} and automatically
+     * The player with a bye is paired with {@code NULL_PLAYER} and automatically
      * wins.
      *
      * @param players       the list of players.
      * @param matchups      the list to store matchups.
      * @param pairedPlayers a set to track players already paired.
-     * @return a {@link Pair} of the unpaired player and {@code NO_PLAYER}, or
+     * @return a {@link Pair} of the unpaired player and {@code NULL_PLAYER}, or
      *         {@code null} if all players are paired.
      */
     private Pair<Signups, Signups> handleBye(List<Signups> players, List<Matchups> matchups,
             Set<String> pairedPlayers) {
         for (Signups player : players) {
-            if (!pairedPlayers.contains(player.getUuid())) {
-                return Pair.of(player, NO_PLAYER);
+            if (!pairedPlayers.contains(player.getId().getUuid())) {
+                return Pair.of(player, NULL_PLAYER);
             }
         }
         return null;

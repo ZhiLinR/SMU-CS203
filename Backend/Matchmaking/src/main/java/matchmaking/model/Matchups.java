@@ -9,9 +9,9 @@ import lombok.experimental.Accessors;
  * This entity is mapped to the "Matchups" table in the database.
  *
  * <p>
- * The class contains fields corresponding to user-specific data
- * such as email, password, name, etc., which are persisted in
- * the database.
+ * The class contains fields corresponding to results data
+ * such as player UUIDs, tournamentId and match result,
+ * which are persisted in the database.
  * </p>
  */
 @Entity

@@ -29,7 +29,8 @@ public class MatchmakingApplication {
         // System.setProperty("DB_URL", dotenv.get("DB_URL"));
         // System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
         // System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
-        // System.setProperty("USERMSVC_URL", dotenv.get("USERMSVC_URL"));
+        // System.setProperty("USERMSVC_ELO_URL", dotenv.get("USERMSVC_ELO_URL"));
+        // System.setProperty("USERMSVC_NAMES_URL", dotenv.get("USERMSVC_NAMES_URL"));
         // System.setProperty("ORIGIN", dotenv.get("ORIGIN"));
 
         SpringApplication.run(MatchmakingApplication.class, args);

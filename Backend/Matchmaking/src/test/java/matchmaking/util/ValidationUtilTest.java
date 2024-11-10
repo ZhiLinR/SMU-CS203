@@ -103,9 +103,10 @@ public class ValidationUtilTest {
      */
     private Signups createPlayer(String uuid, int elo) {
         return new Signups()
-                .setUuid(uuid)
-                .setElo(elo)
-                .setTournamentId(tournamentId);
+                .setId(new PlayerTournamentId()
+                        .setTournamentId(tournamentId)
+                        .setUuid(uuid))
+                .setElo(elo);
     }
 
     /**
@@ -124,8 +125,8 @@ public class ValidationUtilTest {
 
         // Mock matchups
         MatchupsId matchId1 = new MatchupsId()
-                .setPlayer1(player1.getUuid())
-                .setPlayer2(player2.getUuid())
+                .setPlayer1(player1.getId().getUuid())
+                .setPlayer2(player2.getId().getUuid())
                 .setTournamentId(tournamentId);
 
         matchup = new Matchups()
@@ -170,7 +171,6 @@ public class ValidationUtilTest {
     }
 
     // Test methods
-
     /**
      * Tests that validateNotEmpty throws an exception when given an empty value.
      */
@@ -181,14 +181,18 @@ public class ValidationUtilTest {
         assertEquals("TestField must not be null or empty.", exception.getMessage());
     }
 
-    /** Tests that isValidPair returns true for a new pair of players. */
+    /**
+     * Tests that isValidPair returns true for a new pair of players.
+     */
     @Test
     public void testIsValidPairReturnsTrueForNewPair() {
         boolean result = ValidationUtil.isValidPair("Player1", "Player2", playedPairs);
         assertTrue(result);
     }
 
-    /** Tests that isValidPair returns false for an existing pair of players. */
+    /**
+     * Tests that isValidPair returns false for an existing pair of players.
+     */
     @Test
     public void testIsValidPairReturnsFalseForExistingPair() {
         playedPairs.add("Player1-Player2");
@@ -229,7 +233,9 @@ public class ValidationUtilTest {
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isAllPlayersMatched(matchups, playersList));
     }
 
-    /** Tests that isValidPair throws an exception when the pair is null. */
+    /**
+     * Tests that isValidPair throws an exception when the pair is null.
+     */
     @Test
     public void testIsValidPairThrowsExceptionWhenPairIsNull() {
         assertThrows(InvalidRoundException.class, () -> ValidationUtil.isValidPair(null));
@@ -271,9 +277,9 @@ public class ValidationUtilTest {
 
         ResultsNotFoundException exception = assertThrows(
                 ResultsNotFoundException.class,
-                () -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+                () -> ValidationUtil.validatePlayerResult(playerResults, uuid));
 
-        assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
+        assertEquals("Player result not found for UUID: " + uuid, exception.getMessage());
     }
 
     /**
@@ -289,9 +295,9 @@ public class ValidationUtilTest {
 
         ResultsNotFoundException exception = assertThrows(
                 ResultsNotFoundException.class,
-                () -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+                () -> ValidationUtil.validatePlayerResult(playerResults, uuid));
 
-        assertEquals("Player results not found for UUID: " + uuid, exception.getMessage());
+        assertEquals("Player result not found for UUID: " + uuid, exception.getMessage());
     }
 
     /**
@@ -304,7 +310,7 @@ public class ValidationUtilTest {
         List<PlayerResults> playerResults = Arrays.asList(result1);
         String uuid = "uuid1"; // Matching UUID
 
-        assertDoesNotThrow(() -> ValidationUtil.validatePlayerResults(playerResults, uuid));
+        assertDoesNotThrow(() -> ValidationUtil.validatePlayerResult(playerResults, uuid));
     }
 
     /**
