@@ -26,7 +26,7 @@ import org.springframework.http.HttpStatus;
  */
 @CrossOrigin(origins = "${ORIGIN}")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class MiddlewareController {
 
     /**
