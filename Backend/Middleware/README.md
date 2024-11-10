@@ -28,7 +28,7 @@ mvn spring-boot:run
 
 | HTTP Method | Endpoint                             | Description                                            |
 |-------------|-------------------------------------|--------------------------------------------------------|
-| `POST`       | [/auth/jwt](#post-authjwt) | Matchmake users for the most recent round of the tournament with the given Tournament ID. |
+| `GET`       | [/auth/jwt](#get-authjwt) | Checks validity of JWT and values and returns the UUID and Role stored in the JWT. |
 
 ## API Endpoints with Requests and Responses
 
@@ -57,18 +57,12 @@ Sample Success 500 Response:
 }
 ```
 
-### POST /auth/jwt
+### GET /auth/jwt
+
+**Header - jwt: < jwt-value >**
 
 ---
 Checks validity of JWT and values and returns the UUID and Role stored in the JWT.
-
-Sample Request Body:
-
-```json
-{
-    "jwt": "jwt-value"
-}
-```
 
 Sample Success 200 Response:
 
