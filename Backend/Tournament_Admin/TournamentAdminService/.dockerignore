@@ -1,0 +1,8 @@
+target/
+.git/
+.idea/
+docker-compose.yaml
+mvnw.cmd
+mvnw
+.gitignore
+.mvn/
