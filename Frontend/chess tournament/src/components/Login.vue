@@ -3,17 +3,24 @@
       <Toast />
       <div class="chess-board">
         <img src="../assets/Chessboard.png" class="chessboard-img" alt="Chessboard" />
+        <div style="margin-left: 10rem;">
+        <router-link :to="{ name: 'signup' }">
+        <Button class="signup-box" label="New User? Sign up - and start playing chess!" style="margin: 0;">
+        </Button>
+      </router-link>
       </div>
+      </div>
+      
       <div class="login-box">
         <h1>Log In</h1>
         <form @submit.prevent="handleSubmit" class="login-form">
           <div class="p-input-filled">
             <InputText 
-              v-model="username" 
+              v-model="email" 
               type="text" 
-              placeholder="Username" 
+              placeholder="Email" 
               class="w-full"
-              :class="{ 'p-invalid': submitted && !username }" 
+              :class="{ 'p-invalid': submitted && !email }" 
             />
           </div>
   
@@ -22,7 +29,7 @@
               :class="[passwordVisible ? 'pi pi-eye-slash' : 'pi pi-eye']" 
               @click="togglePassword"
               style="cursor: pointer" 
-            />
+            ></i>
             <InputText 
               v-model="password" 
               :type="passwordVisible ? 'text' : 'password'" 
@@ -31,25 +38,41 @@
               :class="{ 'p-invalid': submitted && !password }" 
             />
           </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 1rem;margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center;">
+              <Checkbox v-model="checked" binary variant="filled" label="Remember me" />&nbsp;
+              <p style="color: #FBFBFB; margin: 0;">Remember Me?</p>
+          </div>
+          <div>
+              <p style="color: #FBFBFB; font-style: oblique; margin: 0;">Forgot Password?</p>
+          </div>
+        </div>
+          
   
           <Button 
             severity="info"
             label="Submit" 
             class="w-full rounded" 
             :loading="loading" 
-          />
+            style="background-color: #FBFBFB; color: #2D2D2D"
+          ></Button>
         </form>
       </div>
+
+      
     </div>
   </template>
   
   <script setup>
   import { ref } from 'vue'
   import { useToast } from 'primevue/usetoast'
-  import Button from 'primevue/button';
+  import Button from 'primevue/button'
+  import Checkbox from 'primevue/checkbox'
   
+  const checked = ref(false)
   const toast = useToast()
-  const username = ref('')
+  const email = ref('')
   const password = ref('')
   const passwordVisible = ref(false)
   const submitted = ref(false)
@@ -62,7 +85,7 @@
   const handleSubmit = async () => {
     submitted.value = true
   
-    if (!username.value || !password.value) {
+    if (!email.value || !password.value) {
       toast.add({
         severity: 'error',
         summary: 'Error',
@@ -108,7 +131,17 @@
   background-color: #2D2D2D;
   padding: 2.5rem;
   border-radius: 10px;
-  width: 400px;
+  width: 600px;
+  height: auto;
+}
+
+.signup-box{
+  background-color: #2D2D2D;
+  width: 490px;
+  height: 81px;
+  color: #FBFBFB;
+  border-radius: 10px;
+  
 }
 
 .login-box h1 {

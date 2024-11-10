@@ -14,11 +14,7 @@ export default {
     <div id="Home">
     <HomeComponent />
   </div>
-  <Divider align="center" style="font-weight: bold;">
-    <div class="upcoming-tournament">
-      <h2 style="color:#FBFBFB">Upcoming Tournaments</h2>
-    </div>
-</Divider>
+ 
 
 </template>
 

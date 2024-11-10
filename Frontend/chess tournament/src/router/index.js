@@ -33,6 +33,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/login/Login.vue')
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: () => import('../views/signup/Signup.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {
