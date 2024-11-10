@@ -21,9 +21,11 @@
     "primeicons": "^6.0.1",
     "primevue": "^3.53.0",
     "swiper": "^11.1.3",
+    "vee-validate": "^4.14.7",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.1",

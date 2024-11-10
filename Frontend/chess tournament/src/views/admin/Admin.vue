@@ -1,5 +1,4 @@
 <template>
-  <AdNavbar />
   <div class="tournament-dashboard">
     <div class="action-buttons">
       <Button class="rounded" severity="danger" @click="openCreateDialog()">
@@ -47,6 +46,34 @@
         <div class="line"></div>
       </div>
       <DataTable :value="ongoingTournaments" :loading="loading" responsiveLayout="stack" class="tournament-table">
+        <Column field="name" header="Tournament Name"></Column>
+        <Column field="startDate" header="Start Date">
+          <template #body="slotProps">
+            {{ formatDate(slotProps.data.startDate) }}
+          </template>
+        </Column>
+        <Column field="endDate" header="End Date">
+          <template #body="slotProps">
+            {{ formatDate(slotProps.data.endDate) }}
+          </template>
+        </Column>
+        <Column field="location" header="Location"></Column>
+        <Column field="playerLimit" header="Player Limit"></Column>
+        <Column header="Actions">
+          <template #body="slotProps">
+            <Button label="View Details" @click="viewTournamentDetails(slotProps.data)" severity="info" text />
+          </template>
+        </Column>
+      </DataTable>
+    </div>
+
+    <div class="tournament-section">
+      <div class="tournament-header">
+        <div class="line"></div>
+        <div class="text">Completed Tournaments</div>
+        <div class="line"></div>
+      </div>
+      <DataTable :value="completedTournaments" :loading="loading" responsiveLayout="stack" class="tournament-table">
         <Column field="name" header="Tournament Name"></Column>
         <Column field="startDate" header="Start Date">
           <template #body="slotProps">
@@ -147,7 +174,6 @@ import Column from 'primevue/column'
 import Button from 'primevue/button'
 import Menubar from 'primevue/menubar'
 import Toast from 'primevue/toast'
-import AdNavbar from '../../components/AdNavbar.vue'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
@@ -164,7 +190,6 @@ export default {
     Button,
     Menubar,
     Toast,
-    AdNavbar,
     InputText,
     InputNumber,
     Calendar,
@@ -175,6 +200,7 @@ export default {
     const toast = useToast()
     const upcomingTournaments = ref([])
     const ongoingTournaments = ref([])
+    const completedTournaments = ref([])
     const loading = ref(false)
     const editDialogVisible = ref(false)
     const createDialogVisible = ref(false)
@@ -191,6 +217,7 @@ export default {
           const allTournaments = response.data.content
           upcomingTournaments.value = allTournaments.filter(t => t.status === 'Upcoming')
           ongoingTournaments.value = allTournaments.filter(t => t.status === 'Ongoing')
+          completedTournaments.value = allTournaments.filter(t => t.status === 'Completed')
         } else {
           throw new Error(response.data.message)
         }
@@ -269,6 +296,7 @@ export default {
     const viewTournamentDetails = (tournament) => {
       router.push(`/admin/tournaments/${tournament.tournamentID}`)
     }
+    
 
     const formatDate = (dateString) => {
       return new Date(dateString).toLocaleDateString()
@@ -298,7 +326,8 @@ export default {
       createDialogVisible,
       openCreateDialog,
       closeCreateDialog,
-      viewTournamentDetails
+      viewTournamentDetails,
+      completedTournaments
     }
   }
 }

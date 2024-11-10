@@ -1,5 +1,4 @@
 <template>
-    <AdNavbar />
     <div class="tournament-dashboard">
       <div class="tournament-section">
         <div class="tournament-header">
@@ -69,7 +68,6 @@
   import Button from 'primevue/button'
   import Menubar from 'primevue/menubar'
   import Toast from 'primevue/toast'
-  import AdNavbar from '../../components/AdNavbar.vue'
   import Dialog from 'primevue/dialog'
   import InputText from 'primevue/inputtext'
   import InputNumber from 'primevue/inputnumber'
@@ -86,7 +84,6 @@
       Button,
       Menubar,
       Toast,
-      AdNavbar,
       InputText,
       InputNumber,
       Calendar,
