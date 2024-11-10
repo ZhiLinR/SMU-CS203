@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Represents a user entity in the system.
  * This entity is mapped to the "User" table in the database.
- * 
+ *
  * <p>
  * The class contains fields corresponding to user-specific data
  * such as email, password, name, etc., which are persisted in
@@ -32,7 +32,7 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "isAdmin")  // Ensure this matches your database column name
+    @Column(name = "isAdmin") // Ensure this matches your database column name
     private Byte isAdmin;
 
     @Column(name = "dob")
@@ -41,4 +41,3 @@ public class User {
     @Column(name = "elo")
     private String elo;
 }
-

@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import user.dto.ProfileRequest;
+import user.exception.UnauthorizedException;
+import user.exception.UserNotFoundException;
 import user.model.User;
 import user.repository.*;
 import user.util.*;
@@ -17,15 +19,19 @@ import java.util.Map;
 
 /**
  * Service class for managing user profiles, including creating, authenticating,
- * logging out, and updating user information. This class interacts with the 
- * {@link UserRepository} and {@link JWTokenRepository} to perform necessary 
+ * logging out, and updating user information. This class interacts with the
+ * {@link UserRepository} and {@link JWTokenRepository} to perform necessary
  * database operations and uses {@link JwtUtil} for JWT token management.
  *
- * <p>This service class provides various methods for user profile management,
- * ensuring validation and transaction handling throughout the processes.</p>
+ * <p>
+ * This service class provides various methods for user profile management,
+ * ensuring validation and transaction handling throughout the processes.
+ * </p>
  *
- * <p>All public methods in this service class are transactional, ensuring that 
- * operations are completed atomically.</p>
+ * <p>
+ * All public methods in this service class are transactional, ensuring that
+ * operations are completed atomically.
+ * </p>
  */
 @Service
 public class ProfileService {
@@ -46,7 +52,8 @@ public class ProfileService {
      * Creates a new user profile based on the provided {@link ProfileRequest}.
      *
      * @param profileRequest the profile request containing user details
-     * @return {@code true} if the profile was created successfully; {@code false} otherwise
+     * @return {@code true} if the profile was created successfully; {@code false}
+     *         otherwise
      * @throws IllegalArgumentException if the provided profile request is invalid
      */
     @Transactional
@@ -59,18 +66,19 @@ public class ProfileService {
                 profileRequest.getEmail(),
                 encrypted,
                 profileRequest.getName(),
-                profileRequest.getIsAdmin()
-        );
+                profileRequest.getIsAdmin());
 
         return status == 1;
     }
 
     /**
-     * Authenticates a user based on the provided login request and returns a JWT token.
+     * Authenticates a user based on the provided login request and returns a JWT
+     * token.
      *
      * @param loginRequest the login request containing user credentials
      * @return the generated JWT token
-     * @throws IllegalArgumentException if the login request is invalid or authentication fails
+     * @throws IllegalArgumentException if the login request is invalid or
+     *                                  authentication fails
      */
     @Transactional
     public String authenticateUser(ProfileRequest loginRequest) {
@@ -95,9 +103,9 @@ public class ProfileService {
      * Logs out a user by their UUID.
      *
      * @param uuid the UUID of the user to log out
-     * @throws UserNotFoundException if user not found with the given UUID
+     * @throws UserNotFoundException    if user not found with the given UUID
      * @throws IllegalArgumentException if the UUID is invalid
-     * @throws IllegalStateException if logout fails
+     * @throws IllegalStateException    if logout fails
      */
     @Transactional
     public void logoutUser(String uuid) {
@@ -105,18 +113,20 @@ public class ProfileService {
             // Get user profile and check for errors (handled in getProfileByUUID)
             @SuppressWarnings("unused")
             User user = getProfileByUUID(uuid);
-    
+
             // Check if JWT token exists and update the logout
             Integer rowsAffected = jwTokenRepository.updateLogout(uuid);
-    
-            // Handle cases where the update fails (e.g., no token found or already logged out)
+
+            // Handle cases where the update fails (e.g., no token found or already logged
+            // out)
             if (rowsAffected == 0) {
-                throw new IllegalStateException("Logout failed. Either no JWT token exists for this user or the user is already logged out.");
+                throw new IllegalStateException(
+                        "Logout failed. Either no JWT token exists for this user or the user is already logged out.");
             }
         } catch (Exception e) {
             // Re-throw the exception to be handled by the controller or other layers
             throw e;
-        } 
+        }
     }
 
     /**
@@ -125,20 +135,20 @@ public class ProfileService {
      * @param uuid the UUID of the user
      * @return the {@link User} object associated with the UUID
      * @throws IllegalArgumentException if the UUID is null or empty
-     * @throws UserNotFoundException if no user is found with the given UUID
+     * @throws UserNotFoundException    if no user is found with the given UUID
      */
     @Transactional
     public User getProfileByUUID(String uuid) {
         if (uuid == null || uuid.isEmpty()) {
             throw new IllegalArgumentException("Invalid UUID: UUID cannot be null or empty.");
         }
-    
+
         User user = userRepository.getProfile(uuid);
-    
+
         if (user == null) {
             throw new UserNotFoundException("User not found");
         }
-    
+
         return user; // Return the user profile if everything is valid
     }
 
@@ -151,7 +161,7 @@ public class ProfileService {
     @Transactional
     public Map<String, String> getNamesByUUIDList(List<String> uuids) {
         Map<String, String> nameMap = new HashMap<>();
-        
+
         if (uuids == null || uuids.isEmpty()) {
             return nameMap; // Return empty map for an empty or null list
         }
@@ -178,15 +188,16 @@ public class ProfileService {
      * Updates the ELO rating for the user identified by the specified UUID.
      *
      * @param uuid the UUID of the user
-     * @param elo the new ELO rating to set
+     * @param elo  the new ELO rating to set
      * @throws IllegalArgumentException if the UUID is invalid or ELO is null
-     * @throws UserNotFoundException if no user is found with the given UUID
+     * @throws UserNotFoundException    if no user is found with the given UUID
      */
     @Transactional
     public void updateElo(String uuid, Integer elo) {
         ValidationUtil.validateUUID(uuid);
-        if (elo == null) {
-            throw new IllegalArgumentException("ELO is required");
+
+        if (elo == null || elo < 0) {
+            throw new IllegalArgumentException("Invalid or missing ELO");
         }
 
         try {
@@ -200,19 +211,19 @@ public class ProfileService {
         }
     }
 
-
     /**
      * Updates user information based on provided parameters.
      *
-     * @param uuid the UUID of the user
-     * @param email the new email of the user
+     * @param uuid     the UUID of the user
+     * @param email    the new email of the user
      * @param password the new password of the user
-     * @param name the new name of the user
-     * @param isAdmin the new admin status of the user
-     * @param dob the new date of birth of the user
-     * @return {@code true} if the user was updated successfully; {@code false} otherwise
+     * @param name     the new name of the user
+     * @param isAdmin  the new admin status of the user
+     * @param dob      the new date of birth of the user
+     * @return {@code true} if the user was updated successfully; {@code false}
+     *         otherwise
      * @throws IllegalArgumentException if any provided parameters are invalid
-     * @throws UserNotFoundException if no user is found with the given UUID
+     * @throws UserNotFoundException    if no user is found with the given UUID
      */
     @Transactional
     public boolean updateUser(String uuid, String email, String password, String name, Byte isAdmin, LocalDate dob) {
@@ -239,7 +250,8 @@ public class ProfileService {
      * Validates the provided profile request for missing fields and invalid data.
      *
      * @param profileRequest the profile request to validate
-     * @throws IllegalArgumentException if any required fields are missing or contain invalid data
+     * @throws IllegalArgumentException if any required fields are missing or
+     *                                  contain invalid data
      */
     private void validateProfileRequest(ProfileRequest profileRequest) {
         ValidationUtil.validateRequiredFields(profileRequest.getEmail(), "Email is required");
@@ -259,7 +271,8 @@ public class ProfileService {
      * Validates the provided login request for missing fields and invalid data.
      *
      * @param loginRequest the login request to validate
-     * @throws IllegalArgumentException if the email or password is missing or invalid
+     * @throws IllegalArgumentException if the email or password is missing or
+     *                                  invalid
      */
     private void validateLoginRequest(ProfileRequest loginRequest) {
         ValidationUtil.validateRequiredFields(loginRequest.getEmail(), "Email is required");
@@ -273,12 +286,13 @@ public class ProfileService {
     /**
      * Validates the provided user update parameters for missing or invalid data.
      *
-     * @param uuid the UUID of the user
-     * @param email the new email to update
+     * @param uuid     the UUID of the user
+     * @param email    the new email to update
      * @param password the new password to update
-     * @param name the new name to update
-     * @param isAdmin the new admin status (0 or 1)
-     * @throws IllegalArgumentException if any provided parameters are invalid or missing
+     * @param name     the new name to update
+     * @param isAdmin  the new admin status (0 or 1)
+     * @throws IllegalArgumentException if any provided parameters are invalid or
+     *                                  missing
      */
     private void validateUserUpdate(String uuid, String email, String password, String name, Byte isAdmin) {
         ValidationUtil.validateUUID(uuid);

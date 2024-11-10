@@ -1,5 +1,12 @@
 # SMU-CS203
 
+## Quick Links
+
+1. [Workspace for Matchmaking Microservice](#workspace-for-matchmaking-microservice)
+2. [Quick Reference API Endpoints](#quick-reference-api-endpoints)
+3. [API Endpoints with Requests and Responses](#api-endpoints-with-requests-and-responses)
+
+
 ## Workspace for User Management Microservice
 
 To start the microservice, run the commands below in order
@@ -10,7 +17,63 @@ mvn clean install
 mvn spring-boot:run
 ```
 
+## Quick Reference API Endpoints
+
+### Health Check Endpoint
+
 ### Quick Reference API Endpoints
+
+### Health Check Endpoint
+
+| HTTP Method | Endpoint | Description                                     |
+|-------------|----------|-------------------------------------------------|
+| `GET`       | [/health](#get-health) | Check the health of the application.            |
+
+### User Authentication Endpoints
+
+| HTTP Method | Endpoint | Description                                     |
+|-------------|----------|-------------------------------------------------|
+| `POST`      | [/register](#post-register) | Registers a new user with an email, hashed password, and admin status. |
+| `POST`      | [/login](#post-login) | Validates an existing user using their email and hashed password. |
+| `POST`      | [/logout](#post-logout) | Logs out a user using their UUID.               |
+
+### User Profile Endpoints
+
+| HTTP Method | Endpoint | Description                                     |
+|-------------|----------|-------------------------------------------------|
+| `POST`      | [/profile](#post-profile) | Retrieves a user profile by UUID.               |
+| `PUT`       | [/profile](#put-profile) | Updates user profile data.                   |
+| `PUT`       | [/profile/elo](#put-profileelo) | Updates a user's ELO rating.              |
+| `POST`      | [/namelist](#post-namelist) | Retrieves a list of user names by UUIDs. |
+
+
+
+## API Endpoints with Requests and Responses
+
+### GET /health
+
+---
+Check the health of the application
+
+Sample Success 200 Response:
+
+```json
+{
+    "success": true,
+    "message": "Health Check Success",
+    "content": null
+}
+```
+
+Sample Success 500 Response:
+
+```json
+{
+    "success": true,
+    "message": "Error: <Error Message>",
+    "content": null
+}
+```
 
 ### POST /register
 
@@ -172,7 +235,7 @@ Sample Failed 404 Response:
 }
 ```
 
-### PUT /profile/update
+### PUT /profile
 
 ---
 Updates user profile data. Request body takes in a JSON definition of the changes provided
@@ -221,7 +284,7 @@ Sample Success 404 Response:
 }
 ```
 
-### PUT /profile/update/elo
+### PUT /profile/elo
 
 ---
 Updates user ELO. Request body takes in a JSON definition of uuid and new ELO
@@ -255,7 +318,7 @@ Sample Failed 404 Response:
 }
 ```
 
-### POST /profile/all/names-only
+### POST /namelist
 
 ---
 Retrieves the namelist of all users in a list given an array of UUIDs. Returns a dictionary where the key is UUID and value is name.
@@ -267,7 +330,7 @@ Sample Request Body:
     "data": [
         "uuid_1",
         "uuid_2",
-        "uuid_3"    
+        "uuid_3"
     ]
 }
 ```
