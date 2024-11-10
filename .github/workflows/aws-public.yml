@@ -39,7 +39,7 @@ env:
   ECR_REPOSITORY: cs203/public-user          # set this to your Amazon ECR repository name
   ECS_SERVICE: public-launch                 # set this to your Amazon ECS service name
   ECS_CLUSTER: cs203-public-user          # set this to your Amazon ECS cluster name
-  CONTAINER_NAME: public-user           # set this to the name of the container in the
+  CONTAINER_NAME: public           # set this to the name of the container in the
 
 permissions:
   contents: read
