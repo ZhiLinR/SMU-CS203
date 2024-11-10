@@ -81,7 +81,7 @@ public class MatchmakingController {
      * @throws IllegalArgumentException    if the tournament ID is invalid
      * @throws TournamentNotFoundException if no tournament is found with the given
      *                                     ID
-     * @throws Exception                   for any other unexpected errors that may
+     * @throws RuntimeException            for any other unexpected errors that may
      *                                     occur
      */
     @GetMapping("/matchmaking/{tournamentId}")
@@ -95,6 +95,8 @@ public class MatchmakingController {
         } catch (IllegalArgumentException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (InvalidRoundException e) {
+            return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (InvalidTournamentException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (TournamentNotFoundException e) {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
@@ -121,7 +123,7 @@ public class MatchmakingController {
      *                                     ID
      * @throws ResultsNotFoundException    if no ranking results are found for the
      *                                     tournament
-     * @throws Exception                   for any other unexpected errors that may
+     * @throws RuntimeException            for any other unexpected errors that may
      *                                     occur
      */
     @GetMapping("/ranking/{tournamentId}")
@@ -143,6 +145,8 @@ public class MatchmakingController {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (TournamentNotFoundException e) {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (Exception e) {
             return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
         }

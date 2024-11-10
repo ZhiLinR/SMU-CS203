@@ -2,10 +2,13 @@ package matchmaking.util;
 
 import matchmaking.dto.PlayerResults;
 import matchmaking.exception.InvalidRoundException;
+import matchmaking.exception.InvalidTournamentException;
 import matchmaking.exception.ResultsNotFoundException;
+import matchmaking.exception.TournamentNotFoundException;
 import matchmaking.model.Matchups;
 import matchmaking.model.MatchupsId;
 import matchmaking.model.Signups;
+import matchmaking.model.Tournament;
 
 import org.springframework.data.util.Pair;
 
@@ -35,6 +38,7 @@ public class ValidationUtil {
         }
     }
 
+    @SuppressWarnings("javadoc")
     /**
      * Validates that the provided list is not null or empty.
      *
@@ -111,8 +115,8 @@ public class ValidationUtil {
      *                               number of matchups is insufficient).
      */
     public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
-        if (matchups.size() < ((players.size() + 1) / 2)) {
-            System.out.println("Error thrown");
+        // + 1 to account for odd players
+        if (((players.size() + 1) / 2) != matchups.size()) {
             throw new InvalidRoundException("Failed to match up all players uniquely");
         }
     }
@@ -132,7 +136,7 @@ public class ValidationUtil {
     /**
      * Checks if there is enough signups for matchmaking.
      *
-     * @param signups a List of Signups objects to be validated
+     * @param signups a List of {@link Signups} objects to be validated
      * @throws IllegalArgumentException if the signups list is null or empty
      */
     public static void isValidSignups(List<Signups> signups) {
@@ -144,7 +148,7 @@ public class ValidationUtil {
     /**
      * Checks if the matchup is valid by ensuring there are no duplicate PlayerIDs.
      *
-     * @param signups a List of Signups objects to be validated
+     * @param matchup matchup to be validatated
      * @throws IllegalArgumentException if the signups list is null or empty
      */
     public static void isValidMatchup(Matchups matchup) {
@@ -155,21 +159,6 @@ public class ValidationUtil {
         MatchupsId id = matchup.getId();
         if (id.getPlayer1().equals(id.getPlayer2())) {
             throw new InvalidRoundException("Invalid matchup: Player1 and Player2 cannot be the same.");
-        }
-    }
-
-    /**
-     * Validates that player results are not null and exist in the provided list.
-     *
-     * @param playerResults A list of PlayerResults to check against.
-     * @param uuid          The UUID of the player whose results need to be
-     *                      validated.
-     * @throws ResultsNotFoundException if the player results cannot be found.
-     */
-    public static void validatePlayerResults(List<PlayerResults> playerResults, String uuid)
-            throws ResultsNotFoundException {
-        if (findPlayerResultsByUUID(playerResults, uuid) == null) {
-            throw new ResultsNotFoundException("Player results not found for UUID: " + uuid);
         }
     }
 
@@ -198,8 +187,13 @@ public class ValidationUtil {
                     ? matchup.getId().getPlayer2()
                     : matchup.getId().getPlayer1();
 
-            validatePlayerResults(playerResults, playerWon);
-            validatePlayerResults(playerResults, playerLost);
+            if (!isNullPlayer(playerWon)) {
+                validatePlayerResult(playerResults, playerWon);
+            }
+
+            if (!isNullPlayer(playerLost)) {
+                validatePlayerResult(playerResults, playerLost);
+            }
         }
     }
 
@@ -215,5 +209,66 @@ public class ValidationUtil {
                 .filter(result -> result.getUuid().equals(uuid))
                 .findFirst()
                 .orElse(null); // Return null if not found
+    }
+
+    /**
+     * Validates that the given PlayerResults is not null.
+     *
+     * @param playerResults The PlayerResults object to validate.
+     * @param uuid          The UUID or identifying information for error messages.
+     * @throws ResultsNotFoundException if the PlayerResults is null.
+     */
+    public static void validatePlayerResult(PlayerResults playerResults, String uuid)
+            throws ResultsNotFoundException {
+        if (playerResults == null) {
+            throw new ResultsNotFoundException("Player result not found for UUID: " + uuid);
+        }
+    }
+
+    /**
+     * Validates that player results are not null and exist in the provided list.
+     *
+     * @param playerResults A list of PlayerResults to check against.
+     * @param uuid          The UUID of the player whose results need to be
+     *                      validated.
+     * @throws ResultsNotFoundException if the player results cannot be found.
+     */
+    public static void validatePlayerResult(List<PlayerResults> playerResults, String uuid)
+            throws ResultsNotFoundException {
+        if (findPlayerResultsByUUID(playerResults, uuid) == null) {
+            throw new ResultsNotFoundException("Player result not found for UUID: " + uuid);
+        }
+    }
+
+    /**
+     * Validates that player is not null or forfeit.
+     *
+     * @param uuid The UUID of the player whose results need to be
+     *             validated.
+     * @return is player null or forfeit as boolean.
+     */
+    public static boolean isNullPlayer(String uuid) {
+        if (uuid.equals("null") || uuid.equals("forfeit")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Validates if the provided {@link Tournament} is eligible for ranking
+     * requests.
+     *
+     * @param tournament the {@link Tournament} to validate for ranking eligibility.
+     * @throws TournamentNotFoundException if the tournament does not exist (i.e.,
+     *                                     is null).
+     * @throws InvalidTournamentException  if the tournament status is not
+     *                                     "Completed".
+     */
+    public static void isValidRankingRequest(Tournament tournament) {
+        if (tournament == null) {
+            throw new TournamentNotFoundException("Tournament does not exist.");
+        } else if (tournament.getStatus() != "Completed") {
+            throw new InvalidTournamentException("Tournament has not completed.");
+        }
     }
 }

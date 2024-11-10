@@ -7,12 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import matchmaking.model.Results;
 import matchmaking.model.Signups;
 
 /**
- * Repository interface for managing {@link Signups} entities.
+ * Repository interface for managing {@link Results} entities.
  * This interface extends {@link JpaRepository}, providing a set of built-in
- * methods for performing CRUD operations on {@link Signups} objects in the
+ * methods for performing CRUD operations on {@link Results} objects in the
  * database.
  *
  * <p>
@@ -26,7 +27,7 @@ import matchmaking.model.Signups;
  * </p>
  */
 @Repository
-public interface SignupsRepository extends JpaRepository<Signups, String> {
+public interface ResultsRepository extends JpaRepository<Results, String> {
 
         /**
          * Retrieves a list of signups for a specified tournament.
@@ -38,25 +39,23 @@ public interface SignupsRepository extends JpaRepository<Signups, String> {
          * @return a list of {@link Signups} objects representing the users who signed
          *         up for the tournament.
          */
-        @Procedure(procedureName = "GetSignupsByTournamentId")
-        List<Signups> getSignupsByTournamentId(
+        @Procedure(procedureName = "GetTournamentResult")
+        List<Results> getTournamentResults(
                         @Param("p_tournamentId") String tournamentId);
 
         /**
-         * Calls the stored procedure `UpdateElo` to update the Elo rating of a player.
+         * Calls the stored procedure {@code InsertTournamentResult} to insert a
+         * tournament result
+         * into the database.
          *
-         * <p>
-         * This method executes a stored procedure in the database that updates the
-         * Elo rating for a player identified by their unique UUID. The procedure
-         * expects the player's UUID and the new Elo rating as parameters.
-         * </p>
-         *
-         * @param uuid the unique identifier (UUID) of the player whose Elo rating is to
-         *             be updated.
-         * @param elo  the new Elo rating to be set for the player.
+         * @param uuid         the unique identifier for the user or participant
+         * @param tournamentId the unique identifier for the tournament
+         * @param ranking      the ranking or position achieved by the participant in
+         *                     the tournament
          */
-        @Procedure(procedureName = "UpdateElo")
-        void updateElo(
+        @Procedure(procedureName = "InsertTournamentResult")
+        void insertTournamentResult(
                         @Param("p_uuid") String uuid,
-                        @Param("p_elo") Integer elo);
+                        @Param("p_tournamentId") String tournamentId,
+                        @Param("p_ranking") Integer ranking);
 }

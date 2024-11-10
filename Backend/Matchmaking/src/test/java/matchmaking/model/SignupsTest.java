@@ -22,8 +22,9 @@ public class SignupsTest {
     @BeforeEach
     public void setUp() {
         signups = new Signups()
-                .setUuid("Player1")
-                .setTournamentId("Tournament123")
+                .setId(new PlayerTournamentId()
+                        .setUuid("player1")
+                        .setTournamentId("Tournament123"))
                 .setElo(1500);
     }
 
@@ -37,8 +38,7 @@ public class SignupsTest {
     public void testDefaultConstructor() {
         Signups defaultSignups = new Signups();
         assertNotNull(defaultSignups);
-        assertNull(defaultSignups.getUuid());
-        assertNull(defaultSignups.getTournamentId());
+        assertNull(defaultSignups.getId());
         assertEquals(0, defaultSignups.getElo());
     }
 
@@ -47,8 +47,8 @@ public class SignupsTest {
      */
     @Test
     public void testSetAndGetUuid() {
-        signups.setUuid("Player2");
-        assertEquals("Player2", signups.getUuid());
+        signups.getId().setUuid("Player2");
+        assertEquals("Player2", signups.getId().getUuid());
     }
 
     /**
@@ -56,8 +56,8 @@ public class SignupsTest {
      */
     @Test
     public void testSetAndGetTournamentId() {
-        signups.setTournamentId("Tournament456");
-        assertEquals("Tournament456", signups.getTournamentId());
+        signups.getId().setTournamentId("Tournament456");
+        assertEquals("Tournament456", signups.getId().getTournamentId());
     }
 
     /**
@@ -78,12 +78,14 @@ public class SignupsTest {
     @Test
     public void testEqualsWithDifferentUuids() {
         Signups signups1 = new Signups()
-                .setUuid("Player1")
-                .setTournamentId("Tournament123")
+                .setId(new PlayerTournamentId()
+                        .setUuid("player1")
+                        .setTournamentId("Tournament123"))
                 .setElo(1500);
         Signups signups2 = new Signups()
-                .setUuid("Player2")
-                .setTournamentId("Tournament123")
+                .setId(new PlayerTournamentId()
+                        .setUuid("player2")
+                        .setTournamentId("Tournament123"))
                 .setElo(1500);
         assertNotEquals(signups1, signups2);
         assertNotEquals(signups1.hashCode(), signups2.hashCode());
@@ -98,12 +100,14 @@ public class SignupsTest {
     @Test
     public void testEqualsWithSameAttributes() {
         Signups signups1 = new Signups()
-                .setUuid("Player1")
-                .setTournamentId("Tournament123")
+                .setId(new PlayerTournamentId()
+                        .setUuid("player2")
+                        .setTournamentId("Tournament123"))
                 .setElo(1500);
         Signups signups2 = new Signups()
-                .setUuid("Player1")
-                .setTournamentId("Tournament123")
+                .setId(new PlayerTournamentId()
+                        .setUuid("player2")
+                        .setTournamentId("Tournament123"))
                 .setElo(1500);
         assertEquals(signups1, signups2);
         assertEquals(signups1.hashCode(), signups2.hashCode());
@@ -117,7 +121,7 @@ public class SignupsTest {
      */
     @Test
     public void testToString() {
-        String expectedString = "Signups(uuid=Player1, tournamentId=Tournament123, elo=1500)";
+        String expectedString = "Signups(id=PlayerTournamentId(uuid=player1, tournamentId=Tournament123), elo=1500)";
         assertEquals(expectedString, signups.toString());
     }
 
@@ -126,8 +130,8 @@ public class SignupsTest {
      */
     @Test
     public void testSetUuidToNull() {
-        signups.setUuid(null);
-        assertNull(signups.getUuid());
+        signups.getId().setUuid(null);
+        assertNull(signups.getId().getUuid());
     }
 
     /**
@@ -135,8 +139,8 @@ public class SignupsTest {
      */
     @Test
     public void testSetTournamentIdToNull() {
-        signups.setTournamentId(null);
-        assertNull(signups.getTournamentId());
+        signups.getId().setTournamentId(null);
+        assertNull(signups.getId().getTournamentId());
     }
 
     /**
@@ -147,33 +151,5 @@ public class SignupsTest {
     public void testSetEloToNegative() {
         signups.setElo(-100);
         assertEquals(-100, signups.getElo());
-    }
-
-    /**
-     * Tests the equals and hashCode methods of the {@link Signups} class.
-     * <p>
-     * Verifies that equal instances produce the same hash code and that different
-     * instances do not.
-     * </p>
-     */
-    @Test
-    public void testSignupsEqualsAndHashCode() {
-        Signups signups1 = new Signups()
-                .setUuid("Player1")
-                .setTournamentId("Tournament123")
-                .setElo(1500);
-        Signups signups2 = new Signups()
-                .setUuid("Player1")
-                .setTournamentId("Tournament123")
-                .setElo(1500);
-        Signups signups3 = new Signups()
-                .setUuid("Player2")
-                .setTournamentId("Tournament456")
-                .setElo(1400);
-
-        assertEquals(signups1, signups2);
-        assertNotEquals(signups1, signups3);
-        assertEquals(signups1.hashCode(), signups2.hashCode());
-        assertNotEquals(signups1.hashCode(), signups3.hashCode());
     }
 }
