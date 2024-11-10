@@ -1,97 +1,161 @@
-<script>
-
-
-const onFormSubmit = (data) => {
-  console.log('Form submitted:', data)
-}
-
-</script>
 <template>
     <div class="login-container">
-    <div class="chess-board">
-       <img src = "../assets/Chessboard.png" class = "chessboard-img" alt = "Chessboard"/>
-    </div>
-    <div class="login-outer-box">
-      <div class="login-header">
+      <Toast />
+      <div class="chess-board">
+        <img src="../assets/Chessboard.png" class="chessboard-img" alt="Chessboard" />
+      </div>
+      <div class="login-box">
         <h1>Log In</h1>
-      </div>
-      <div class="form-login">
-        <!-- <Form :resolver @submit="onFormSubmit" class="gap-4 w-full">
-            <FormField v-slot="$field" as="section" name="username" initialValue="" class="flex flex-col gap-2">
+        <form @submit.prevent="handleSubmit" class="login-form">
+          <div class="p-input-filled">
             <InputText 
-                type="text" 
-                placeholder="Username" 
-                class="input-box"  
+              v-model="username" 
+              type="text" 
+              placeholder="Username" 
+              class="w-full"
+              :class="{ 'p-invalid': submitted && !username }" 
             />
-            <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
-                {{ $field.error?.message }}
-            </Message>
-            </FormField>
-            <FormField v-slot="$field" asChild name="password" initialValue="">
-            <section class="flex flex-col gap-2">
-                <Password 
-                type="text" 
-                placeholder="Password" 
-                :feedback="false" 
-                toggleMask 
-                fluid 
-                class="input-box"  
-                />
-                <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">
-                {{ $field.error?.message }}
-                </Message>
-            </section>
-            </FormField>
-
-          <Button type="submit" severity="secondary" label="Log In" class="w-full" style="background-color: #FBFBFB; color: #2D2D2D; border-radius: 5px;margin-top:15 px;">
-          </Button>
-
-        </Form> -->
-        <Form :resolver @submit="onFormSubmit" class="flex flex-col gap-4 w-full sm:w-56">
-    <FormField v-slot="$field" as="section" name="username" initialValue="" class="flex flex-col gap-2">
-        <InputText type="text" placeholder="Username" />
-        <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
-    </FormField>
-    <FormField v-slot="$field" asChild name="password" initialValue="">
-        <section class="flex flex-col gap-2">
-            <Password type="text" placeholder="Password" :feedback="false" toggleMask fluid />
-            <Message v-if="$field?.invalid" severity="error" size="small" variant="simple">{{ $field.error?.message }}</Message>
-        </section>
-    </FormField>
-    <Button type="submit" severity="secondary" label="Submit" />
-</Form>
+          </div>
+  
+          <div class="p-input-filled p-input-icon-right">
+            <i 
+              :class="[passwordVisible ? 'pi pi-eye-slash' : 'pi pi-eye']" 
+              @click="togglePassword"
+              style="cursor: pointer" 
+            />
+            <InputText 
+              v-model="password" 
+              :type="passwordVisible ? 'text' : 'password'" 
+              placeholder="Password" 
+              class="w-full"
+              :class="{ 'p-invalid': submitted && !password }" 
+            />
+          </div>
+  
+          <Button 
+            severity="info"
+            label="Submit" 
+            class="w-full rounded" 
+            :loading="loading" 
+          />
+        </form>
       </div>
     </div>
-</div>
-</template>
-<style>
-h1{
-    color: #FBFBFB
+  </template>
+  
+  <script setup>
+  import { ref } from 'vue'
+  import { useToast } from 'primevue/usetoast'
+  import Button from 'primevue/button';
+  
+  const toast = useToast()
+  const username = ref('')
+  const password = ref('')
+  const passwordVisible = ref(false)
+  const submitted = ref(false)
+  const loading = ref(false)
+  
+  const togglePassword = () => {
+    passwordVisible.value = !passwordVisible.value
+  }
+  
+  const handleSubmit = async () => {
+    submitted.value = true
+  
+    if (!username.value || !password.value) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please fill in all fields',
+        life: 3000
+      })
+      return
+    }
+  
+    loading.value = true
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Login successful',
+        life: 3000
+      })
+    } catch (error) {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Login failed',
+        life: 3000
+      })
+    } finally {
+      loading.value = false
+    }
+  }
+  </script>
+<style scoped>
+.login-container {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  gap: 2rem;
+  padding: 2rem;
+  background-color: white;
 }
 
-.login-container{
-    display:flex;
+
+.login-box {
+  background-color: #2D2D2D;
+  padding: 2.5rem;
+  border-radius: 10px;
+  width: 400px;
+}
+
+.login-box h1 {
+  color: #FBFBFB;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.p-input-filled .p-inputtext {
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  width: 100%;
+}
+
+.p-input-filled .p-inputtext:hover {
+  border-color: #93a3b8;
+}
+
+.p-input-filled .p-inputtext:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.p-input-filled .p-inputtext.p-invalid {
+  border-color: #ef4444;
 }
 
 
-.login-outer-box{
-    padding: 2rem;
-    background-color: #2D2D2D;
-    margin: 50px;
-    border-radius: 10px;
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 400px;
+  }
+
+
 }
-
-.form-login {
-    justify-content: center;
-    align-items: center;
-}
-
-.input-box {
-    width: 553px;
-    height: 46px;
-    box-sizing: border-box; /* Ensure padding/border don’t affect size */
-}
-
-
-
 </style>

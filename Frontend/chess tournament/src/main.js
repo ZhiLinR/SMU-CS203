@@ -4,6 +4,7 @@ import router from './router';
 import store from './store';
 
 import PrimeVue from 'primevue/config';
+import { createPinia } from 'pinia';
 import Aura from '@primevue/themes/aura';
 import AutoComplete from 'primevue/autocomplete';
 import Accordion from 'primevue/accordion';
@@ -102,6 +103,7 @@ import TreeTable from 'primevue/treetable';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
 
+
 //primevue things
 import 'primevue/resources/themes/md-light-indigo/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -125,6 +127,7 @@ app.use(PrimeVue, {
 app.use(router);
 app.use(store);
 app.use(PrimeVue, { ripple: true });
+app.use(createPinia());
 app.use(ToastService);
 app.use(DialogService);
 app.use(ConfirmationService);
