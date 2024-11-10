@@ -15,7 +15,7 @@ app.use(corsMiddleware);
 app.use(express.json()); // Middleware for parsing JSON bodies
 
 
-app.use('/', publicUserRoutes); // Public routes for users
+app.use('/api/public', publicUserRoutes); // Public routes for users
 app.use(errorHandler); // Middleware for error handling
 
 
