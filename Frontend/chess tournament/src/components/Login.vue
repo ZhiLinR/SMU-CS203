@@ -66,13 +66,14 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import axios from 'axios'
-  import { useToast } from 'primevue/usetoast'
+  import { useToast } from 'primevue/usetoast' 
   
   const router = useRouter()
   const toast = useToast()
+
   
   // Form data
   const email = ref('')
@@ -81,11 +82,13 @@
   const submitted = ref(false)
   const loading = ref(false)
   const checked = ref(false)
+
   
   // Toggle password visibility
   const togglePassword = () => {
     passwordVisible.value = !passwordVisible.value
   }
+
   
   // Handle form submission
   const handleSubmit = async () => {
@@ -108,18 +111,24 @@
       const response = await axios.post(import.meta.env.VITE_API_URL_USER + `/login`, {
         email: email.value,
         password: password.value,
-        remember: checked.value
       })
   
-      // Store token in localStorage
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token)
-        // Set default authorization header
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
-      }
       
       // Show success message
       if (response.data.success) {
+        const { token, email } = response.data.content
+
+         // Store token in sessionStorage
+         sessionStorage.setItem('authToken', token)
+          
+          // Store user info
+          sessionStorage.setItem('userEmail', email)
+
+           // Set axios default authorization header for future requests
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+          console.log('Login successful', token, email)
+
         toast.add({
           severity: 'success',
           summary: 'Login Successful',
@@ -129,12 +138,12 @@
         
         // Redirect after successful login
         setTimeout(() => {
-          router.push('/user/tournaments')
-        }, 2000)
+          router.push('/user')
+        }, 1000)
       }
       
     } catch (error) {
-      // Handle different types of errors
+      
       const errorMessage = error.response?.data?.message || 'An error occurred during login'
       
       toast.add({
@@ -147,6 +156,7 @@
       loading.value = false
     }
   }
+
   </script>
 
   

@@ -8,10 +8,8 @@ export default {
   setup() {
     const toast = useToast()
     const loading = ref(false)
-    const upcomingTournaments = ref([])
     const ongoingTournaments = ref([])
     const showAllOngoing = ref(false);
-    const showAllUpcoming = ref(false);
     const stats = ref({
       totalTournaments: 0,
       totalUsers: 0
@@ -20,14 +18,12 @@ export default {
     const fetchTournaments = async () => {
       loading.value = true
       try {
-        const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/tournaments`)
+        const response = await axios.get(import.meta.env.VITE_API_URL_PUBLIC + `/events`)
         if (response.data.success) {
-          const allTournaments = response.data.content
-          upcomingTournaments.value = allTournaments.filter(t => t.status === 'Upcoming')
-          ongoingTournaments.value = allTournaments.filter(t => t.status === 'Ongoing')
+          ongoingTournaments.value = response.data.content[0] || []
+
+          stats.value.totalTournaments = ongoingTournaments.value.length
           
-          // Update stats
-          stats.value.totalTournaments = allTournaments.length
         } else {
           throw new Error(response.data.message)
         }
@@ -44,8 +40,9 @@ export default {
       }
     }
 
-    const limitedOngoingTournaments = computed(() => (showAllOngoing.value ? ongoingTournaments.value : ongoingTournaments.value.slice(0, 4)));
-    const limitedUpcomingTournaments = computed(() => (showAllUpcoming.value ? upcomingTournaments.value : upcomingTournaments.value.slice(0, 4)));
+    const limitedOngoingTournaments = computed(() => 
+    (showAllOngoing.value ? ongoingTournaments.value : ongoingTournaments.value.slice(0, 4)));
+   
 
     onMounted(() => {
       fetchTournaments()
@@ -53,12 +50,9 @@ export default {
 
     return {
       loading,
-      upcomingTournaments,
       ongoingTournaments,
       limitedOngoingTournaments,
-      limitedUpcomingTournaments,
       showAllOngoing,
-      showAllUpcoming,
       stats,
     }
   }
@@ -156,7 +150,7 @@ export default {
 </div>
 
         <!-- No Tournaments Message -->
-        <Card v-if="upcomingTournaments.length === 0 && ongoingTournaments.length === 0">
+        <Card v-if="ongoingTournaments.length === 0">
           <template #content>
             <p class="text-center">No tournaments available at the moment.</p>
           </template>
