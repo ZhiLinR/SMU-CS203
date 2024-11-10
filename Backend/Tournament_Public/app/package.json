@@ -1,0 +1,27 @@
+{
+  "name": "tournament_public",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest",
+    "generate-docs": "jsdoc -c jsdoc.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-validator": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.3"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0",
+    "jest": "^29.7.0",
+    "jsdoc": "^4.0.4",
+    "nodemon": "^3.1.7"
+  }
+}
