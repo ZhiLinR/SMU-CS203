@@ -5,15 +5,20 @@ import TournamentAdminService.response.StandardApiResponse;
 import TournamentAdminService.model.Matchup;
 import TournamentAdminService.service.MatchupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-
+@CrossOrigin(origins = "${ORIGIN}")
 @RestController
 @RequestMapping("/api/matchups")
 public class MatchupController {
+
+    @Value("${ORIGIN}")
+    private String origin;
+
 
     @Autowired
     private MatchupService matchupService;

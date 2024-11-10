@@ -46,9 +46,9 @@ A chess tournament website that allows players to sign up, register for tourname
 
 ## Endpoint References
 
-Tournament-Admin (TBA)  
-Tournament-Public (TBA)  
-Tournament-User (TBA)  
-[User](https://github.com/ZhiLinR/SMU-CS203/blob/main/Backend/User/README.md)  
-[Middleware](https://github.com/ZhiLinR/SMU-CS203/blob/main/Backend/Middleware/README.md)  
+Tournament-Admin (TBA)
+Tournament-Public (TBA)
+Tournament-User (TBA)
+[User](https://github.com/ZhiLinR/SMU-CS203/blob/main/Backend/User/README.md)
+[Middleware](https://github.com/ZhiLinR/SMU-CS203/blob/main/Backend/Middleware/README.md)
 Matchmaking (TBA)

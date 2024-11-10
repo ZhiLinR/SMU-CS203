@@ -1,10 +1,12 @@
 package user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import jakarta.persistence.LockModeType;
 import user.model.JWToken;
 
 /**
@@ -28,6 +30,7 @@ public interface JWTokenRepository extends JpaRepository<JWToken, String> {
      * @param email the email address of the user
      * @param jwt   the JSON Web Token associated with the user
      */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Procedure(name = "UpdateJWTLastLogin")
     void updateJWTLastLogin(
             @Param("p_email") String email,
@@ -39,6 +42,7 @@ public interface JWTokenRepository extends JpaRepository<JWToken, String> {
      * @param uuid the UUID of the user to log out
      * @return the number of rows affected by the update operation
      */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Procedure(name = "UpdateLogout")
     Integer updateLogout(@Param("p_uuid") String uuid);
 
@@ -47,6 +51,7 @@ public interface JWTokenRepository extends JpaRepository<JWToken, String> {
      *
      * @param uuid the UUID of the user whose JWT is to be checked
      */
+    @Lock(LockModeType.PESSIMISTIC_READ)
     @Procedure(name = "CheckJWT")
     void checkJWT(@Param("p_uuid") String uuid);
 }

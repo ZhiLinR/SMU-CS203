@@ -72,6 +72,14 @@
             <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Annotation setting of env var for testing -->
+        <dependency>
+            <groupId>org.junit-pioneer</groupId>
+            <artifactId>junit-pioneer</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
         <build>

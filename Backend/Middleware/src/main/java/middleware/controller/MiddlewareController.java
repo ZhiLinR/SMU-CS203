@@ -1,6 +1,7 @@
 package middleware.controller;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import org.springframework.http.HttpStatus;
  */
 @CrossOrigin(origins = "${ORIGIN}")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class MiddlewareController {
 
     /**
@@ -36,6 +37,9 @@ public class MiddlewareController {
 
     @Autowired
     private MiddlewareService middlewareService;
+
+    @Autowired
+    private TokenValidationService tokenValidationService;
 
     /**
      * Performs a health check for the application.
@@ -77,20 +81,29 @@ public class MiddlewareController {
      */
     @PostMapping("/jwt")
     public ResponseEntity<Map<String, Object>> checkJwt(@RequestBody JWTRequest jwtRequest) {
-        try {
-            // Call the service function to check the JWT
-            Map<String, String> result = middlewareService.checkJwt(jwtRequest);
-            // If successful, return a success response
-            return ResponseManager.success("JWT validation successful.", result);
-        } catch (UserNotFoundException e) {
-            // Return 404 if the user is not found
-            return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (UnauthorizedException e) {
-            // Return 401 for unauthorized access
-            return ResponseManager.error(HttpStatus.UNAUTHORIZED, e.getMessage());
-        } catch (Exception e) {
-            // Return 500 for any other unexpected errors
-            return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        // Call the async service method
+        CompletableFuture<Map<String, String>> resultFuture = middlewareService.checkJwt(jwtRequest);
+
+        return resultFuture
+                .thenApply(result -> ResponseManager.success("JWT validation successful.", result)) // On success
+                .exceptionally(ex -> {
+                    // Handle exceptions
+                    Throwable cause = ex.getCause(); // Get the cause of the exception
+                    if (cause instanceof UserNotFoundException) {
+                        return ResponseManager.error(HttpStatus.NOT_FOUND, cause.getMessage());
+                    } else if (cause instanceof UnauthorizedException) {
+                        // Invalidate token if invalid JWT
+                        tokenValidationService.invalidateJwt(jwtRequest.getJwt());
+
+                        return ResponseManager.error(HttpStatus.UNAUTHORIZED, cause.getMessage());
+                    } else if (cause instanceof IllegalArgumentException) {
+                        return ResponseManager.error(HttpStatus.BAD_REQUEST, cause.getMessage());
+                    } else {
+                        // For unexpected errors, provide a generic message
+                        return ResponseManager.error(HttpStatus.INTERNAL_SERVER_ERROR,
+                                cause.getMessage());
+                    }
+                })
+                .join(); // Waits for the async process to complete and return the response
     }
 }
