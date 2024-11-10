@@ -1,6 +1,9 @@
 package middleware.util;
 
 import middleware.exception.UserNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import middleware.exception.UnauthorizedException;
 import middleware.model.JWToken;
 
@@ -10,6 +13,9 @@ import middleware.model.JWToken;
  * claims are consistent with the data stored in the database.
  */
 public class ValidationUtil {
+
+    @Autowired
+    private TokenValidationService tokenValidationService;
 
     /**
      * Validates that a string is not null or empty.
@@ -66,10 +72,11 @@ public class ValidationUtil {
      * @throws UnauthorizedException if roles do not match.
      * @throws UserNotFoundException if user is not found.
      */
-    public static void validateUserRole(Byte dbIsAdmin, Byte isAdmin, String uuid)
+    public void validateUserRole(Byte dbIsAdmin, Byte isAdmin, String uuid)
             throws UnauthorizedException, UserNotFoundException {
         if (dbIsAdmin == null || !dbIsAdmin.equals(isAdmin)) {
             // Throw an exception if user is not found OR user roles do not match
+            tokenValidationService.updateLogout(uuid);
 
             throw new UserNotFoundException("User not found for the provided UUID.");
         }

@@ -37,6 +37,9 @@ public class MiddlewareService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private ValidationUtil validationUtil;
+
     /**
      * Asynchronously validates a JWT by extracting claims, verifying its presence
      * in the database, and checking the user's role.
@@ -82,7 +85,7 @@ public class MiddlewareService {
                 ValidationUtil.validateUuid(dbUuid, extractedUuid);
 
                 Byte dbIsAdmin = tokenValidationService.getUserRoleSync(dbUuid);
-                ValidationUtil.validateUserRole(dbIsAdmin, isAdmin, extractedUuid);
+                validationUtil.validateUserRole(dbIsAdmin, isAdmin, extractedUuid);
 
                 // Return validated user data
                 return Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString());

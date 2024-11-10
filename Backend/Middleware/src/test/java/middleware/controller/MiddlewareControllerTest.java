@@ -82,6 +82,7 @@ public class MiddlewareControllerTest {
                 System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
                 System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
                 System.setProperty("JWT_SECRET", dotenv.get("JWT_SECRET"));
+                System.setProperty("ORIGIN", dotenv.get("ORIGIN"));
         }
 
         /**
@@ -118,7 +119,7 @@ public class MiddlewareControllerTest {
                                 .thenReturn(CompletableFuture
                                                 .completedFuture(Map.of("uuid", "12345", "isAdmin", "true")));
 
-                mockMvc.perform(post("/api/jwt")
+                mockMvc.perform(post("/api/auth/jwt")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{ \"jwt\": \"valid-jwt-token\" }"))
                                 .andExpect(status().isOk())
@@ -144,7 +145,7 @@ public class MiddlewareControllerTest {
                                 .thenReturn(CompletableFuture
                                                 .failedFuture(new UserNotFoundException("User not found")));
 
-                mockMvc.perform(post("/api/jwt")
+                mockMvc.perform(post("/api/auth/jwt")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{ \"jwt\": \"valid-jwt-token\" }"))
                                 .andExpect(status().isNotFound())
@@ -168,7 +169,7 @@ public class MiddlewareControllerTest {
                                 .thenReturn(CompletableFuture
                                                 .failedFuture(new UnauthorizedException("Unauthorized access")));
 
-                mockMvc.perform(post("/api/jwt")
+                mockMvc.perform(post("/api/auth/jwt")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{ \"jwt\": \"valid-jwt-token\" }"))
                                 .andExpect(status().isUnauthorized())
@@ -191,7 +192,7 @@ public class MiddlewareControllerTest {
                 Mockito.when(middlewareService.checkJwt(any(JWTRequest.class)))
                                 .thenReturn(CompletableFuture.failedFuture(new RuntimeException("Unexpected error")));
 
-                mockMvc.perform(post("/api/jwt")
+                mockMvc.perform(post("/api/auth/jwt")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{ \"jwt\": \"valid-jwt-token\" }"))
                                 .andExpect(status().isInternalServerError())
