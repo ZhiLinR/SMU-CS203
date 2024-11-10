@@ -9,7 +9,7 @@ const errorHandler = (err, req, res, next) => {
 
     // Send the error response
     res.status(statusCode).json({
-        
+
         message: message,
         success: false,
         content: null

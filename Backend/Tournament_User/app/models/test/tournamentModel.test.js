@@ -121,14 +121,14 @@ describe('TournamentModel', () => {
         afterEach(() => {
             jest.clearAllMocks();
         });
-    
+
         it('should return true if the tournament exists', async () => {
             const mockResult = [{ count: 1 }];
-    
+
             db.query.mockImplementation((query, params, callback) => {
                 callback(null, mockResult);
             });
-    
+
             const result = await TournamentModel.checkTournamentExists(123); // Pass a mock tournamentId
             expect(result).toBe(true);
             expect(db.query).toHaveBeenCalledWith(
@@ -137,29 +137,29 @@ describe('TournamentModel', () => {
                 expect.any(Function)
             );
         });
-    
+
         it('should return false if the tournament does not exist', async () => {
             const mockResult = [{ count: 0 }];
-    
+
             db.query.mockImplementation((query, params, callback) => {
                 callback(null, mockResult);
             });
-    
+
             const result = await TournamentModel.checkTournamentExists(123);
             expect(result).toBe(false);
         });
-    
+
         it('should throw an error if the database query fails', async () => {
             const mockError = new Error('Database connection failed');
-        
+
             db.query.mockImplementation((query, params, callback) => {
                 callback(mockError, null); // Simulate database error
             });
-        
+
             await expect(TournamentModel.checkTournamentExists(123))
                 .rejects.toThrow('Database connection failed'); // Match the raw error message
         });
-        
+
     });
 
 
@@ -212,7 +212,7 @@ describe('TournamentModel', () => {
             );
         });
     });
-    
+
 });
 
 

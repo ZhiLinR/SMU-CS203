@@ -182,7 +182,7 @@ exports.getUserTournamentGameRank = (tournamentID, UUID) => {
 exports.checkTournamentExists = (tournamentId) => {
     return new Promise((resolve, reject) => {
         const query = 'SELECT COUNT(*) AS count FROM Tournament WHERE tournamentID = ?';
-        
+
         db.query(query, [tournamentId], (err, result) => {
             if (err) {
                 return reject(err);  // Handle any database error
@@ -205,7 +205,7 @@ exports.checkTournamentExists = (tournamentId) => {
 exports.getPlayersInTournament = (tournamentId) => {
     return new Promise((resolve, reject) => {
         const query = 'Call GetPlayersInTournament(?)';
-        
+
         db.query(query, [tournamentId], (err, result) => {
             if (err) {
                 return reject(err);  // Handle any database error
@@ -228,7 +228,7 @@ exports.getPlayersInTournament = (tournamentId) => {
 exports.GetPlayerTournamentsByStatus = (playerUUID) => {
     return new Promise((resolve, reject) => {
         const query = 'CALL GetPlayerTournamentsByStatus(?)';
-        
+
         db.query(query, [playerUUID], (err, result) => {
             if (err) {
                 return reject(err);  // Handle any database error
@@ -243,7 +243,7 @@ exports.GetPlayerTournamentsByStatus = (playerUUID) => {
 
 /**
  * Fetches the list of completed tournaments from the database.
- * 
+ *
  * @returns {Promise<Array>} A promise that resolves to an array of completed tournaments.
  * @throws {Error} If there is an error executing the query.
  */
@@ -264,7 +264,7 @@ exports.getCompletedTournaments = () => {
 /**
  * Retrieves the tournament history for a given user by their UUID.
  * @param {string} TournamentID - The UUID of the user.
-* @returns {Promise<Array<{player: string, wins: int, rank: int}>>} 
+* @returns {Promise<Array<{player: string, wins: int, rank: int}>>}
  * @throws {Error} If the database query fails.
  */
 exports.getTournamentRanking = (tournamentId) => {
@@ -291,7 +291,7 @@ exports.getTournamentRanking = (tournamentId) => {
 /**
  * Retrieves the matchups for a given tournament
  * @param {string} TournamentID - The ID of tournament.
-* @returns {Promise<Array<{player1: string, player2: string,playerWon: string, tournamentID: string,roundNum: int}>>} 
+* @returns {Promise<Array<{player1: string, player2: string,playerWon: string, tournamentID: string,roundNum: int}>>}
  * @throws {Error} If the database query fails.
  */
 exports.getAllTournamentMatchups = (tournamentId) => {
