@@ -2,7 +2,6 @@ package middleware.util;
 
 import middleware.exception.UserNotFoundException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import middleware.exception.UnauthorizedException;
