@@ -1,7 +1,18 @@
 # Ignore environment variables
 .env
 
+.gitignore
+
 # Ignore dependencies
 node_modules
 node_modules\.bin
 
+# ignore local dev stuff
+docker-compose.yml
+jsdoc.json
+README.md
+
+#ignore docs
+docs
+tests
+coverage
