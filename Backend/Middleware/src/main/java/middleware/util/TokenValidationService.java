@@ -101,4 +101,26 @@ public class TokenValidationService {
 
         jwTokenRepository.invalidateJwt(jwt);
     }
+
+    /**
+     * Synchronously logouts compromised user by invalidating JWT.
+     * This method is annotated with {@code @Transactional} with propagation set to
+     * {@code REQUIRES_NEW} to ensure a new transaction is started for each
+     * invocation.
+     *
+     * <p>
+     * Validates that the provided JWT is not empty, then marks it as invalid in the
+     * {@code jwTokenRepository}.
+     * </p>
+     *
+     * @param jwt the JSON Web Token (JWT) to be invalidated; must not be null or
+     *            empty.
+     * @throws IllegalArgumentException if the provided JWT is null or empty.
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void updateLogout(String uuid) {
+        ValidationUtil.validateNotEmpty(uuid, "UUID");
+
+        jwTokenRepository.updateLogout(uuid);
+    }
 }

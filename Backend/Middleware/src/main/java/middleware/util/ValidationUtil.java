@@ -66,15 +66,12 @@ public class ValidationUtil {
      * @throws UnauthorizedException if roles do not match.
      * @throws UserNotFoundException if user is not found.
      */
-    public static void validateUserRole(Byte dbIsAdmin, Byte isAdmin)
+    public static void validateUserRole(Byte dbIsAdmin, Byte isAdmin, String uuid)
             throws UnauthorizedException, UserNotFoundException {
-        if (dbIsAdmin == null) {
-            // Throw an exception if user is not found
+        if (dbIsAdmin == null || !dbIsAdmin.equals(isAdmin)) {
+            // Throw an exception if user is not found OR user roles do not match
+
             throw new UserNotFoundException("User not found for the provided UUID.");
-        }
-        if (!dbIsAdmin.equals(isAdmin)) {
-            // Throw an exception if roles do not match
-            throw new UnauthorizedException("Unauthorized Transaction");
         }
     }
 }

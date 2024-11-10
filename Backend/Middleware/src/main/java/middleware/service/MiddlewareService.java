@@ -82,7 +82,7 @@ public class MiddlewareService {
                 ValidationUtil.validateUuid(dbUuid, extractedUuid);
 
                 Byte dbIsAdmin = tokenValidationService.getUserRoleSync(dbUuid);
-                ValidationUtil.validateUserRole(dbIsAdmin, isAdmin);
+                ValidationUtil.validateUserRole(dbIsAdmin, isAdmin, extractedUuid);
 
                 // Return validated user data
                 return Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString());
