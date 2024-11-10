@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: . # Use the Dockerfile in the current directory
+    ports:
+      - "8080:32781" # Map port 8080 on the host to port 7877 in the container
+    env_file:
+      - .env # Load environment variables from the .env file
+    volumes:
+      - .:/app # Mount the current directory to /app inside the container
+      - /app/node_modules # Exclude node_modules on the host
+    command: node server.js # Override the CMD in the Dockerfile

@@ -1,8 +1,8 @@
 # Use Node.js LTS (Long Term Support) as the base image
 FROM node:20-slim
 
-COPY app/ /Tournament_Public_App/
-WORKDIR /Tournament_Public_App/
+COPY TournamentUserMVSC/ /Tournament_User_App/
+WORKDIR /Tournament_User_App/
 
 # Install dependencies
 RUN npm install --omit=dev
