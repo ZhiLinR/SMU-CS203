@@ -1,4 +1,5 @@
 <template>
+  <AdNavbar/>
   <div class="tournament-details">
     <!-- Left side - Chess board visualization -->
     <div class="chess-board">
@@ -65,8 +66,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router';
 import { useToast } from 'primevue/usetoast'
 import axios from 'axios'
-
-// Components
+import AdNavbar from '../../components/AdNavbar.vue';
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'

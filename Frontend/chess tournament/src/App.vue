@@ -1,21 +1,22 @@
 <template>
+
   <div id="app" :style="{ backgroundColor: '#FBFBFB' }">
-    <Navbar/>
     <router-view />
 
   </div>
 </template>
 
 <script>
-import Navbar from '../src/components/AdNavbar.vue'
+
 import Home from './views/Home/Home.vue'
 import UpcomingTournaments from '../src/components/UpcomingTournaments.vue'
+
 
 
 export default {
   name: 'App',
   components: {
-    Navbar,
+
     Home,
     UpcomingTournaments,
 

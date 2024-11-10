@@ -1,4 +1,5 @@
 <template>
+  <UserNavbar/>
     <div class="tournament-dashboard">
       <div class="tournament-section">
         <div class="tournament-header">
@@ -73,6 +74,7 @@
   import InputNumber from 'primevue/inputnumber'
   import Calendar from 'primevue/calendar'
   import { useRouter } from 'vue-router'
+  import UserNavbar from '../../components/UserNavbar.vue'
   
   
   
@@ -89,6 +91,7 @@
       Calendar,
       Dialog,
       useRouter,
+      UserNavbar
     },
     setup() {
       const toast = useToast()

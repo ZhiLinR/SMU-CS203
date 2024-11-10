@@ -1,4 +1,5 @@
 <template>
+  <AdNavbar/>
   <div class="tournament-dashboard">
     <div class="action-buttons">
       <Button class="rounded" severity="danger" @click="openCreateDialog()">
@@ -179,6 +180,7 @@ import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Calendar from 'primevue/calendar'
 import { useRouter } from 'vue-router'
+import AdNavbar from '../../components/AdNavbar.vue'
 
 
 
@@ -195,6 +197,7 @@ export default {
     Calendar,
     Dialog,
     useRouter,
+    AdNavbar
   },
   setup() {
     const toast = useToast()

@@ -29,11 +29,11 @@ const router = createRouter({
       name: 'userTournamentDetails',
       component: () => import('../views/user/UserJoinTournament.vue')
     },
-    {
-      path: '/user/tournaments',
-      name: 'userPastTournament',
-      component: () => import('../views/user/UserTournaments.vue')
-    },
+    // {
+    //   path: '/user/completed',
+    //   name: 'userCompletedTournament',
+    //   component: () => import('../views/user/UserCompletedTournament.vue')
+    // },
     {
       path: '/user/profile',
       name: 'userProfile',

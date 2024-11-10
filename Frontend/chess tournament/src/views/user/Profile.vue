@@ -1,4 +1,5 @@
 <template>
+  <UserNavbar/>
     <div class="profile-container">
       <div class="profile-content" v-if="userData">
         <div class="profile-header">
@@ -82,7 +83,7 @@
   import Column from 'primevue/column';
   import Button from 'primevue/button';
   import axios from 'axios';
-  
+  import UserNavbar from '../../components/UserNavbar.vue';
   const router = useRouter();
   const userData = ref(null);
   const activeTournaments = ref([]);

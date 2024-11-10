@@ -1,17 +1,19 @@
 <script>
 
 import HomeComponent from '../../components/Home.vue'
+import UserNavbar from '../../components/UserNavbar.vue';
 
 export default {
   name: 'Home',
   components: {
     HomeComponent,
-
+    UserNavbar
   }
 }
 </script>
 <template>
     <div id="Home">
+      <UserNavbar/>
     <HomeComponent />
   </div>
  
