@@ -1,77 +1,102 @@
 package middleware.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.jsonwebtoken.Claims;
-
 import middleware.dto.JWTRequest;
 import middleware.exception.UserNotFoundException;
 import middleware.exception.UnauthorizedException;
 import middleware.model.JWToken;
-import middleware.repository.*;
 import middleware.util.*;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * MiddlewareService handles the business logic for validating JWT tokens and
- * checking user roles. It interacts with repositories to validate JWT sessions,
- * user roles, and extract claims from the token.
+ * checking user roles. It interacts with the {@link TokenValidationService} to
+ * validate JWT sessions, verify user roles, and extract claims from the token.
+ * This service provides an asynchronous method for validating JWTs and
+ * performing associated checks, such as user verification and role validation.
+ *
+ * <p>
+ * All database-related operations are handled in transactional methods
+ * to ensure consistency and integrity.
+ * </p>
  */
 @Service
+@Transactional
 public class MiddlewareService {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JWTokenRepository jwTokenRepository;
+    private TokenValidationService tokenValidationService;
 
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private ValidationUtil validationUtil;
+
     /**
-     * Validates the provided JWT by extracting claims, checking its validity in the
-     * database, and comparing user role information.
+     * Asynchronously validates a JWT by extracting claims, verifying its presence
+     * in the database, and checking the user's role.
      *
      * <p>
-     * This method decrypts the JWT to extract claims such as user UUID and admin
-     * status. It then validates the session by checking if the token exists in the
-     * database and matches the extracted information.
+     * This method decrypts the JWT to extract the user UUID and admin status. It
+     * then calls synchronous methods to validate the JWT and verify the user's role
+     * against the stored values in the database.
      * </p>
      *
-     * @param jwtRequest the request object containing the JWT to be validated.
-     * @return a Map containing the user's UUID and admin status ("isAdmin").
-     * @throws UnauthorizedException if the JWT is invalid or session validation
-     *                               fails.
-     * @throws UserNotFoundException if the user UUID associated with the JWT is not
-     *                               found.
+     * <p>
+     * The method returns a {@link CompletableFuture} containing the user UUID and
+     * admin status as key-value pairs. The operation is performed asynchronously to
+     * prevent blocking the main thread.
+     * </p>
+     *
+     * @param jwtRequest the request containing the JWT to validate.
+     * @return a {@link CompletableFuture} with a map containing the user's UUID and
+     *         admin status.
+     * @throws UnauthorizedException if the JWT is invalid or expired.
+     * @throws UserNotFoundException if the associated user UUID is not found in the
+     *                               database.
+     * @throws RuntimeException      if any unexpected error occurs during the JWT
+     *                               validation process.
      */
-    @Transactional
-    public Map<String, String> checkJwt(JWTRequest jwtRequest) {
-        String jwt = jwtRequest.getJwt();
-        Claims claims;
+    @Async
+    public CompletableFuture<Map<String, String>> checkJwt(JWTRequest jwtRequest) {
+        System.out.println("Executing in thread: " + Thread.currentThread().getName()); // For diagnostic purposes
 
-        // Decrypt JWT and extract claims
-        claims = jwtUtil.decryptToken(jwt);
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String jwt = jwtRequest.getJwt();
+                ValidationUtil.validateNotEmpty(jwt, "JWT");
 
-        String extractedUuid = claims.get("uuid", String.class);
-        Byte isAdmin = claims.get("isAdmin", Byte.class);
+                Claims claims = jwtUtil.decryptToken(jwt);
 
-        // Validate JWT session data
-        JWToken dbJwt = jwTokenRepository.checkValidity(jwt);
-        ValidationUtil.validateJwtSession(dbJwt); // Moved validation logic
+                String extractedUuid = claims.get("uuid", String.class);
+                Byte isAdmin = claims.get("isAdmin", Byte.class);
 
-        String dbUuid = dbJwt.getUuid();
-        ValidationUtil.validateUuid(dbUuid, extractedUuid); // Moved validation logic
+                // Validate JWT session and user role
+                JWToken dbJwt = tokenValidationService.checkValiditySync(jwt);
+                String dbUuid = dbJwt.getUuid();
+                ValidationUtil.validateUuid(dbUuid, extractedUuid);
 
-        // Retrieve and check role for the user
-        Byte dbIsAdmin = userRepository.getRoleByUUID(dbUuid);
-        ValidationUtil.validateUserRole(dbIsAdmin, isAdmin); // Moved validation logic
+                Byte dbIsAdmin = tokenValidationService.getUserRoleSync(dbUuid);
+                validationUtil.validateUserRole(dbIsAdmin, isAdmin, extractedUuid);
 
-        // Prepare and return the result as a map
-        return Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString());
+                // Return validated user data
+                return Map.of("uuid", dbUuid, "isAdmin", isAdmin.toString());
+
+            } catch (IllegalArgumentException e) {
+                throw e;
+            } catch (UnauthorizedException | UserNotFoundException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new RuntimeException("Unexpected error during JWT validation: " + e.getMessage());
+            }
+        });
     }
 }

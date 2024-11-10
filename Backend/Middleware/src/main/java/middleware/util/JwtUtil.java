@@ -3,9 +3,8 @@ package middleware.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.JwtException; // Import for JwtException
 import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+
 import middleware.exception.UnauthorizedException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -33,24 +32,30 @@ public class JwtUtil {
     /**
      * Decrypts and validates a JWT token and extracts the claims.
      *
-     * @param token the JWT token to decrypt and validate
-     * @return the claims extracted from the JWT token
-     * @throws JwtException if the token is invalid or expired
+     * @param token the JWT token to decrypt and validate.
+     * @return the claims extracted from the JWT token.
+     * @throws UnauthorizedException if the token is invalid, expired, or has an
+     *                               invalid signature.
      */
-    public Claims decryptToken(String token) {
+    public Claims decryptToken(String token) throws UnauthorizedException {
+        ValidationUtil.validateNotEmpty(token, "JWT");
         try {
             // Use the parser to validate and parse the JWT
-            return Jwts.parser()
+            Claims claims = Jwts.parser()
                     .setSigningKey(secretKey) // Use the secret key to validate the signature
                     .parseClaimsJws(token)
                     .getBody(); // Return the claims (UUID, username, isAdmin, etc.)
+
+            return claims;
         } catch (ExpiredJwtException e) {
+            // Print the error message for debugging
             throw new UnauthorizedException("JWT token has expired", e);
-        } catch (UnsupportedJwtException e) {
-            throw new UnauthorizedException("JWT token is unsupported", e);
         } catch (SignatureException e) {
+            // Print the error message for debugging
             throw new UnauthorizedException("Invalid JWT signature", e);
         } catch (Exception e) {
+            // Print the error message for debugging
+            e.printStackTrace(); // Print stack trace for additional context
             throw new UnauthorizedException("Invalid JWT token", e);
         }
     }
