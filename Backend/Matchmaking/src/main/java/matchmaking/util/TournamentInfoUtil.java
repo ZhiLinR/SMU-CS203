@@ -28,6 +28,9 @@ public class TournamentInfoUtil {
     @Autowired
     private ResultsRepository resultsRepository;
 
+    @Autowired
+    private TournamentRepository tournamentRepository;
+
     /**
      * Retrieves the current round number for a given tournament.
      *
@@ -236,6 +239,13 @@ public class TournamentInfoUtil {
         }
 
         resultsRepository.insertTournamentResult(uuid, tournamentId, ranking);
+    }
+
+    @Transactional
+    public Tournament getTournamentById(String tournamentId) {
+        ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
+
+        return tournamentRepository.getTournamentById(tournamentId);
     }
 
     /**

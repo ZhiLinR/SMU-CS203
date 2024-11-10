@@ -76,6 +76,10 @@ public class RatingService {
             System.out.println(tournamentId);
             ValidationUtil.validateNotEmpty(tournamentId, "Tournament ID");
 
+            // Validate that tournament exists and is completed
+            ValidationUtil.isValidRankingRequest(
+                    tournamentInfoUtil.getTournamentById(tournamentId));
+
             List<Results> databaseResults = tournamentInfoUtil.getTournamentResults(tournamentId);
             List<String> rankedUuids;
 

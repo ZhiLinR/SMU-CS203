@@ -96,6 +96,8 @@ public class MatchmakingController {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (InvalidRoundException e) {
             return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (InvalidTournamentException e) {
+            return ResponseManager.error(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (TournamentNotFoundException e) {
             return ResponseManager.error(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {

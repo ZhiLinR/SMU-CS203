@@ -2,10 +2,13 @@ package matchmaking.util;
 
 import matchmaking.dto.PlayerResults;
 import matchmaking.exception.InvalidRoundException;
+import matchmaking.exception.InvalidTournamentException;
 import matchmaking.exception.ResultsNotFoundException;
+import matchmaking.exception.TournamentNotFoundException;
 import matchmaking.model.Matchups;
 import matchmaking.model.MatchupsId;
 import matchmaking.model.Signups;
+import matchmaking.model.Tournament;
 
 import org.springframework.data.util.Pair;
 
@@ -111,7 +114,8 @@ public class ValidationUtil {
      *                               number of matchups is insufficient).
      */
     public static void isAllPlayersMatched(List<Matchups> matchups, List<Signups> players) {
-        if (players.size() / matchups.size() != 2) {
+        // + 1 to account for odd players
+        if (((players.size() + 1) / 2) != matchups.size()) {
             throw new InvalidRoundException("Failed to match up all players uniquely");
         }
     }
@@ -247,5 +251,23 @@ public class ValidationUtil {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Validates if the provided {@link Tournament} is eligible for ranking
+     * requests.
+     *
+     * @param tournament the {@link Tournament} to validate for ranking eligibility.
+     * @throws TournamentNotFoundException if the tournament does not exist (i.e.,
+     *                                     is null).
+     * @throws InvalidTournamentException  if the tournament status is not
+     *                                     "Completed".
+     */
+    public static void isValidRankingRequest(Tournament tournament) {
+        if (tournament == null) {
+            throw new TournamentNotFoundException("Tournament does not exist.");
+        } else if (tournament.getStatus() != "Completed") {
+            throw new InvalidTournamentException("Tournament has not completed.");
+        }
     }
 }
