@@ -224,7 +224,7 @@ exports.quitTournament = async (req, res, next) => {
 exports.getUpcomingTournaments = async (req, res, next) => {
     try {
         const result = await TournamentService.getUpcomingTournaments();
-        if (!result || result.length === 0) {
+        if (!result[0] || result[0].length === 0) {
             throw new Error('No upcoming tournaments');
         }
 
@@ -234,7 +234,7 @@ exports.getUpcomingTournaments = async (req, res, next) => {
             statusCode: 200,
             message: 'Upcoming tournaments',
             success: true,
-            content : result
+            content : result[0]
         };
 
         next();
@@ -261,7 +261,7 @@ exports.getUpcomingTournaments = async (req, res, next) => {
 exports.getOnGoingTournaments = async (req, res, next) => {
     try {
         let result = await TournamentService.getOnGoingTournaments();
-        if (!result || result.length === 0) {
+        if (!result[0] || result[0].length === 0) {
             throw new Error('No on-goingtournaments');
         }
 
@@ -269,7 +269,7 @@ exports.getOnGoingTournaments = async (req, res, next) => {
             statusCode: 200,
             message: 'On-going tournaments',
             success: true,
-            content: result
+            content: result[0]
         };
 
         next();
@@ -424,7 +424,7 @@ exports.getPlayerTournaments = async  (req, res, next) => {
             throw new Error('Player UUID is required');
         }
  
-        const result = await TournamentUserService.GetPlayerTournamentsByStatus(playerUUID);
+        const result = await TournamentUserService.getPlayerTournamentsByStatus(playerUUID);
         
         if (!result || result.length === 0) {
             throw new Error('No tournaments found for this player')

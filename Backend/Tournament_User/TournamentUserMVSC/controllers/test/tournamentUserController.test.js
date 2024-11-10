@@ -23,7 +23,11 @@ jest.mock('../../config/db', () => ({
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'log').mockImplementation(() => {});
 
+
+
+
 // Test for getTournaments route
+//if no tournament exist
 describe('getTournaments Controller', () => {
     afterEach(() => {
         jest.clearAllMocks(); // Reset mocks after each test
@@ -69,7 +73,12 @@ describe('getTournaments Controller', () => {
     });
 });
 
+
+
+
 // Test case for getTournamentMatchups
+//test no matchup found
+//handle service error
 describe('getTournamentMatchups Controller', () => {
     afterEach(() => {
         jest.clearAllMocks(); // Clear mocks after each test
@@ -138,7 +147,11 @@ describe('getTournamentMatchups Controller', () => {
     });
 });
 
+
+
 // Test case for signUpForTournament
+//test missing fields
+//test handle service error
 describe('signUpForTournament Controller', () => {
     afterEach(() => {
         jest.clearAllMocks(); // Reset mocks after each test
@@ -212,6 +225,9 @@ describe('signUpForTournament Controller', () => {
 
 
 //test for quitting
+//test  missing field
+//test no signup found
+//test service error
 describe('quitTournament Controller', () => {
     afterEach(() => {
         jest.clearAllMocks(); // Reset mocks after each test
@@ -301,6 +317,9 @@ describe('quitTournament Controller', () => {
 
 
 //test for get players in tournament
+//test missing tournament
+//test if no players are found
+//test for unexpected errors
 
 describe('getPlayersInTournament', () => {
     let req, res, next;
