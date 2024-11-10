@@ -1,8 +1,4 @@
 const mysql = require('mysql2');
-const loadEnvVariables = require('./dotenv'); // Import dotenv loader
-
-// Load environment variables
-loadEnvVariables();
 
 // Set up the MySQL connection
 const db = mysql.createConnection({
