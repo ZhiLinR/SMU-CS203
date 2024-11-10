@@ -7,3 +7,6 @@ node_modules\.bin
 
 # Ignore log files
 *.log
+
+#ignore docs
+docs
