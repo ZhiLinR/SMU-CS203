@@ -19,11 +19,11 @@
 
     <h1 class="page-title">Source: tournamentUserController.js</h1>
 
-    
 
 
 
-    
+
+
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>const TournamentUserService = require('../services/tournamentUserService');  // Import service
@@ -62,7 +62,7 @@ exports.getTournaments = async (req, res, next) => {
         res.status(200).json({
             message: 'Tournament Found',
             success: true,
-            content: tournamentNames 
+            content: tournamentNames
 
         });
     } catch (err) {
@@ -252,7 +252,7 @@ exports.getInProgressTournaments = async (req, res, next) => {
 
 
 /**
- * Get UserTournamentGameResult 
+ * Get UserTournamentGameResult
  * @async
  * @param {Object} req - The request object.
  * @param {Object} req.params - The request parameters
@@ -271,7 +271,7 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
     try {
         // Step 1: Check if tournament exists
         const tournamentExists = await TournamentUserService.checkTournamentExists(tournamentId);
-        
+
         if (!tournamentExists) {
             const error = new Error('Tournament not found.');
             error.statusCode = 404;  // Not Found
@@ -280,7 +280,7 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
 
         // Step 2: Get user's tournament game rank if tournament exists
         const getUserTournamentGameRank = await TournamentUserService.getUserTournamentGameRank(tournamentId, UUID);
-        
+
         if (!getUserTournamentGameRank || getUserTournamentGameRank.length === 0) {
             const error = new Error('No Game result found for the provided tournamentID.');
             error.statusCode = 404;  // Not Found
@@ -289,7 +289,7 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
 
         // Respond with the ranking information
         res.status(200).json({
-            
+
             message: 'Current Tournament Ranking:',
             success: true,
             content: getUserTournamentGameRank
