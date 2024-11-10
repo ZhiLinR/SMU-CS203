@@ -37,9 +37,9 @@ on:
 env:
   AWS_REGION: ap-southeast-1                  # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: cs203/middleware          # set this to your Amazon ECR repository name
-  ECS_SERVICE: middleware-launch                 # set this to your Amazon ECS service name
+  ECS_SERVICE: auth-launch                 # set this to your Amazon ECS service name
   ECS_CLUSTER: cs203-middleware          # set this to your Amazon ECS cluster name
-  CONTAINER_NAME: middleware
+  CONTAINER_NAME: middleware-auth
 
 permissions:
   contents: read
@@ -48,7 +48,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: staging-middleware
+    environment: staging-ecs
 
     steps:
     - name: Checkout
@@ -81,7 +81,7 @@ jobs:
 
         - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition tournament-admin --query taskDefinition > task-definition.json
+          aws ecs describe-task-definition --task-definition middleware-auth --query taskDefinition > task-definition.json
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
