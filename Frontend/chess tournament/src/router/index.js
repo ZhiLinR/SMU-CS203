@@ -30,9 +30,9 @@ const router = createRouter({
       component: () => import('../views/user/UserJoinTournament.vue')
     },
     {
-      path: '/user/completed',
-      name: 'userCompletedTournament',
-      component: () => import('../views/user/UserCompletedTournament.vue')
+      path: '/user/tournaments',
+      name: 'userPastTournament',
+      component: () => import('../views/user/UserTournaments.vue')
     },
     {
       path: '/user/profile',

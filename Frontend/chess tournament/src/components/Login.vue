@@ -53,6 +53,7 @@
           <Button 
             severity="info"
             label="Submit" 
+            type="submit"
             class="w-full rounded" 
             :loading="loading" 
             style="background-color: #FBFBFB; color: #2D2D2D"
@@ -66,49 +67,80 @@
   
   <script setup>
   import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import axios from 'axios'
   import { useToast } from 'primevue/usetoast'
-  import Button from 'primevue/button'
-  import Checkbox from 'primevue/checkbox'
   
-  const checked = ref(false)
+  const router = useRouter()
   const toast = useToast()
+  
+  // Form data
   const email = ref('')
   const password = ref('')
   const passwordVisible = ref(false)
   const submitted = ref(false)
   const loading = ref(false)
+  const checked = ref(false)
   
+  // Toggle password visibility
   const togglePassword = () => {
     passwordVisible.value = !passwordVisible.value
   }
   
+  // Handle form submission
   const handleSubmit = async () => {
     submitted.value = true
-  
+    
+    // Check if required fields are filled
     if (!email.value || !password.value) {
       toast.add({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Please fill in all fields',
+        summary: 'Login Failed',
+        detail: 'Please fill in all required fields',
         life: 3000
       })
       return
     }
   
     loading.value = true
+  
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Login successful',
-        life: 3000
+      const response = await axios.post(import.meta.env.VITE_API_URL_USER + `/login`, {
+        email: email.value,
+        password: password.value,
+        remember: checked.value
       })
+  
+      // Store token in localStorage
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token)
+        // Set default authorization header
+        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
+      }
+      
+      // Show success message
+      if (response.data.success) {
+        toast.add({
+          severity: 'success',
+          summary: 'Login Successful',
+          detail: 'Your account has logged in successfully!',
+          life: 3000
+        })
+        
+        // Redirect after successful login
+        setTimeout(() => {
+          router.push('/user/tournaments')
+        }, 2000)
+      }
+      
     } catch (error) {
+      // Handle different types of errors
+      const errorMessage = error.response?.data?.message || 'An error occurred during login'
+      
       toast.add({
         severity: 'error',
-        summary: 'Error',
-        detail: 'Login failed',
+        summary: 'Login Failed',
+        detail: errorMessage,
         life: 3000
       })
     } finally {
@@ -116,6 +148,8 @@
     }
   }
   </script>
+
+  
 <style scoped>
 .login-container {
   display: flex;
