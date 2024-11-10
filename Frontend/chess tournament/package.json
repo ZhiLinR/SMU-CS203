@@ -15,6 +15,7 @@
     "chart.js": "^4.4.6",
     "gsap": "^3.12.3",
     "mouse-follower": "^1.1.2",
+    "pinia": "^2.2.6",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
     "primevue": "^3.53.0",

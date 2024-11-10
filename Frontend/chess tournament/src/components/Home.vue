@@ -1,26 +1,45 @@
   
-  <script>
- import { ref, onMounted } from 'vue'
+<script>
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { useToast } from 'primevue/usetoast'
 
-export default {
+ export default {
   name: 'Home',
   setup() {
-    const tournaments = ref([])
+    const toast = useToast()
+    const loading = ref(false)
+    const upcomingTournaments = ref([])
+    const ongoingTournaments = ref([])
     const stats = ref({
       totalTournaments: 0,
       totalUsers: 0
     })
 
     const fetchTournaments = async () => {
+      loading.value = true
       try {
-        const response = await fetch('http://localhost:3000/tournaments')
-        const data = await response.json()
-        if (data.success) {
-          tournaments.value = data.content[0]
-          stats.value.totalTournaments = tournaments.value.length
+        const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/tournaments`)
+        if (response.data.success) {
+          const allTournaments = response.data.content
+          upcomingTournaments.value = allTournaments.filter(t => t.status === 'Upcoming')
+          ongoingTournaments.value = allTournaments.filter(t => t.status === 'Ongoing')
+          
+          // Update stats
+          stats.value.totalTournaments = allTournaments.length
+        } else {
+          throw new Error(response.data.message)
         }
       } catch (error) {
-        console.error('Error fetching tournaments:', error)
+        console.error('Failed to fetch tournaments:', error)
+        toast.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: error.message || 'Failed to fetch tournaments', 
+          life: 3000 
+        })
+      } finally {
+        loading.value = false
       }
     }
 
@@ -29,7 +48,9 @@ export default {
     })
 
     return {
-      tournaments,
+      loading,
+      upcomingTournaments,
+      ongoingTournaments,
       stats
     }
   }
