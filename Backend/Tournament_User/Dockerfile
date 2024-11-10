@@ -1,20 +1,14 @@
-# Use an official Node.js image
-FROM node:18-alpine
+# Use Node.js LTS (Long Term Support) as the base image
+FROM node:20-slim
 
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy package.json and package-lock.json
-COPY package*.json ./
+COPY TournamentUserMVSC/ /Tournament_User_App/
+WORKDIR /Tournament_User_App/
 
 # Install dependencies
-RUN npm install
+RUN npm install --omit=dev
 
-# Copy the rest of the application
-COPY . .
+# Expose the port your app runs on
+EXPOSE 8080
 
-# Expose the port your application listens on
-EXPOSE 32781
-
-# Default command (can be overridden in docker-compose.yml)
+# Start the application
 CMD ["node", "server.js"]

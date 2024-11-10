@@ -5,8 +5,7 @@ COPY app/ /Tournament_Public_App/
 WORKDIR /Tournament_Public_App/
 
 # Install dependencies
-# npm ci is preferred for production as it's more reliable than npm install
-RUN npm ci
+RUN npm install --omit=dev
 
 # Expose the port your app runs on
 EXPOSE 8080
