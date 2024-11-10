@@ -3,19 +3,14 @@ const express = require('express');
 const cors = require('cors');
 const publicUserRoutes = require('./routes/publicUserRoutes');
 const errorHandler = require('./middlewares/errorHandler');
+const corsMiddleware = require('./middlewares/corsMiddleware');
 
 
 const app = express();
 
-// Enable CORS for the specific origin defined in the .env file
-const corsOptions = {
-    // origin: process.env.CORS_ORIGIN || '*'
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-};
+// Apply custom CORS middleware
+app.use(corsMiddleware);
 
-app.use(cors(corsOptions)); // Use the CORS middleware with the defined options
 
 app.use(express.json()); // Middleware for parsing JSON bodies
 
