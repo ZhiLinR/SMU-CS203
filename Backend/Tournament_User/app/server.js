@@ -7,6 +7,11 @@ const errorHandler = require('./middlewares/errorHandler');  // Import error-han
 const successHandler = require('./middlewares/successHandler');// Import success-handling middleware
 const corsMiddleware = require('./middlewares/corsMiddleware');
 
+const corsOptions = {
+    origin: process.env.ALLOWED_ORIGINS?.split(',').map(origin => origin.trim()),
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+app.use(cors(corsOptions))
 // Middleware to parse incoming JSON
 app.use(express.json());
 
