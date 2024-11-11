@@ -32,7 +32,7 @@ const getAllowedOrigins = () => {
       }
     } else {
       // Optional: Log denied origins for debugging
-      const sanitizedOrigin = encodeURI(origin);
+      const sanitizedOrigin = encodeURIComponent(origin);
       console.warn(`Blocked request from unauthorized origin: ${sanitizedOrigin}`);
       return res.status(403).json({
         error: 'Not allowed by CORS'
