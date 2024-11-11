@@ -18,6 +18,7 @@ export default {
       { name: 'Past Tournaments', endpoint: '/past-events', status: 'Completed' },
     ])
 
+    const isLoggedIn = ref(!!localStorage.getItem('token'))
     const loading = ref(true)
     const tournaments = ref([])
     const filteredTournaments = ref([]) 
@@ -55,9 +56,22 @@ export default {
     }
     }
 
-    const viewTournament = (tournamentId) => {
-      router.push(`/${tournamentId}`)
-    }
+    
+const viewTournament = (tournamentId) => {
+  if (isLoggedIn.value) {
+    router.push(`/${tournamentId}`)
+  } else {
+    toast.add({
+      severity: 'warn',
+      summary: 'Login Required',
+      detail: 'Please log in to view this tournament',
+      life: 3000,
+    })
+    setTimeout(() => {
+      router.push('/login')
+    }, 3000)
+  }
+}
 
     watch(selectedTournaments, () => {
       fetchTournaments()
@@ -80,6 +94,7 @@ export default {
 </script>
 
 <template>
+  <Toast />
   <div class="tournament-container">
     <!-- Dropdown Filter -->
     <Dropdown v-model="selectedTournaments" 
@@ -115,7 +130,7 @@ export default {
             <Card
               v-for="tournament in filteredTournaments"
               :key="tournament.tournamentID"
-              style="min-width: 250px; flex: 0 0 auto; background-color: #FBFBFB; display: block"
+              style="min-width: 250px; flex: 0 0 auto; background-color: #FBFBFB; display: block; cursor: pointer;"
               @click="viewTournament(tournament.tournamentID)"
             >
               <template #title>

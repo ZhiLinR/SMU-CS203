@@ -34,17 +34,28 @@ const handleLogout = () => {
   <div class="grid align-items-center justify-content-center">
     <div class="col-12 md:col-12 lg:col-10">
       <Menubar>
+        <!-- header -->
         <template #start>
-          <a class='line-remove'>
-            <router-link :to="{ name: 'user' }" style="margin-left: 100px;">
+          <template v-if = "!isLoggedIn">
+            <a class='line-remove'>
+            <router-link :to="{ name: 'Home' }" style="margin-left: 100px;">
               <span style="text-decoration: none; font-weight: bold;">Check-M8</span>
             </router-link>
           </a>
-        </template>
-        
+          </template>
+          <template v-else>
+            <a class='line-remove'>
+            <router-link :to="{ name: 'user' }" style="margin-left: 100px;">
+              <span style="text-decoration: none; font-weight: bold;">Check-M8</span>
+            </router-link>
+            </a>
+          </template>
+        </template>  
+
         <template #end>
           <!-- Show these items only when logged out -->
           <template v-if="!isLoggedIn">
+            
             <a class='line-remove' style="margin-right: 50px;">
               <router-link :to="{ name: 'Home' }">
                 <span style="text-decoration: none;">Home</span>
@@ -59,6 +70,7 @@ const handleLogout = () => {
 
           <!-- Show these items only when logged in -->
           <template v-else>
+            
             <a class='line-remove' style="margin-right: 50px;">
               <router-link :to="{ name: 'user' }">
                 <span style="text-decoration: none;">Home</span>

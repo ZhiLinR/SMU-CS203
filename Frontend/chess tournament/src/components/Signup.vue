@@ -16,7 +16,7 @@
             placeholder="Your account Name" 
             class="w-full"
             :class="{ 'p-invalid': submitted && !name }" 
-          ></InputText>
+          />
           <small class="text-red-500" v-if="submitted && !name">
             Name is required
           </small>
@@ -29,10 +29,13 @@
             type="text" 
             placeholder="Email" 
             class="w-full"
-            :class="{ 'p-invalid': submitted && !email }" 
+            :class="{ 'p-invalid': submitted && !isValidEmail }" 
           />
           <small class="text-red-500" v-if="submitted && !email">
             Email is required
+          </small>
+          <small class="text-red-500" v-if="submitted && email && !isValidEmail">
+            Please enter a valid email address
           </small>
         </div>
 
@@ -48,10 +51,13 @@
             :type="passwordVisible ? 'text' : 'password'" 
             placeholder="Password" 
             class="w-full"
-            :class="{ 'p-invalid': submitted && !password }" 
-          ></InputText>
+            :class="{ 'p-invalid': submitted && !isValidPassword }" 
+          />
           <small class="text-red-500" v-if="submitted && !password">
             Password is required
+          </small>
+          <small class="text-red-500" v-if="submitted && password && !isValidPassword">
+            Password must be at least 8 characters long and contain at least one number
           </small>
         </div>
         
@@ -63,14 +69,14 @@
           :loading="loading" 
           style="background-color: #FBFBFB; color: #2D2D2D; margin-top: 2rem;"
           type="submit"
-        ></Button>
+        />
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
@@ -86,48 +92,109 @@ const passwordVisible = ref(false)
 const submitted = ref(false)
 const loading = ref(false)
 
+// Computed properties for validation
+const isValidEmail = computed(() => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email.value)
+})
+
+const isValidPassword = computed(() => {
+  const passwordRegex = /^(?=.*[0-9]).{8,}$/
+  return passwordRegex.test(password.value)
+})
+
 // Toggle password visibility
 const togglePassword = () => {
   passwordVisible.value = !passwordVisible.value
+}
+
+// Validation function
+const validateForm = () => {
+  if (!name.value) {
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Name is required',
+      life: 3000
+    })
+    return false
+  }
+  
+  if (!email.value) {
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Email is required',
+      life: 3000
+    })
+    return false
+  }
+
+  if (!isValidEmail.value) {
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Please enter a valid email address',
+      life: 3000
+    })
+    return false
+  }
+
+  if (!password.value) {
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Password is required',
+      life: 3000
+    })
+    return false
+  }
+
+  if (!isValidPassword.value) {
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Password must be at least 8 characters long and contain at least one number',
+      life: 3000
+    })
+    return false
+  }
+
+  return true
 }
 
 // Handle form submission
 const handleSubmit = async () => {
   submitted.value = true
   
-  // Check if required fields are filled
-  if (!name.value || !email.value || !password.value) {
+  // Validate form before submission
+  if (!validateForm()) {
     return
   }
 
   loading.value = true
 
   try {
-    const signup = await axios.post(import.meta.env.VITE_API_URL_USER + `/register`, {
+    const signup = await axios.post(import.meta.env.VITE_API_URL_USERS + `/register`, {
       email: email.value,
       password: password.value,
       name: name.value,
       isAdmin: 0,
     })
-
     
-    // Show success message
-    if (signup.data.success){
+    if (signup.data.success) {
       toast.add({
-      severity: 'success',
-      summary: 'Registration Successful',
-      detail: 'Your account has been created successfully!',
-      life: 3000
-    })
-     // Redirect to login page after successful registration
-     setTimeout(() => {
-      router.push('/login')
-    }, 2000)
-
+        severity: 'success',
+        summary: 'Registration Successful',
+        detail: 'Your account has been created successfully!',
+        life: 3000
+      })
+      
+      setTimeout(() => {
+        router.push('/login')
+      }, 2000)
     }
-    
   } catch (error) {
-    // Handle different types of errors
     const errorMessage = error.response?.data?.message || 'An error occurred during registration'
     
     toast.add({
