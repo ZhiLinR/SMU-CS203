@@ -613,3 +613,56 @@ exports.getAllTournamentMatchups = async (req, res, next) => {
         next(err); // Pass the error to the error-handling middleware
     }
 };
+
+/**
+ * Get all tournaments for a player with their status
+ * @param {Object} req - Express request object containing player UUID in params
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {Promise<void>}
+ */
+exports.getPlayerTournamentsByStatus = async (req, res, next) => {
+    try {
+        const { playerUUID } = req.params;
+        
+        const userTournaments = await TournamentUserService.getPlayerTournamentsByStatus(playerUUID);
+        
+        if (!userTournaments || userTournaments.length === 0) {
+            throw new Error('No tournaments found for this player');
+        }
+
+        // Format the tournaments
+        const userTournamentDetails = result.map(tournament => ({
+            tournamentID: tournament.tournamentID,
+            tournamentName: tournament.tournamentName,
+            startDate: new Date(tournament.startDate).toISOString(),
+            endDate: new Date(tournament.endDate).toISOString(),
+            location: tournament.location,
+            status: tournament.status,
+            wonLastMatch: !!tournament.wonLastMatch
+        }));
+
+        res.locals.data = {
+            statusCode: 200,
+            message: 'Player tournaments retrieved successfully',
+            success: true,
+            content: userTournamentDetails 
+        };
+        
+        // Pass to success handler
+        next();
+        
+    } catch (err) {
+        // Set specific status codes based on error messages
+        if (err.message === 'No tournaments found for this player') {
+            err.statusCode = 404;
+        }
+
+        if (err.message === 'Player UUID is required') {
+            err.statusCode = 400;
+        }
+
+        console.error('Error retrieving player tournaments:', err);
+        next(err);  // Pass the error to the middleware
+    }
+};
