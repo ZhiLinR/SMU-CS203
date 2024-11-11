@@ -126,46 +126,47 @@ describe('TournamentModel', () => {
         afterEach(() => {
             jest.clearAllMocks();
         });
-
-        it('should return true if the tournament exists', async () => {
-            const mockResult = [{ count: 1 }];
-
+    
+        it('should return the result if the tournament exists', async () => {
+            const mockResult = [[{ tournamentID: 123, name: 'Tournament A' }]]; // Mock result of the stored procedure
+    
             db.query.mockImplementation((query, params, callback) => {
-                callback(null, mockResult);
+                callback(null, mockResult); // Simulate a successful query
             });
-
+    
             const result = await TournamentModel.checkTournamentExists(123); // Pass a mock tournamentId
-            expect(result).toBe(true);
+            expect(result).toEqual(mockResult); // Expect the full result from the stored procedure
             expect(db.query).toHaveBeenCalledWith(
-                'SELECT COUNT(*) AS count FROM Tournament WHERE tournamentID = ?',
+                'CALL GetTournamentById(?)',
                 [123],
                 expect.any(Function)
             );
         });
-
-        it('should return false if the tournament does not exist', async () => {
-            const mockResult = [{ count: 0 }];
-
+    
+        it('should return an empty array if the tournament does not exist', async () => {
+            const mockResult = [[]]; // Simulate no results returned by the stored procedure
+    
             db.query.mockImplementation((query, params, callback) => {
-                callback(null, mockResult);
+                callback(null, mockResult); // Simulate a successful query
             });
-
+    
             const result = await TournamentModel.checkTournamentExists(123);
-            expect(result).toBe(false);
+            expect(result).toEqual(mockResult); // Expect an empty array
         });
-
+    
         it('should throw an error if the database query fails', async () => {
             const mockError = new Error('Database connection failed');
-
+    
             db.query.mockImplementation((query, params, callback) => {
-                callback(mockError, null); // Simulate database error
+                callback(mockError, null); // Simulate a database error
             });
-
+    
             await expect(TournamentModel.checkTournamentExists(123))
                 .rejects.toThrow('Database connection failed'); // Match the raw error message
         });
-
     });
+    
+    
 
 
     //test for players in tournament
@@ -219,7 +220,7 @@ describe('TournamentModel', () => {
             );
         });
     });
-
+    
 });
 
 
