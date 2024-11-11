@@ -132,7 +132,7 @@
 
       const validateUser = async () => {
         const response = await axios.get(import.meta.env.VITE_API_URL_MIDDLEWARE + "/jwt" , {
-          headers: { jwt: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
+          headers: { Authorization: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
         }) 
         if (response.data.success) {
           uuid.value = response.data.content.uuid

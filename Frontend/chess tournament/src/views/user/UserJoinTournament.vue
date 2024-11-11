@@ -33,9 +33,11 @@
           <span class="label">End Date:</span>
           <span class="value">{{ formatDate(tournament.endDate) }}</span>
         </div>
+        <!-- Join tournament button -->
+      <Button label="Join Tournament" severity="success" class="join-button" @click="joinTournament" />
       </div>
 
-      <!-- Participants section -->
+      <!-- Participants section
       <div class="participants-section">
         <div class="section-header">
           <h3>Current Participants({{ participants.length }})</h3>
@@ -46,10 +48,9 @@
             <Column field="rating" header="Rating"></Column>
           </DataTable>
         </div>
-      </div>
+      </div> -->
 
-      <!-- Join tournament button -->
-      <Button label="Join Tournament" severity="success" class="join-button" @click="joinTournament" />
+      
     </div>
 
   </div>
@@ -81,7 +82,7 @@ const tournamentId = sessionStorage.getItem("tournamentId");
 onMounted(async () => {
   if (tournamentId) {
     fetchTournamentDetails(tournamentId);
-    fetchParticipants(tournamentId);
+   // fetchParticipants(tournamentId);
     token.value = sessionStorage.getItem('authToken')
     if (await validateUser()) {
       await fetchUserProfile();
@@ -103,42 +104,42 @@ const fetchTournamentDetails = async (tournamentId) => {
   }
 }
 
-// Fetch participants
-const fetchParticipants = async (tournamentId) => {
-  try {
-    const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/matchups/participants/${tournamentId}`);
-    if (response.data.success) {
-      list.value = response.data.content;
-      console.log(list);  // For debugging purposes
+// // Fetch participants
+// const fetchParticipants = async (tournamentId) => {
+//   try {
+//     const response = await axios.get(import.meta.env.VITE_API_URL_PUBLIC_USER + `/tournaments/players/${tournamentId}`);
+//     if (response.data.success) {
+//       list.value = response.data.content;
+//       console.log(list);  // For debugging purposes
 
-      const participantsProfiles = await Promise.all(
-        list.value.map(async (uuid) => {
-          try {
-            const res = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, { uuid });
-            return res.data.success ? res.data.content : null;  // Return null if not successful
-          } catch (err) {
-            console.error(`Failed to fetch profile for UUID: ${uuid}`, err);
-            return null;  // Handle each failure gracefully
-          }
-        })
-      );
+//       const participantsProfiles = await Promise.all(
+//         list.value.map(async (uuid) => {
+//           try {
+//             const res = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, { uuid });
+//             return res.data.success ? res.data.content : null;  // Return null if not successful
+//           } catch (err) {
+//             console.error(`Failed to fetch profile for UUID: ${uuid}`, err);
+//             return null;  // Handle each failure gracefully
+//           }
+//         })
+//       );
 
-      participants.value = participantsProfiles
-        .filter(profile => profile !== null)  // Filter out null values (failed requests)
-        .map(profile => ({
-          name: profile.name,
-          rating: profile.elo
-        }));
+//       participants.value = participantsProfiles
+//         .filter(profile => profile !== null)  // Filter out null values (failed requests)
+//         .map(profile => ({
+//           name: profile.name,
+//           rating: profile.elo
+//         }));
 
-      if (participantsProfiles.includes(null)) {
-        toast.add({ severity: 'warn', summary: 'Warning', detail: 'Some participant profiles could not be fetched' });
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching participants:', error);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch participants' });
-  }
-};
+//       if (participantsProfiles.includes(null)) {
+//         toast.add({ severity: 'warn', summary: 'Warning', detail: 'Some participant profiles could not be fetched' });
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Error fetching participants:', error);
+//     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch participants' });
+//   }
+// };
 
 
 const joinTournament = async () => {
@@ -164,7 +165,7 @@ const formatDate = (date) => {
 
 const validateUser = async () => {
   const response = await axios.get(import.meta.env.VITE_API_URL_MIDDLEWARE + "/jwt", {
-    headers: { jwt: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
+    headers: { Authorization: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
   })
   if (response.data.success) {
     uuid.value = response.data.content.uuid

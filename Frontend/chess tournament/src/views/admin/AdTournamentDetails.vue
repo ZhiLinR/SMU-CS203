@@ -37,10 +37,15 @@
           <span class="label">Description:</span>
           <span class="value">{{ tournament.descOID }}</span>
         </div>
+         <!-- Conditional buttons based on tournament status -->
+      <Button v-if="tournament.status === 'Ongoing'" label="Match Players" severity="success" class="action-button"
+        @click="matchPlayers" />
+      <Button v-if="tournament.status === 'Completed'" label="Generate Results" severity="success" class="action-button"
+        @click="generateResults" />
       </div>
 
       <!-- Participants section -->
-      <div class="participants-section">
+      <!-- <div class="participants-section">
         <div class="section-header">
           <h3>Current Participants({{ participants.length }})</h3>
         </div>
@@ -50,13 +55,15 @@
             <Column field="rating" header="Elo Rating"> </Column>
           </DataTable>
         </div>
-      </div>
+      </div> -->
+      <!-- Dialog for displaying rankings -->
+      <Dialog v-model:visible="rankingDialogVisible" header="Player Rankings" :style="{ width: '30vw' }">
+        <ul v-if="rankings.length">
+          <li v-for="(player, index) in rankings" :key="index">{{ index + 1 }}. {{ player }}</li>
+        </ul>
+      </Dialog>
 
-      <!-- Conditional buttons based on tournament status -->
-      <Button v-if="tournament.status === 'Upcoming'" label="Match Players" severity="success" class="action-button"
-        @click="matchPlayers" />
-      <Button v-if="tournament.status === 'Completed'" label="Generate Results" severity="success" class="action-button"
-        @click="generateResults" />
+     
     </div>
   </div>
 </template>
@@ -67,8 +74,9 @@ import { useRoute } from 'vue-router';
 import { useToast } from 'primevue/usetoast'
 import axios from 'axios'
 import AdNavbar from '../../components/AdNavbar.vue';
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
+// import DataTable from 'primevue/datatable'
+// import Column from 'primevue/column'
+import Dialog from 'primevue/dialog' 
 import Button from 'primevue/button'
 
 const toast = useToast()
@@ -78,7 +86,9 @@ const route = useRoute();
 const tournament = ref({})
 const participants = ref([])
 const list = ref([])
-
+const rankingDialogVisible = ref(false) 
+const rankings = ref([])
+const tournamentId = sessionStorage.getItem("tournamentId");
 // Fetch tournament details
 const fetchTournamentDetails = async (tournamentId) => {
   try {
@@ -92,46 +102,46 @@ const fetchTournamentDetails = async (tournamentId) => {
 }
 
 // Fetch participants
-const fetchParticipants = async (tournamentId) => {
-  try {
-    const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/matchups/participants/${tournamentId}`);
-    if (response.data.success) {
-      list.value = response.data.content;
-      console.log(list);  // For debugging purposes
+// const fetchParticipants = async (tournamentId) => {
+//   try {
+//     const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/matchups/participants/${tournamentId}`);
+//     if (response.data.success) {
+//       list.value = response.data.content;
+//       console.log(list);  // For debugging purposes
 
-      const participantsProfiles = await Promise.all(
-        list.value.map(async (uuid) => {
-          try {
-            const res = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, { uuid });
-            return res.data.success ? res.data.content : null;  // Return null if not successful
-          } catch (err) {
-            console.error(`Failed to fetch profile for UUID: ${uuid}`, err);
-            return null;  // Handle each failure gracefully
-          }
-        })
-      );
+//       const participantsProfiles = await Promise.all(
+//         list.value.map(async (uuid) => {
+//           try {
+//             const res = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, { uuid });
+//             return res.data.success ? res.data.content : null;  // Return null if not successful
+//           } catch (err) {
+//             console.error(`Failed to fetch profile for UUID: ${uuid}`, err);
+//             return null;  // Handle each failure gracefully
+//           }
+//         })
+//       );
 
-      participants.value = participantsProfiles
-        .filter(profile => profile !== null)  // Filter out null values (failed requests)
-        .map(profile => ({
-          name: profile.name,
-          rating: profile.elo
-        }));
+//       participants.value = participantsProfiles
+//         .filter(profile => profile !== null)  // Filter out null values (failed requests)
+//         .map(profile => ({
+//           name: profile.name,
+//           rating: profile.elo
+//         }));
 
-      if (participantsProfiles.includes(null)) {
-        toast.add({ severity: 'warn', summary: 'Warning', detail: 'Some participant profiles could not be fetched' });
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching participants:', error);
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch participants' });
-  }
-};
+//       if (participantsProfiles.includes(null)) {
+//         toast.add({ severity: 'warn', summary: 'Warning', detail: 'Some participant profiles could not be fetched' });
+//       }
+//     }
+//   } catch (error) {
+//     console.error('Error fetching participants:', error);
+//     toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch participants' });
+//   }
+// };
 
 
 const matchPlayers = async () => {
   try {
-    const response = await axios.get(import.meta.env.VITE_API_URL_USERS + `/matchmaking/${tournament.value.id}`);
+    const response = await axios.get(import.meta.env.VITE_API_URL_MATCH + `/matchmaking/${tournamentId}`);
 
     if (response.data.success) {
       console.log('Players matched successfully');
@@ -148,12 +158,13 @@ const matchPlayers = async () => {
 
 const generateResults = async () => {
   try {
-    const response = await axios.get(import.meta.env.VITE_API_URL_TOURNAMENT + `/ranking/${tournament.value.id}`);
+    const response = await axios.get(import.meta.env.VITE_API_URL_MATCH + `/ranking/${tournamentId}`);
 
     if (response.data.success) {
       console.log('Results generated successfully:', response.data.content.results);
+      rankings.value = response.data.content.results; 
+      rankingDialogVisible.value = true;
       toast.add({ severity: 'success', summary: 'Success', detail: 'Tournament results generated successfully' })
-      // You can handle the ranking results here, e.g., display them in a modal or update the component state
     } else {
       console.error('Error generating results:', response.data.message);
       toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to generate results' })
@@ -173,10 +184,10 @@ const formatDate = (date) => {
 // Lifecycle
 onMounted(() => {
   // Get the tournament ID from the route params
-  const tournamentId = sessionStorage.getItem("tournamentId");
+  
   if (tournamentId) {
     fetchTournamentDetails(tournamentId);
-    fetchParticipants(tournamentId);
+    // fetchParticipants(tournamentId);
   } else {
     console.error('Tournament ID is missing in route params');
   }

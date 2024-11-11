@@ -86,6 +86,7 @@ const router = useRouter();
 const userData = ref(null);
 const activeTournaments = ref([]);
 const completedTournaments = ref([]);
+const token = ref('')
 const uuid = ref('');
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString();
@@ -129,26 +130,29 @@ const handleQuit = async (tournamentId) => {
 };
 
 const fetchUserProfile = async () => {
-  try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL_USERS}/profile`, {
-      uuid: 'e7461892-7af1-11ef-b4bc-0242ac110002' // Replace with actual user UUID
-    });
-
-    if (response.data.success) {
-      userData.value = response.data.content;
-      // Add rank property if it's not included in the API response
-      userData.value.rank = calculateRank(userData.value.elo);
-    } else {
-      console.error('Error fetching user profile:', response.data.message);
+    console.log(uuid.value)
+    try {
+      const response = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, {
+        uuid: uuid.value 
+      });
+  
+      if (response.data.success) {
+        userData.value = response.data.content;
+        // Add rank property if it's not included in the API response
+       userData.value.rank = calculateRank(userData.value.elo);
+       console.log(userData.value,userData.value.elo)
+       sessionStorage.setItem("elo", userData.value.elo)
+      } else {
+        console.error('Error fetching user profile:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
     }
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-  }
-};
+  };
 
 const fetchPlayerTournaments = async () => {
   try {
-    const response = await axios.get(import.meta.env.VITE_API_URL_PUBLIC_USER = `/player/e7461892-7af1-11ef-b4bc-0242ac110002/tournaments`);
+    const response = await axios.get(import.meta.env.VITE_API_URL_PUBLIC_USER = `/player/${uuid.value}/tournaments`);
     console.log(response)
     if (response.data.success) {
       activeTournaments.value = response.data.content.filter(t => t.status === 'Upcoming');
@@ -168,7 +172,7 @@ const calculateRank = (elo) => {
 };
 const validateUser = async () => {
   const response = await axios.get(import.meta.env.VITE_API_URL_MIDDLEWARE + "/jwt", {
-    headers: { jwt: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
+    headers: { Authorization: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
   })
   if (response.data.success) {
     uuid.value = response.data.content.uuid
@@ -183,10 +187,10 @@ onMounted(async () => {
   token.value = sessionStorage.getItem('authToken')
   validateUser()
   uuid.value = sessionStorage.getItem('uuid')
-  await fetchUserProfile();
-  if (userData.value) {
-    await fetchPlayerTournaments();
-  }
+  if (await validateUser()) {
+      await fetchUserProfile();
+      await fetchPlayerTournaments();
+    }
 });
 </script>
 

@@ -41,7 +41,7 @@ const handleAdminLogout = () => {
         <template #start>
           <template v-if = "!isAdminLoggedIn">
             <a class='line-remove'>
-            <router-link :to="{ name: 'Home' }" style="margin-left: 100px;">
+            <router-link :to="{ name: 'admin' }" style="margin-left: 100px;">
               <span style="text-decoration: none; font-weight: bold;">Check-M8</span>
             </router-link>
           </a>
@@ -59,13 +59,13 @@ const handleAdminLogout = () => {
           <!-- Show these items only when admin is logged out -->
           <template v-if="!isAdminLoggedIn">
             <a class="line-remove" style="margin-right: 50px;">
-              <router-link :to="{ name: 'Home' }">
-                <span style="text-decoration: none;">Home</span>
+              <router-link :to="{ name: 'admin' }">
+                <span style="text-decoration: none;">Tournaments</span>
               </router-link>
             </a>
             <a class="line-remove" style="margin-right: 50px;">
               <router-link :to="{ name: 'login' }">
-                <Button class="login-btn">Log In</Button>
+                <Button label="Log out" style="font-size: smaller;" class="login-btn" ></Button>
               </router-link>
             </a>
           </template>
@@ -111,7 +111,6 @@ a {
 
 .login-btn{
   border-radius: 10px;
-  background-color: #2D2D2D;
   max-height: 50px;
   max-width: 100px;
 }
