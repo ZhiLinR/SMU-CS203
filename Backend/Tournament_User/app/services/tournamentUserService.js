@@ -32,8 +32,8 @@ exports.getUserTournamentGameRank = (tournamentId,UUID) => {
 
 
 // Service to get all tournaments based on status of each player
-exports.GetPlayerTournamentsByStatus = (playerUUID)=> {
-    return TournamentModel.GetPlayerTournamentsByStatus(playerUUID); // call the model
+exports.getPlayerTournamentsByStatus = (playerUUID)=> {
+    return TournamentModel.getPlayerTournamentsByStatus(playerUUID); // call the model
 };
 
 //service to get all completed tournaments

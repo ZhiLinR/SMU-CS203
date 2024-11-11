@@ -159,7 +159,7 @@ exports.signUpForTournament =  async (req, res, next) => {
         if (err.message.startsWith('Missing required fields')) {
             err.statusCode = 400;  // Bad Request
         }
-
+        
         console.error('Error during tournament signup:', err);
         next(err);  // Pass the error to the error-handling middleware
     }
@@ -179,7 +179,7 @@ exports.quitTournament = async (req, res, next) => {
     const { UUID } = req.params;
     const { tournamentID } = req.body;
 
-
+   
 
     try {
         if (!UUID || !tournamentID) {
@@ -286,7 +286,7 @@ exports.getOnGoingTournaments = async (req, res, next) => {
 
 
 /**
- * Get UserTournamentGameResult
+ * Get UserTournamentGameResult 
  * @param {Object} req.params - The request parameters
  * @param {string} req.params.UUID - The ID of the User.
  * @param {string} req.params.tournamentId - The ID of the tournament.
@@ -418,18 +418,18 @@ exports.getPlayersInTournament = async (req, res, next) => {
 exports.getPlayerTournaments = async  (req, res, next) => {
     try {
         const { playerUUID } = req.params;
-
+        
         // Validate playerUUID
         if (!playerUUID) {
             throw new Error('Player UUID is required');
         }
-
+ 
         const result = await TournamentUserService.GetPlayerTournamentsByStatus(playerUUID);
-
+        
         if (!result || result.length === 0) {
             throw new Error('No tournaments found for this player')
         }
-
+ 
         res.locals.data = {
             statusCode : 200,
             message: 'Player tournaments retrieved successfully',
@@ -438,7 +438,7 @@ exports.getPlayerTournaments = async  (req, res, next) => {
         };
         // Pass to success handler
         next();
-
+        
     } catch (err) {
 
         if(err.message ==='No tournaments found for this player'){
@@ -482,7 +482,7 @@ exports.getCompletedTournaments = async  (req, res, next) => {
         if (err.message === 'No completed tournaments') {
             err.statusCode = 404;  // Set a custom status code for this specific error
         }
-
+        
         console.error('Error retrieving completed tournaments:', err);
         next(err);  // Pass the error to the error-handling middleware
     }

@@ -6,6 +6,9 @@ jest.mock('../../config/db', () => ({
     query: jest.fn(),
 }));
 
+
+    //test success input
+    //if sql query fails
 describe('TournamentModel', () => {
     afterEach(() => {
         jest.clearAllMocks(); // Reset mocks after each test
@@ -64,7 +67,8 @@ describe('TournamentModel', () => {
 
 
     //quit tournament model
-
+    //test success input
+    //if sql query fails
 
     describe('quitTournament', () => {
         it('should resolve with results if the query is successful', async () => {
@@ -115,7 +119,8 @@ describe('TournamentModel', () => {
         });
     });
 
-
+    //test success input
+    //test if tournament doesnt exist
     //test check tournament exist in db anot
     describe('checkTournamentExists', () => {
         afterEach(() => {
@@ -164,6 +169,8 @@ describe('TournamentModel', () => {
 
 
     //test for players in tournament
+    //test success input
+    //if sql query fails
     describe('quitTournament', () => {
         it('should resolve with results if the query is successful', async () => {
             const UUID = 'user-123';
