@@ -225,7 +225,7 @@ exports.getPlayersInTournament = (tournamentId) => {
  * @throws {Error} If the database query fails.
  */
 
-exports.GetPlayerTournamentsByStatus = (playerUUID) => {
+exports.getPlayerTournamentsByStatus = (playerUUID) => {
     return new Promise((resolve, reject) => {
         const query = 'CALL GetPlayerTournamentsByStatus(?)';
 
