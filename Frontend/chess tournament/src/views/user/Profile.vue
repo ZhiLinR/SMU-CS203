@@ -1,5 +1,6 @@
 <template>
   <UserNavbar />
+  <Toast />
   <div class="profile-container">
     <div class="profile-content" v-if="userData">
       <div class="profile-header">
@@ -19,7 +20,7 @@
           </template>
           <template #content>
             <DataTable :value="activeTournaments" :paginator="true" :rows="5">
-              <Column field="name" header="Tournament"></Column>
+              <Column field="tournamentName" header="Tournament"></Column>
               <Column field="startDate" header="Start Date">
                 <template #body="slotProps">
                   {{ formatDate(slotProps.data.startDate) }}
@@ -30,7 +31,7 @@
                 <template #body="slotProps">
                   <Button label="View" size="small" style="margin-right: 0.5rem;"
                     @click="navigateToTournament(slotProps.data.id)" />
-                  <Button label="Quit" size="small" severity="danger" @click="handleQuit(slotProps.data.id)" />
+                  <Button label="Quit" size="small" severity="danger" @click="handleQuit(slotProps.data)" />
                 </template>
               </Column>
             </DataTable>
@@ -46,7 +47,7 @@
           </template>
           <template #content>
             <DataTable :value="completedTournaments" :paginator="true" :rows="5">
-              <Column field="name" header="Tournament"></Column>
+              <Column field="tournamentName" header="Tournament"></Column>
               <Column field="endDate" header="End Date">
                 <template #body="slotProps">
                   {{ formatDate(slotProps.data.endDate) }}
@@ -82,6 +83,8 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import axios from 'axios';
 import UserNavbar from '../../components/UserNavbar.vue';
+import Toast from 'primevue/toast'
+
 const router = useRouter();
 const userData = ref(null);
 const activeTournaments = ref([]);
@@ -110,49 +113,49 @@ const navigateToTournament = (tournamentId) => {
   router.push(`/tournament/${tournamentId}`);
 };
 
-const handleQuit = async (tournamentId) => {
+const handleQuit = async (tournament) => {
+  console.log(uuid.value, tournament.tournamentID)
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL_PUBLIC_USER}/tournament/quit/${userData.value.UUID}`,
-      { tournamentID: tournamentId }
+    const response = await axios.delete(
+      import.meta.env.VITE_API_URL_PUBLIC_USER + `/tournaments/quit/${uuid.value}`,
+      { data: { tournamentID: tournament.tournamentID } }
     );
 
     if (response.data.success) {
       // Remove the tournament from the activeTournaments list
-      activeTournaments.value = activeTournaments.value.filter(t => t.id !== tournamentId);
+      console.log(response.data.message)
+      activeTournaments.value = activeTournaments.value.filter(t => t.id !== tournament.tournamentID);
     } else {
       throw new Error('Failed to quit tournament');
     }
   } catch (error) {
     console.error('Error quitting tournament:', error);
-    // Handle error (e.g., show an error message to the user)
   }
 };
 
 const fetchUserProfile = async () => {
-    console.log(uuid.value)
-    try {
-      const response = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, {
-        uuid: uuid.value 
-      });
-  
-      if (response.data.success) {
-        userData.value = response.data.content;
-        // Add rank property if it's not included in the API response
-       userData.value.rank = calculateRank(userData.value.elo);
-       console.log(userData.value,userData.value.elo)
-       sessionStorage.setItem("elo", userData.value.elo)
-      } else {
-        console.error('Error fetching user profile:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
+  try {
+    const response = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, {
+      uuid: uuid.value
+    });
+
+    if (response.data.success) {
+      userData.value = response.data.content;
+      // Add rank property if it's not included in the API response
+      userData.value.rank = calculateRank(userData.value.elo);
+      console.log(userData.value, userData.value.elo)
+      sessionStorage.setItem("elo", userData.value.elo)
+    } else {
+      console.error('Error fetching user profile:', response.data.message);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+  }
+};
 
 const fetchPlayerTournaments = async () => {
   try {
-    const response = await axios.get(import.meta.env.VITE_API_URL_PUBLIC_USER = `/player/${uuid.value}/tournaments`);
+    const response = await axios.get(import.meta.env.VITE_API_URL_PUBLIC_USER + `/player/${uuid.value}/tournaments`);
     console.log(response)
     if (response.data.success) {
       activeTournaments.value = response.data.content.filter(t => t.status === 'Upcoming');
@@ -188,9 +191,9 @@ onMounted(async () => {
   validateUser()
   uuid.value = sessionStorage.getItem('uuid')
   if (await validateUser()) {
-      await fetchUserProfile();
-      await fetchPlayerTournaments();
-    }
+    await fetchUserProfile();
+    await fetchPlayerTournaments();
+  }
 });
 </script>
 

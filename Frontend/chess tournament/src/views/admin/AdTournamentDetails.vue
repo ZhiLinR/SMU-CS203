@@ -1,5 +1,6 @@
 <template>
   <AdNavbar/>
+  <Toast/>
   <div class="tournament-details">
     <!-- Left side - Chess board visualization -->
     <div class="chess-board">
@@ -39,6 +40,8 @@
         </div>
          <!-- Conditional buttons based on tournament status -->
       <Button v-if="tournament.status === 'Ongoing'" label="Match Players" severity="success" class="action-button"
+        @click="matchPlayers" />
+        <Button v-if="tournament.status === 'Upcoming'" label="Match Players" severity="success" class="action-button"
         @click="matchPlayers" />
       <Button v-if="tournament.status === 'Completed'" label="Generate Results" severity="success" class="action-button"
         @click="generateResults" />

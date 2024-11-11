@@ -63,7 +63,7 @@ const handleLogout = () => {
             </a>
             <a class='line-remove' style="margin-right: 50px;">
               <router-link :to="{ name: 'login' }">
-                <Button class="login-btn">Log In</Button>
+                <Button class="login-btn" style="font-size: smaller;">Log In</Button>
               </router-link>
             </a>
           </template>
@@ -82,10 +82,11 @@ const handleLogout = () => {
               </router-link>
             </a>
             <Button 
+            
               class="logout-btn" 
-              style="margin-right: 50px;"
+              style="margin-right: 50px; font-size: smaller;"
               @click="handleLogout"
-              label="Log Out"
+              label="Log Out" 
             >
             </Button>
           </template>

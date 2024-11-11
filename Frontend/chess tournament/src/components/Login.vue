@@ -120,7 +120,7 @@ const handleSubmit = async () => {
         life: 3000
       })
 
-      if (checkAdminAuthStatus == true) {
+      if (await checkAdminAuthStatus == true) {
         // Redirect after successful login
         setTimeout(() => {
           router.push('/admin')
@@ -155,7 +155,7 @@ const checkAdminAuthStatus = async () => {
   if (response.data.success) {
 
     isAdmin.value = response.data.content.isAdmin
-    if (isAdmin.value == 1) {
+    if (isAdmin.value === 1) {
       uuid.value = response.data.content.uuid
       localStorage.setItem('uuid', uuid)
       localStorage.setItem('isAdmin', isAdmin)

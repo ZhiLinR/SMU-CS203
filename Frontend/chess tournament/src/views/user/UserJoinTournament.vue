@@ -1,5 +1,6 @@
 <template>
   <UserNavbar />
+  <Toast/>
   <div class="tournament-details">
     <!-- Left side - Chess board visualization -->
     <div class="chess-board">
