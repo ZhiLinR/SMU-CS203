@@ -34,6 +34,10 @@
           <span class="label">End Date:</span>
           <span class="value">{{ formatDate(tournament.endDate) }}</span>
         </div>
+        <div class="detail-row">
+          <span class="label">Description:</span>
+          <span class="value">{{ tournament.descOID }}</span>
+        </div>
         <!-- Join tournament button -->
       <Button label="Join Tournament" severity="success" class="join-button" @click="joinTournament" />
       </div>

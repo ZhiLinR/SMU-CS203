@@ -122,9 +122,9 @@ const handleQuit = async (tournament) => {
     );
 
     if (response.data.success) {
-      // Remove the tournament from the activeTournaments list
-      console.log(response.data.message)
       activeTournaments.value = activeTournaments.value.filter(t => t.id !== tournament.tournamentID);
+      console.log(response.data.message)
+      
     } else {
       throw new Error('Failed to quit tournament');
     }
