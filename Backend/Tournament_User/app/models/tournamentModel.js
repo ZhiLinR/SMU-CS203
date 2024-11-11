@@ -195,28 +195,6 @@ exports.checkTournamentExists = (tournamentId) => {
     });
 };
 
-/**
- * Model to get players who signed up for a tournament ( Based on signups).
- * @param {string} tournamentId - The ID of the tournament.
- * @returns {Promise<Array<{UUID: string}>>} A promise that resolves to an array of player UUIDs.
- * @throws {Error} If the database query fails.
- */
-
-exports.getPlayersInTournament = (tournamentId) => {
-    return new Promise((resolve, reject) => {
-        const query = 'Call GetPlayersInTournament(?)';
-
-        db.query(query, [tournamentId], (err, result) => {
-            if (err) {
-                return reject(err);  // Handle any database error
-            }
-
-            console.log("Raw result from the database:", result);
-            resolve(result[0]);
-        });
-    });
-};
-
 
 /**
  * Model to get all tournaments for a player with their status.

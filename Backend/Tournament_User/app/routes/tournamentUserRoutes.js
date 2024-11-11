@@ -10,9 +10,7 @@ router.get('/tournaments/view/upcoming', TournamentUserController.getUpcomingTou
 router.get('/tournaments/view/ongoing', TournamentUserController.getOnGoingTournaments);
 router.get('/tournaments/ranking/:tournamentId', TournamentUserController.getUserTournamentGameRank);
 router.get('/tournaments/players/:tournamentId',TournamentUserController.getPlayersInTournament); // change to nameUsersdfer
-// take note, delete this route b4 submission, old procedure
-router.get('/player/:playerUUID/tournaments', TournamentUserController.getPlayerTournaments);
-//
+
 router.get('/tournaments/view/completed', TournamentUserController.getCompletedTournaments);
 router.get('/tournaments/view/ranking/:tournamentId', TournamentUserController.getTournamentRanking); //change to name
 router.get('/tournamentusermsvc/health', TournamentUserController.getHealthStatus);
