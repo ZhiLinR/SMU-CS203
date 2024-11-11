@@ -297,6 +297,7 @@ export default {
     }
 
     const viewTournamentDetails = (tournament) => {
+      sessionStorage.setItem("tournamentId",tournament.tournamentID)
       router.push(`/admin/tournaments/${tournament.tournamentID}`)
     }
     

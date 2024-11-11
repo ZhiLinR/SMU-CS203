@@ -1,5 +1,5 @@
 <template>
-  <UserNavbar/>
+  <UserNavbar />
   <div class="tournament-details">
     <!-- Left side - Chess board visualization -->
     <div class="chess-board">
@@ -68,13 +68,30 @@ import Column from 'primevue/column'
 
 const toast = useToast()
 const route = useRoute();
-
+const token = ref('')
+const uuid = ref('')
+const elo = ref('')
 // State
 const tournament = ref({})
 const participants = ref([])
 const list = ref([])
 
+const userData = ref(null);
 
+onMounted(async () => {
+  const tournamentId = sessionStorage.getItem("tournamentId");
+  console.log(tournamentId)
+  if (tournamentId) {
+    fetchTournamentDetails(tournamentId);
+    fetchParticipants(tournamentId);
+    token.value = sessionStorage.getItem('authToken')
+    if (await validateUser()) {
+      await fetchUserProfile();
+    }
+  } else {
+    console.error('Tournament ID is missing in route params');
+  }
+});
 
 // Fetch tournament details
 const fetchTournamentDetails = async (tournamentId) => {
@@ -126,17 +143,20 @@ const fetchParticipants = async (tournamentId) => {
 };
 
 
-const joinTournament = async () => {
+const joinTournament = async (tournamentId, elo) => {
   try {
-    // Implementation would depend on your backend API structure
-    const response = await axios.post(import.meta.env.VITE_API_URL_PUBLIC_USER + `/tournaments/signup/${uuid}`)
+    const response = await axios.post(
+      import.meta.env.VITE_API_URL_PUBLIC_USER +`/tournaments/signup/${uuid.value}`,
+      { tournamentID: tournamentId, elo: elo.value }
+    );
+
     if (response.data.success) {
-      toast.add({ severity: 'success', summary: 'Success', detail: 'Tournament joined successfully' })
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Tournament joined successfully' });
     }
   } catch (error) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to join tournament' })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to join tournament' });
   }
-}
+};
 
 // Utilities
 const formatDate = (date) => {
@@ -144,16 +164,41 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString()
 }
 
-// Lifecycle
-onMounted(() => {
-  const tournamentId = route.params.tournamentId;
-  if (tournamentId) {
-    fetchTournamentDetails(tournamentId);
-    fetchParticipants(tournamentId);
-  } else {
-    console.error('Tournament ID is missing in route params');
+const validateUser = async () => {
+  const response = await axios.get(import.meta.env.VITE_API_URL_MIDDLEWARE + "/jwt", {
+    headers: { jwt: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
+  })
+  if (response.data.success) {
+    uuid.value = response.data.content.uuid
+    localStorage.setItem('uuid', uuid)
+    console.log(token.value, uuid.value)
+    return true
   }
-});
+}
+
+const fetchUserProfile = async () => {
+    console.log(uuid.value)
+    try {
+      const response = await axios.post(import.meta.env.VITE_API_URL_USERS + `/profile`, {
+        uuid: uuid.value 
+      });
+  
+      if (response.data.success) {
+        userData.value = response.data.content;
+        elo.value = userData.value.elo;
+        // Add rank property if it's not included in the API response
+       // userData.value.rank = calculateRank(userData.value.elo);
+       console.log(userData.value, elo.value)
+      } else {
+        console.error('Error fetching user profile:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
+  };
+
+// Lifecycle
+
 </script>
 
 <style scoped>

@@ -108,7 +108,7 @@
     loading.value = true
   
     try {
-      const response = await axios.post(import.meta.env.VITE_API_URL_USER + `/login`, {
+      const response = await axios.post(import.meta.env.VITE_API_URL_USERS + `/login`, {
         email: email.value,
         password: password.value,
       })
@@ -213,10 +213,7 @@
   border-color: #93a3b8;
 }
 
-.p-input-filled .p-inputtext:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-}
+
 
 .p-input-filled .p-inputtext.p-invalid {
   border-color: #ef4444;

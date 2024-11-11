@@ -173,7 +173,7 @@ const formatDate = (date) => {
 // Lifecycle
 onMounted(() => {
   // Get the tournament ID from the route params
-  const tournamentId = route.params.tournamentId;
+  const tournamentId = sessionStorage.getItem("tournamentId");
   if (tournamentId) {
     fetchTournamentDetails(tournamentId);
     fetchParticipants(tournamentId);

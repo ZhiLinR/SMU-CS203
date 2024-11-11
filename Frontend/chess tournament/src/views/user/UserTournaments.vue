@@ -98,6 +98,8 @@
       const upcomingTournaments = ref([])
       const ongoingTournaments = ref([])
       const loading = ref(false)
+      const token = ref('')
+      const uuid = ref('')
       const router = useRouter();
   
   
@@ -120,19 +122,32 @@
       }
     
       const viewTournamentDetails = (tournament) => {
+        sessionStorage.setItem("tournamentId",tournament.tournamentID)
         router.push(`/user/tournaments/${tournament.tournamentID}`)
       }
   
       const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString()
       }
-  
-      onMounted(() => {
+
+      const validateUser = async () => {
+        const response = await axios.get(import.meta.env.VITE_API_URL_MIDDLEWARE + "/jwt" , {
+          headers: { jwt: token.value, Origin: import.meta.env.VITE_API_URL_ORIGIN }
+        }) 
+        if (response.data.success) {
+          uuid.value = response.data.content.uuid
+          localStorage.setItem('uuid', uuid)
+          console.log(token.value,uuid.value)
+          return true
+        } 
+      }
+      onMounted(async () => {
         fetchTournaments()
+        token.value = sessionStorage.getItem('authToken')
+        validateUser()
+        uuid.value = sessionStorage.getItem('uuid')
       })
-      onMounted(() => {
-        fetchTournaments()
-      })
+
   
       return {
         upcomingTournaments,
@@ -140,7 +155,10 @@
         loading,
         fetchTournaments,
         formatDate,
-        viewTournamentDetails
+        viewTournamentDetails,
+        validateUser,
+        token,
+        uuid
       }
     }
   }

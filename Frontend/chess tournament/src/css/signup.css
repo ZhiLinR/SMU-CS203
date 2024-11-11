@@ -49,11 +49,7 @@
   .p-input-filled .p-inputtext:hover {
     border-color: #93a3b8;
   }
-  
-  .p-input-filled .p-inputtext:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  }
+
   
   .p-input-filled .p-inputtext.p-invalid {
     border-color: #ef4444;
