@@ -181,16 +181,13 @@ exports.getUserTournamentGameRank = (tournamentID, UUID) => {
  */
 exports.checkTournamentExists = (tournamentId) => {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT COUNT(*) AS count FROM Tournament WHERE tournamentID = ?';
+        const query = 'CALL GetTournamentById(?)';
 
         db.query(query, [tournamentId], (err, result) => {
             if (err) {
                 return reject(err);  // Handle any database error
             }
-
-            // If the tournament exists, resolve with `true`, otherwise `false`
-            const exists = result[0].count > 0;
-            resolve(exists);
+            resolve(result);
         });
     });
 };
@@ -225,7 +222,7 @@ exports.getPlayersInTournament = (tournamentId) => {
  * @throws {Error} If the database query fails.
  */
 
-exports.GetPlayerTournamentsByStatus = (playerUUID) => {
+exports.getPlayerTournamentsByStatus = (playerUUID) => {
     return new Promise((resolve, reject) => {
         const query = 'CALL GetPlayerTournamentsByStatus(?)';
 
