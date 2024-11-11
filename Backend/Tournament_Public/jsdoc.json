@@ -1,7 +1,8 @@
 {
     "source": {
-      "include": ["models/tournament.js","controllers/publicUserController.js",
-      "routes/publicUserRoutes.js","userService/userService.js","middlewares/errorHandler.js" ],
+      "include": ["./app/models/tournament.js","./app/controllers/publicUserController.js",
+      "./app/routes/publicUserRoutes.js","./app/userService/userService.js","./app/middlewares/errorHandler.js", 
+      "./app/middlewares/successHandler.js" ],
       "includePattern": ".js$",
       "excludePattern": "(node_modules/|docs)"
     },

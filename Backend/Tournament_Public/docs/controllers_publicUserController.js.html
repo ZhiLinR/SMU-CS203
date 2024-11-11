@@ -24,7 +24,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAllTournaments">getAllTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getCompletedTournaments">getCompletedTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getInProgressTournaments">getInProgressTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTournamentByID">getTournamentByID</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTournamentById">getTournamentById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getUpcomingTournaments">getUpcomingTournaments</a></span></li>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#errorHandler">errorHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAllTournaments">getAllTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getCompletedTournaments">getCompletedTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getOngoingTournaments">getOngoingTournaments</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTournamentByID">getTournamentByID</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getTournamentById">getTournamentById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getUpcomingTournaments">getUpcomingTournaments</a></span></li>
 </nav>
 
 <div id="main">
@@ -40,6 +40,11 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>const TournamentUserService = require('../userService/userService');
+const { sendSuccessResponse } = require('../middlewares/successHandler');
+const { errorHandler } = require('../middlewares/errorHandler');
+const { validationResult } = require('express-validator');
+const { validateTournamentId } = require('../middlewares/validationHandler'); // Import the validation
+
 
 
 
@@ -56,16 +61,12 @@ exports.getAllTournaments = async (req, res, next) => {
     try {
         const allTournaments = await TournamentUserService.getAllTournaments();
         if (!allTournaments || allTournaments.length === 0) {
-            const error = new Error('No tournaments retrieved');
+            const error = new Error('No tournaments found');
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved all tournaments",
-            "content": allTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved all tournaments', allTournaments);
+
     } catch (err) {
         console.error('Error retrieving tournaments:', err);
         next(err);  // Pass the error to the middleware
@@ -89,19 +90,15 @@ exports.getUpcomingTournaments = async (req, res, next) => {
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved upcoming tournaments",
-            "content": upcomingTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved upcoming tournaments', upcomingTournaments);
+
     } catch (err) {
         console.error('Error retrieving upcoming tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
 };
 
-/**  Controller to get in-progress tournaments
+/**  Controller to get ongoing tournaments
  * @async
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
@@ -110,22 +107,18 @@ exports.getUpcomingTournaments = async (req, res, next) => {
  * @throws {error} If input invalid or missing fields.
  */
 
-exports.getInProgressTournaments = async (req, res, next) => {
+exports.getOngoingTournaments = async (req, res, next) => {
     try {
-        const inProgressTournaments = await TournamentUserService.getInProgressTournaments();
-        if (!inProgressTournaments || inProgressTournaments.length === 0) {
-            const error = new Error('No in-progress tournaments');
+        const ongoingTournaments = await TournamentUserService.getOngoingTournaments();
+        if (!ongoingTournaments || ongoingTournaments.length === 0) {
+            const error = new Error('No ongoing tournaments');
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved in-progress tournaments",
-            "content": inProgressTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved ongoing tournaments', ongoingTournaments);
+
     } catch (err) {
-        console.error('Error retrieving in-progress tournaments:', err);
+        console.error('Error retrieving ongoing tournaments:', err);
         next(err);  // Pass the error to the middleware
     }
 };
@@ -145,12 +138,8 @@ exports.getCompletedTournaments = async (req, res, next) => {
             error.statusCode = 404;
             return next(error);
         }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved completed tournaments",
-            "content": completedTournaments
-        });
+        sendSuccessResponse(res, 200, 'successfully retrieved completed tournaments', completedTournaments);
+
     } catch (err) {
         console.error('Error retrieving completed tournaments:', err);
         next(err);  // Pass the error to the middleware
@@ -159,38 +148,51 @@ exports.getCompletedTournaments = async (req, res, next) => {
 
 /**
  * Controller to get a specific tournament by ID.
- * 
+ *
  * @param {Object} req - The request object.
  * @param {Object} req.params - The parameters from the request URL.
- * @param {string} req.params.id - The ID of the tournament to retrieve.
+ * @param {string} req.params.tournamentId - The ID of the tournament to retrieve.
  * @param {Object} res - The response object.
  * @returns {Promise&lt;void>} A promise that resolves to sending a JSON response with the tournament details.
  */
 
-// Controller to get a specific tournament (example)
-exports.getTournamentById = async (req, res, next) => {
-    const {tournamentId} = req.params;
-    try {
-        const specificTournament = await TournamentUserService.getTournamentByID(tournamentId);
-         // If no tournament is found, return a 404 response
-         if (!specificTournament) {
-            const error = new Error('No tournament with that id is found');
-            error.statusCode = 404;
-            return next(error);  // Pass error to middleware
-        }
-        res.status(200).json({
-            "success": true,
-            "status" : 200,
-            "message": "successfully retrieved tournament based on tournament ID",
-            "content": specificTournament
-        });
-    } catch (error) {
-        res.status(500).json({ 
-            message: 'Error fetching tournament', 
-            error: error.message });
-    }
-};
+exports.getTournamentById = [
+   // First, use the validation middleware
+   validateTournamentId,
 
+   // Then, handle the logic for the controller
+   async (req, res, next) => {
+       // Check if validation failed
+       const errors = validationResult(req);
+       if (!errors.isEmpty()) {
+           // If validation fails, return a 400 response with the errors
+           const error = new Error('Invalid Tournament ID');
+           error.statusCode = 400;
+           return next(error);
+       }
+
+       const { tournamentId } = req.params;
+
+       try {
+           // Query your database or service to retrieve the tournament
+           const specificTournament = await TournamentUserService.getTournamentByID(tournamentId);
+
+           // If no tournament is found, return a 404 response
+           if (!specificTournament) {
+               const error = new Error('No tournament with that id is found');
+               error.statusCode = 404;
+               return next(error);  // Pass error to the middleware
+           }
+
+           // Send the success response
+           sendSuccessResponse(res, 200, 'successfully retrieved tournament based on tournament ID', specificTournament);
+
+       } catch (err) {
+           console.error('Error retrieving tournament:', err);
+           next(err);  // Pass the error to the middleware
+       }
+   },
+];
 </code></pre>
         </article>
     </section>
@@ -203,7 +205,7 @@ exports.getTournamentById = async (req, res, next) => {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Fri Oct 25 2024 14:46:28 GMT+0800 (Singapore Standard Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.4</a> on Mon Nov 11 2024 18:25:41 GMT+0800 (Singapore Standard Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
