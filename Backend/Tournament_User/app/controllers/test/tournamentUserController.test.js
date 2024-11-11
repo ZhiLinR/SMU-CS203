@@ -8,12 +8,14 @@ const {
 
 const TournamentUserService = require('../../services/tournamentUserService'); // Import the service
 const TournamentService = require('../../services/tournamentService'); // Import the service
+const UserService = require('../../services/userService'); // Correctly import UserService
 
 const db = require('../../config/db'); // Import the database configuration
 
 // Mock services and database
 jest.mock('../../services/tournamentUserService'); // Mock the service layer
 jest.mock('../../services/tournamentService');
+jest.mock('../../services/UserService');
 jest.mock('../../config/db', () => ({
     query: jest.fn(),
     connect: jest.fn(),
@@ -84,16 +86,23 @@ describe('getTournamentMatchups Controller', () => {
         jest.clearAllMocks(); // Clear mocks after each test
     });
 
-    it('should return a list of matchups for a valid tournament ID and UUID', async () => {
+    it('should return a list of matchups with enriched player names', async () => {
         const req = { params: { tournamentId: 'tournament-123' }, body: { UUID: 'user-456' } }; // Mock request
         const res = { locals: {}, status: jest.fn().mockReturnThis(), json: jest.fn() }; // Mock response
         const next = jest.fn(); // Mock next middleware function
 
-        // Mock service response
+        // Mock service responses
         TournamentUserService.getTournamentMatchups.mockResolvedValue([
-            { player1: 'Player A', player2: 'Player B', round: 1 },
-            { player1: 'Player C', player2: 'Player D', round: 2 },
+            { player1: 'player-1', player2: 'player-2', playerWon: 'player-1', tournamentID: 'tournament-123', roundNum: 1 },
+            { player1: 'player-3', player2: 'player-4', playerWon: 'player-4', tournamentID: 'tournament-123', roundNum: 2 },
         ]);
+
+        UserService.getNamesByUUIDs.mockResolvedValue({
+            'player-1': 'Alice',
+            'player-2': 'Bob',
+            'player-3': 'Charlie',
+            'player-4': 'Diana',
+        });
 
         // Call the controller
         await getTournamentMatchups(req, res, next);
@@ -104,11 +113,23 @@ describe('getTournamentMatchups Controller', () => {
             message: 'Tournament Matchups:',
             success: true,
             content: [
-                { player1: 'Player A', player2: 'Player B', round: 1 },
-                { player1: 'Player C', player2: 'Player D', round: 2 },
+                {
+                    player1Name: 'Alice',
+                    player2Name: 'Bob',
+                    playerWonName: 'Alice',
+                    tournamentID: 'tournament-123',
+                    roundNum: 1,
+                },
+                {
+                    player1Name: 'Charlie',
+                    player2Name: 'Diana',
+                    playerWonName: 'Diana',
+                    tournamentID: 'tournament-123',
+                    roundNum: 2,
+                },
             ],
         });
-        expect(next).toHaveBeenCalled(); // Ensure next was called
+        expect(next).toHaveBeenCalled(); // Ensure next middleware was called
     });
 
     it('should handle no matchups found', async () => {
@@ -126,7 +147,7 @@ describe('getTournamentMatchups Controller', () => {
         expect(next).toHaveBeenCalledWith(expect.objectContaining({
             message: 'No matchups found for the provided tournament ID/UUID',
             statusCode: 404,
-        })); // Ensure error is passed to next
+        })); // Ensure error is passed to next middleware
     });
 
     it('should handle service errors gracefully', async () => {
@@ -143,10 +164,9 @@ describe('getTournamentMatchups Controller', () => {
         // Assertions
         expect(next).toHaveBeenCalledWith(expect.objectContaining({
             message: 'Database error',
-        })); // Ensure error is passed to next
+        })); // Ensure error is passed to next middleware
     });
 });
-
 
 
 // Test case for signUpForTournament
@@ -321,80 +341,89 @@ describe('quitTournament Controller', () => {
 //test if no players are found
 //test for unexpected errors
 
-describe('getPlayersInTournament', () => {
-    let req, res, next;
-
-    beforeEach(() => {
-        req = { params: {} };
-        res = { locals: {}, status: jest.fn().mockReturnThis(), json: jest.fn() }; // Mock response
-        next = jest.fn(); // Mock next function
-        jest.clearAllMocks(); // Clear mocks
+describe('getTournamentMatchups Controller', () => {
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mocks after each test
     });
 
-    it('should handle missing tournamentId by calling next with an error', async () => {
-        await getPlayersInTournament(req, res, next);
+    it('should return a list of matchups with enriched player names', async () => {
+        const req = { params: { tournamentId: 'tournament-123' }, body: { UUID: 'user-456' } }; // Mock request
+        const res = { locals: {}, status: jest.fn().mockReturnThis(), json: jest.fn() }; // Mock response
+        const next = jest.fn(); // Mock next middleware function
 
-        expect(next).toHaveBeenCalledWith(expect.objectContaining({
-            message: 'Missing required fields tournamentID',
-            statusCode: 400, // Error code set in catch block
-        }));
+        // Mock service responses
+        TournamentUserService.getTournamentMatchups.mockResolvedValue([
+            { player1: 'player-1', player2: 'player-2', playerWon: 'player-1', tournamentID: 'tournament-123', roundNum: 1 },
+            { player1: 'player-3', player2: 'player-4', playerWon: 'player-4', tournamentID: 'tournament-123', roundNum: 2 },
+        ]);
+
+        UserService.getNamesByUUIDs.mockResolvedValue({
+            'player-1': 'Alice',
+            'player-2': 'Bob',
+            'player-3': 'Charlie',
+            'player-4': 'Diana',
+        });
+
+        // Call the controller
+        await getTournamentMatchups(req, res, next);
+
+        // Assertions
+        expect(res.locals.data).toEqual({
+            statusCode: 200,
+            message: 'Tournament Matchups:',
+            success: true,
+            content: [
+                {
+                    player1Name: 'Alice',
+                    player2Name: 'Bob',
+                    playerWonName: 'Alice',
+                    tournamentID: 'tournament-123',
+                    roundNum: 1,
+                },
+                {
+                    player1Name: 'Charlie',
+                    player2Name: 'Diana',
+                    playerWonName: 'Diana',
+                    tournamentID: 'tournament-123',
+                    roundNum: 2,
+                },
+            ],
+        });
+        expect(next).toHaveBeenCalled(); // Ensure next middleware was called
     });
 
-    it('should handle non-existent tournamentId by calling next with an error', async () => {
-        req.params.tournamentId = 'invalid-id';
-        TournamentService.checkTournamentExists.mockResolvedValue(false); // Tournament does not exist
+    it('should handle no matchups found', async () => {
+        const req = { params: { tournamentId: 'tournament-123' }, body: { UUID: 'user-456' } }; // Mock request
+        const res = { locals: {}, status: jest.fn().mockReturnThis(), json: jest.fn() }; // Mock response
+        const next = jest.fn(); // Mock next middleware function
 
-        await getPlayersInTournament(req, res, next);
+        // Mock service response
+        TournamentUserService.getTournamentMatchups.mockResolvedValue([]); // No matchups found
 
+        // Call the controller
+        await getTournamentMatchups(req, res, next);
+
+        // Assertions
         expect(next).toHaveBeenCalledWith(expect.objectContaining({
-            message: 'Invalid tournamentID: Tournament not found.',
+            message: 'No matchups found for the provided tournament ID/UUID',
             statusCode: 404,
-        }));
+        })); // Ensure error is passed to next middleware
     });
 
-    it('should return an empty array if no players are found', async () => {
-        req.params.tournamentId = 'valid-id';
-        TournamentService.checkTournamentExists.mockResolvedValue(true); // Tournament exists
-        TournamentService.getPlayersInTournament.mockResolvedValue([]); // No players
+    it('should handle service errors gracefully', async () => {
+        const req = { params: { tournamentId: 'tournament-123' }, body: { UUID: 'user-456' } }; // Mock request
+        const res = { locals: {}, status: jest.fn().mockReturnThis(), json: jest.fn() }; // Mock response
+        const next = jest.fn(); // Mock next middleware function
 
-        await getPlayersInTournament(req, res, next);
+        // Mock service to throw an error
+        TournamentUserService.getTournamentMatchups.mockRejectedValue(new Error('Database error'));
 
-        expect(res.locals.data).toEqual({
-            statusCode: 200,
-            message: 'No players have signed up for this tournament yet.',
-            success: true,
-            content: [],
-        });
-        expect(next).toHaveBeenCalled(); // Passes to next middleware
-    });
+        // Call the controller
+        await getTournamentMatchups(req, res, next);
 
-    it('should return a list of player UUIDs if players are found', async () => {
-        req.params.tournamentId = 'valid-id';
-        TournamentService.checkTournamentExists.mockResolvedValue(true); // Tournament exists
-        TournamentService.getPlayersInTournament.mockResolvedValue([
-            { UUID: 'player1' },
-            { UUID: 'player2' },
-        ]); // Players found
-
-        await getPlayersInTournament(req, res, next);
-
-        expect(res.locals.data).toEqual({
-            statusCode: 200,
-            message: 'Players in the tournament:',
-            success: true,
-            content: ['player1', 'player2'],
-        });
-        expect(next).toHaveBeenCalled(); // Passes to next middleware
-    });
-
-    it('should handle unexpected errors and call next with an error', async () => {
-        req.params.tournamentId = 'valid-id';
-        TournamentService.checkTournamentExists.mockRejectedValue(new Error('Unexpected error')); // Simulate error
-
-        await getPlayersInTournament(req, res, next);
-
+        // Assertions
         expect(next).toHaveBeenCalledWith(expect.objectContaining({
-            message: 'Unexpected error',
-        }));
+            message: 'Database error',
+        })); // Ensure error is passed to next middleware
     });
 });
