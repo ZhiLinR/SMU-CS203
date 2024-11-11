@@ -70,17 +70,15 @@ const toast = useToast()
 const route = useRoute();
 const token = ref('')
 const uuid = ref('')
-const elo = ref('')
+const elo = sessionStorage.getItem("elo")
 // State
 const tournament = ref({})
 const participants = ref([])
 const list = ref([])
 
 const userData = ref(null);
-
+const tournamentId = sessionStorage.getItem("tournamentId");
 onMounted(async () => {
-  const tournamentId = sessionStorage.getItem("tournamentId");
-  console.log(tournamentId)
   if (tournamentId) {
     fetchTournamentDetails(tournamentId);
     fetchParticipants(tournamentId);
@@ -143,13 +141,13 @@ const fetchParticipants = async (tournamentId) => {
 };
 
 
-const joinTournament = async (tournamentId, elo) => {
+const joinTournament = async () => {
   try {
     const response = await axios.post(
       import.meta.env.VITE_API_URL_PUBLIC_USER +`/tournaments/signup/${uuid.value}`,
-      { tournamentID: tournamentId, elo: elo.value }
+      { tournamentID: tournamentId, elo: elo }
     );
-
+    console.log(response)
     if (response.data.success) {
       toast.add({ severity: 'success', summary: 'Success', detail: 'Tournament joined successfully' });
     }
@@ -185,10 +183,10 @@ const fetchUserProfile = async () => {
   
       if (response.data.success) {
         userData.value = response.data.content;
-        elo.value = userData.value.elo;
         // Add rank property if it's not included in the API response
        // userData.value.rank = calculateRank(userData.value.elo);
-       console.log(userData.value, elo.value)
+       console.log(userData.value,userData.value.elo)
+       sessionStorage.setItem("elo", userData.value.elo)
       } else {
         console.error('Error fetching user profile:', response.data.message);
       }
