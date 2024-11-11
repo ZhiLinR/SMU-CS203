@@ -128,6 +128,7 @@ export default {
         </Card>
       </div>
       <div style="text-align: center; margin-top: 1rem; ">
+        <router-link to ="/public/tournaments">
         <Button 
           v-if="ongoingTournaments.length > 4 && !showAllOngoing" 
           @click="showAllOngoing = true" 
@@ -135,13 +136,7 @@ export default {
         >
           View More
         </Button>
-        <button 
-          v-if="showAllOngoing" 
-          @click="showAllOngoing = false"
-          style="margin: 1rem;"
-        >
-          Show Less
-        </button>
+      </router-link>
       </div>
     </template>
   </Card>

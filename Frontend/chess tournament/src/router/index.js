@@ -48,6 +48,16 @@ const router = createRouter({
       path: '/signup',
       name: 'signup',
       component: () => import('../views/signup/Signup.vue')
+    },
+    {
+      path: '/public/tournaments',
+      name: 'publicTournaments',
+      component: () => import('../views/public/PublicTournaments.vue')
+    },
+    {
+      path: '/:tournamentId',
+      name: 'publicTournament',
+      component: () => import('../views/public/PublicTournaments.vue')
     }
   ],
   scrollBehavior(to, from, savedPosition) {

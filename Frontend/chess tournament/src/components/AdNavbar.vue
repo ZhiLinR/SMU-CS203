@@ -4,7 +4,7 @@
       <Menubar >
         <template #start>
             <a class='line-remove'>
-            <router-link :to="{ name: 'admin' }" style="margin-left: 100px;">
+            <router-link :to="{ name: 'Home' }" style="margin-left: 100px;">
               <span style="text-decoration: none; font-weight: bold;">Check-M8</span></router-link>
           </a>
         </template>

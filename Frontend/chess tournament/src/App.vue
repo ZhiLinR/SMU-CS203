@@ -9,8 +9,6 @@
 <script>
 
 import Home from './views/Home/Home.vue'
-import UpcomingTournaments from '../src/components/UpcomingTournaments.vue'
-
 
 
 export default {
@@ -18,7 +16,6 @@ export default {
   components: {
 
     Home,
-    UpcomingTournaments,
 
   }
 }
