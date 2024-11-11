@@ -424,7 +424,7 @@ exports.getPlayerTournaments = async  (req, res, next) => {
             throw new Error('Player UUID is required');
         }
  
-        const result = await TournamentUserService.GetPlayerTournamentsByStatus(playerUUID);
+        const result = await TournamentUserService.getPlayerTournamentsByStatus(playerUUID);
         
         if (!result || result.length === 0) {
             throw new Error('No tournaments found for this player')
