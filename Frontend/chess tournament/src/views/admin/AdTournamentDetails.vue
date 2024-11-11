@@ -1,6 +1,6 @@
 <template>
-  <AdNavbar/>
-  <Toast/>
+  <AdNavbar />
+  <Toast />
   <div class="tournament-details">
     <!-- Left side - Chess board visualization -->
     <div class="chess-board">
@@ -38,13 +38,13 @@
           <span class="label">Description:</span>
           <span class="value">{{ tournament.descOID }}</span>
         </div>
-         <!-- Conditional buttons based on tournament status -->
-      <Button v-if="tournament.status === 'Ongoing'" label="Match Players" severity="success" class="action-button"
-        @click="matchPlayers" />
+        <!-- Conditional buttons based on tournament status -->
+        <Button v-if="tournament.status === 'Ongoing'" label="Match Players" severity="success" class="action-button"
+          @click="matchPlayers" />
         <Button v-if="tournament.status === 'Upcoming'" label="Match Players" severity="success" class="action-button"
-        @click="matchPlayers" />
-      <Button v-if="tournament.status === 'Completed'" label="Generate Results" severity="success" class="action-button"
-        @click="generateResults" />
+          @click="matchPlayers" />
+        <Button v-if="tournament.status === 'Completed'" label="Generate Results" severity="success"
+          class="action-button" @click="generateResults" />
       </div>
 
       <!-- Participants section -->
@@ -66,7 +66,19 @@
         </ul>
       </Dialog>
 
-     
+      <Dialog v-model:visible="matchupDialogVisible" header="Tournament Matchups" :style="{ width: '50vw' }">
+        <ul v-if="matchups.length">
+          <li v-for="(matchup, index) in matchups" :key="index">
+            {{ matchup.player1Name }} vs {{ matchup.player2Name }} - Winner: {{ matchup.playerWonName }}
+          </li>
+        </ul>
+        <div v-else>
+          No matchups available.
+        </div>
+      </Dialog>
+
+
+
     </div>
   </div>
 </template>
@@ -79,17 +91,19 @@ import axios from 'axios'
 import AdNavbar from '../../components/AdNavbar.vue';
 // import DataTable from 'primevue/datatable'
 // import Column from 'primevue/column'
-import Dialog from 'primevue/dialog' 
+import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 
 const toast = useToast()
 const route = useRoute();
+const matchupDialogVisible = ref(false);
+const matchups = ref([]);
 
 // State
 const tournament = ref({})
 const participants = ref([])
 const list = ref([])
-const rankingDialogVisible = ref(false) 
+const rankingDialogVisible = ref(false)
 const rankings = ref([])
 const tournamentId = sessionStorage.getItem("tournamentId");
 // Fetch tournament details
@@ -147,7 +161,14 @@ const matchPlayers = async () => {
     const response = await axios.get(import.meta.env.VITE_API_URL_MATCH + `/matchmaking/${tournamentId}`);
 
     if (response.data.success) {
-      console.log('Players matched successfully');
+      const matchupResponse = await axios.get(import.meta.env.VITE_API_URL_PUBLIC_USER + `/tournaments/getAllMatchups/${tournamentId}`)
+      if (matchupResponse.data.success){
+        console.log(matchupResponse)
+        matchups.value = matchupResponse.data.content; 
+        console.log(matchups.value)
+        matchupDialogVisible.value = true;
+        console.log('Players matched successfully');
+      }
       toast.add({ severity: 'success', summary: 'Success', detail: 'Players matched successfully' })
     } else {
       console.error('Error matching players:', response.data.message);
@@ -165,7 +186,7 @@ const generateResults = async () => {
 
     if (response.data.success) {
       console.log('Results generated successfully:', response.data.content.results);
-      rankings.value = response.data.content.results; 
+      rankings.value = response.data.content.results;
       rankingDialogVisible.value = true;
       toast.add({ severity: 'success', summary: 'Success', detail: 'Tournament results generated successfully' })
     } else {
@@ -187,7 +208,7 @@ const formatDate = (date) => {
 // Lifecycle
 onMounted(() => {
   // Get the tournament ID from the route params
-  
+
   if (tournamentId) {
     fetchTournamentDetails(tournamentId);
     // fetchParticipants(tournamentId);
