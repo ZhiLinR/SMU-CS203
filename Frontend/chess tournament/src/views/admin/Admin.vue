@@ -106,11 +106,11 @@
         </div>
         <div class="p-field">
           <label for="startDate">Start Date</label>
-          <Calendar id="startDate" v-model="creatingTournament.startDate" dateFormat="yy-mm-dd" />
+          <Calendar id="startDate" v-model="creatingTournament.startDate" dateFormat="yy-mm-dd" :minDate="today" />
         </div>
         <div class="p-field">
           <label for="endDate">End Date</label>
-          <Calendar id="endDate" v-model="creatingTournament.endDate" dateFormat="yy-mm-dd" />
+          <Calendar id="endDate" v-model="creatingTournament.endDate" dateFormat="yy-mm-dd"  :minDate="today" />
         </div>
         <div class="p-field">
           <label for="playerLimit">Player Limit</label>
@@ -167,7 +167,7 @@
   </div>
 </template>
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useToast } from 'primevue/usetoast'
 import DataTable from 'primevue/datatable'
@@ -210,6 +210,7 @@ export default {
     const editingTournament = ref({})
     const creatingTournament = ref({})
     const router = useRouter();
+    const today = computed(() => new Date());
 
 
     const fetchTournaments = async () => {
@@ -331,7 +332,8 @@ export default {
       openCreateDialog,
       closeCreateDialog,
       viewTournamentDetails,
-      completedTournaments
+      completedTournaments,
+      today
     }
   }
 }
