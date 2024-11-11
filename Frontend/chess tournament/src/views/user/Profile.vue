@@ -30,7 +30,7 @@
               <Column header="Action">
                 <template #body="slotProps">
                   <Button label="View" size="small" style="margin-right: 0.5rem;"
-                    @click="navigateToTournament(slotProps.data.id)" />
+                    @click="navigateToTournament(slotProps.data.tournamentID)" />
                   <Button label="Quit" size="small" severity="danger" @click="handleQuit(slotProps.data)" />
                 </template>
               </Column>
@@ -53,15 +53,15 @@
                   {{ formatDate(slotProps.data.endDate) }}
                 </template>
               </Column>
-              <Column field="placement" header="Placement">
+              <Column field="rating" header="Winner">
                 <template #body="slotProps">
-                  <Tag :value="formatPlacement(slotProps.data.placement)"
-                    :severity="getPlacementSeverity(slotProps.data.placement)" />
+                  <Tag :value="formatPlacement(slotProps.data.wonLastMatch)"
+                    :severity="getPlacementSeverity(slotProps.data.wonLastMatch)" />
                 </template>
               </Column>
               <Column header="Action">
                 <template #body="slotProps">
-                  <Button label="View" size="small" @click="navigateToTournament(slotProps.data.id)" />
+                  <Button label="View" size="small" @click="navigateToTournament(slotProps.data.tournamentID)" />
                 </template>
               </Column>
             </DataTable>
@@ -109,8 +109,8 @@ const getPlacementSeverity = (placement) => {
   return null;
 };
 
-const navigateToTournament = (tournamentId) => {
-  router.push(`/tournament/${tournamentId}`);
+const navigateToTournament = (tournamentID) => {
+  router.push(`tournaments/${tournamentID}`);
 };
 
 const handleQuit = async (tournament) => {
