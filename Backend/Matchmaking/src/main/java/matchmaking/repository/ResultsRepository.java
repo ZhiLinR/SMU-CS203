@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import matchmaking.model.PlayerTournamentId;
 import matchmaking.model.Results;
 import matchmaking.model.Signups;
 
@@ -27,7 +28,7 @@ import matchmaking.model.Signups;
  * </p>
  */
 @Repository
-public interface ResultsRepository extends JpaRepository<Results, String> {
+public interface ResultsRepository extends JpaRepository<Results, PlayerTournamentId> {
 
         /**
          * Retrieves a list of signups for a specified tournament.
