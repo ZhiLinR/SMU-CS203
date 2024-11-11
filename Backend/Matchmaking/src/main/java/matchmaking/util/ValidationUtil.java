@@ -267,7 +267,7 @@ public class ValidationUtil {
     public static void isValidRankingRequest(Tournament tournament) {
         if (tournament == null) {
             throw new TournamentNotFoundException("Tournament does not exist.");
-        } else if (tournament.getStatus() != "Completed") {
+        } else if (!tournament.getStatus().equals("Completed")) {
             throw new InvalidTournamentException("Tournament has not completed.");
         }
     }
