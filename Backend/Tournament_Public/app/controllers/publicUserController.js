@@ -49,7 +49,7 @@ exports.getUpcomingTournaments = async (req, res, next) => {
             error.statusCode = 404;
             return next(error);
         }
-        sendSuccessResponse(res, 200, 'successfully retrieved upcoming tournamentst', upcomingTournaments);
+        sendSuccessResponse(res, 200, 'successfully retrieved upcoming tournaments', upcomingTournaments);
 
     } catch (err) {
         console.error('Error retrieving upcoming tournaments:', err);
