@@ -102,7 +102,7 @@
       <div class="p-fluid">
         <div class="p-field">
           <label for="name">Tournament Name</label>
-          <InputText id="name" v-model="creatingTournament.name" required autofocus />
+          <InputText id="name" v-model="creatingTournament.name" required  />
         </div>
         <div class="p-field">
           <label for="startDate">Start Date</label>
@@ -127,7 +127,7 @@
       </div>
       <template #footer>
         <Button label="Cancel" icon="pi pi-times" @click="closeCreateDialog" class="p-button-text" />
-        <Button label="Create" icon="pi pi-check" @click="createTournament" autofocus />
+        <Button label="Create" icon="pi pi-check" @click="createTournament" />
       </template>
     </Dialog>
 
@@ -136,7 +136,7 @@
       <div class="p-fluid">
         <div class="p-field">
           <label for="name">Name</label>
-          <InputText id="name" v-model="editingTournament.name" required autofocus />
+          <InputText id="name" v-model="editingTournament.name" required />
         </div>
         <div class="p-field">
           <label for="startDate">Start Date</label>
@@ -161,7 +161,7 @@
       </div>
       <template #footer>
         <Button label="Cancel" icon="pi pi-times" @click="closeEditDialog" class="p-button-text" />
-        <Button label="Save" icon="pi pi-check" @click="saveTournament" autofocus />
+        <Button label="Save" icon="pi pi-check" @click="saveTournament"  />
       </template>
     </Dialog>
   </div>
