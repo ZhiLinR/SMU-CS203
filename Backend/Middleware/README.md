@@ -59,7 +59,7 @@ Sample Success 500 Response:
 
 ### GET /auth/jwt
 
-**Header - jwt: < jwt-value >**
+**Header - Authorization: < jwt-value >**
 
 ---
 Checks validity of JWT and values and returns the UUID and Role stored in the JWT.

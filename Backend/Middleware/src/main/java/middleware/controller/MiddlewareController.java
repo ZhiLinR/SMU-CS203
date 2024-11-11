@@ -79,7 +79,7 @@ public class MiddlewareController {
      * @throws Exception             for any other unexpected errors.
      */
     @GetMapping("/jwt")
-    public ResponseEntity<Map<String, Object>> checkJwt(@RequestHeader("jwt") String jwt) {
+    public ResponseEntity<Map<String, Object>> checkJwt(@RequestHeader("Authorization") String jwt) {
         // Call the async service method
         CompletableFuture<Map<String, String>> resultFuture = middlewareService.checkJwt(jwt);
 
