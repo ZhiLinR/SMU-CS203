@@ -1,4 +1,27 @@
 const db = require('../config/db');  // Import the database connection
+const axios = require("axios");
+require("dotenv").config(); // Load environment variables
+
+// Base URL of the User MSVC
+const USER_MSVC_URL = process.env.USER_MSVC_URL ;
+
+class UserMSVCNames {
+    static async getNamesByUUIDs(uuidArray) {
+        try {
+            const response = await axios.post(`${USER_MSVC_URL}/namelist`, {
+                data: uuidArray,
+            });
+
+            // Return the mapping dictionary
+            return response.data.content;
+        } catch (error) {
+            console.error('Error fetching names from UserService:', error);
+            throw new Error('Failed to fetch names from UserService');
+        }
+    }
+}
+
+module.exports = UserMSVCNames;
 
 
 exports.getNamesByUUIDs = (uuidInput) => {
@@ -22,21 +45,7 @@ exports.getNamesByUUIDs = (uuidInput) => {
             return resolve({});
         }
 
-        // SQL query to fetch names for UUIDs
-        const query = 'CALL UserMSVC.GetNamesByUUIDs(?)';
-        db.query(query, [uuidList.join(',')], (err, results) => {
-            if (err) {
-                return reject(err);
-            }
 
-            // Convert results into a mapping of UUIDs to names
-            const uuidNameMapping = {};
-            results[0].forEach((row) => {
-                uuidNameMapping[row.UUID] = row.name;
-            });
-
-            resolve(uuidNameMapping);
-        });
     });
 };
 

@@ -1,7 +1,7 @@
 const TournamentUserService = require('../services/tournamentUserService');  // Import service
 const TournamentService = require('../services/tournamentService');  // Import service
-const UserService = require('../services/userService')// import service
-
+const UserService = require('../services/userService')// import 
+const UserMSVCNames = require('../services/userService');
 /**
  * Get participated tournament history for a user
  * @param {Object} req.params - The request parameters TournamentID
@@ -58,13 +58,18 @@ exports.getTournaments = async (req, res, next) => {
  * @throws {error} If UUID invalid.
  */
 
-// Get tournament matchups by tournament ID
+// Get tournament matchups by tournament ID and user UUID
 exports.getTournamentMatchups = async (req, res, next) => {
     const { tournamentId } = req.params;
-    const { UUID } = req.body;
+    const { UUID } = req.body; // Extract UUID from the request body
 
     try {
-        // Fetch matchups from the service
+        // Ensure UUID is provided
+        if (!UUID) {
+            throw new Error('UUID is required in the request body.');
+        }
+
+        // Fetch matchups for the specific tournament and UUID
         const matchups = await TournamentUserService.getTournamentMatchups(tournamentId, UUID);
 
         if (!matchups || matchups.length === 0) {
@@ -79,19 +84,19 @@ exports.getTournamentMatchups = async (req, res, next) => {
             uniqueUUIDs.add(matchup.playerWon);
         });
 
+        console.log(uniqueUUIDs);
         // Convert Set to Array for querying
         const uuidArray = Array.from(uniqueUUIDs);
 
-        // Fetch names for all UUIDs
+        // Fetch names for all UUIDs using the /namelist endpoint
         const uuidNameMapping = await UserService.getNamesByUUIDs(uuidArray);
-
+        console.log(matchups);
+        console.log(uuidNameMapping);
         // Map UUIDs to names in the matchups
         const matchupsWithNames = matchups.map((matchup) => ({
-            //player1: matchup.player1,
+            
             player1Name: uuidNameMapping[matchup.player1] || 'Unknown',
-           // player2: matchup.player2,
             player2Name: uuidNameMapping[matchup.player2] || 'Unknown',
-           // playerWon: matchup.playerWon,
             playerWonName: uuidNameMapping[matchup.playerWon] || 'Unknown',
             tournamentID: matchup.tournamentID,
             roundNum: matchup.roundNum,
@@ -109,6 +114,8 @@ exports.getTournamentMatchups = async (req, res, next) => {
     } catch (err) {
         if (err.message === 'No matchups found for the provided tournament ID/UUID') {
             err.statusCode = 404;
+        } else if (err.message === 'UUID is required in the request body.') {
+            err.statusCode = 400;
         }
         console.error('Error fetching matchups:', err);
         next(err); // Pass the error to the middleware
@@ -305,7 +312,7 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
         }
 
         const allRankings = await TournamentService.getTournamentRanking(tournamentId);
-
+        console.log(allRankings);
         if (!allRankings || allRankings.length === 0) {
             throw new Error('No Game result found for the provided tournamentID.');
         }
@@ -314,9 +321,11 @@ exports.getUserTournamentGameRank = async (req, res, next) => {
         if (!userRanking) {
             throw new Error('User not found in the tournament ranking.');
         }
-
+        console.log(userRanking);
         // Fetch user's name
-        const userNameMapping = await UserService.getNamesByUUIDs(UUID);
+        const uuidArray = [UUID];
+        const userNameMapping = await UserService.getNamesByUUIDs(uuidArray);
+        console.log(userNameMapping);
         const userName = userNameMapping[UUID] || 'Unknown';
 
         res.locals.data = {
@@ -361,11 +370,13 @@ exports.getPlayersInTournament = async (req, res, next) => {
             throw new Error('Missing required fields tournamentID');
         }
 
+        // Check if the tournament exists
         const tournamentExists = await TournamentService.checkTournamentExists(tournamentId);
         if (!tournamentExists) {
             throw new Error('Invalid tournamentID: Tournament not found.');
         }
 
+        // Get players in the tournament
         const players = await TournamentService.getPlayersInTournament(tournamentId);
 
         if (!players || players.length === 0) {
@@ -378,14 +389,19 @@ exports.getPlayersInTournament = async (req, res, next) => {
             return next();
         }
 
-        const uuidArray = players.map((player) => player.UUID);
-        const uuidNameMapping = await UserService.getNamesByUUIDs(uuidArray);
-
+        // Extract UUIDs of players
+        const uuidArray = players.map((player) => player.UUID).filter((uuid) => uuid);
+        console.log(uuidArray);
+        // Call User MSVC to get names for UUIDs
+        const uuidNameMapping = await UserMSVCNames.getNamesByUUIDs(uuidArray);
+        console.log(uuidNameMapping);
+        // Map UUIDs to names in the players array
         const playersWithNames = players.map((player) => ({
             UUID: player.UUID,
             name: uuidNameMapping[player.UUID] || 'Unknown',
         }));
 
+        // Set response with enriched player data
         res.locals.data = {
             statusCode: 200,
             message: 'Players in the tournament:',
@@ -395,6 +411,7 @@ exports.getPlayersInTournament = async (req, res, next) => {
 
         next();
     } catch (err) {
+        // Custom error status codes
         if (err.message === 'Missing required fields tournamentID') {
             err.statusCode = 400;
         }
@@ -403,10 +420,11 @@ exports.getPlayersInTournament = async (req, res, next) => {
             err.statusCode = 404;
         }
 
-        console.error('Error retrieving players:', err);
-        next(err);
+        console.error('Error retrieving players:', err.message);
+        next(err); // Pass error to middleware
     }
 };
+
 
 
 
@@ -456,17 +474,17 @@ exports.getTournamentRanking = async (req, res, next) => {
 
         // Step 1: Fetch rankings from the service
         const rankings = await TournamentService.getTournamentRanking(tournamentId);
-
+        console.log(rankings);
         if (!rankings || rankings.length === 0) {
             throw new Error('No ranking data available for the specified tournament');
         }
 
         // Step 2: Extract all UUIDs from the rankings
         const uuidArray = rankings.map((ranking) => ranking.player); // Assuming `player` is the UUID field
-
+        console.log(uuidArray);
         // Step 3: Fetch names for the UUIDs
         const uuidNameMapping = await UserService.getNamesByUUIDs(uuidArray);
-
+        console.log(uuidNameMapping);
         // Step 4: Map UUIDs to names in the rankings
         const rankingsWithNames = rankings.map((ranking) => ({
             name: uuidNameMapping[ranking.player] || 'Unknown', // Convert UUID to name
@@ -536,16 +554,13 @@ exports.getAllTournamentMatchups = async (req, res, next) => {
         // Convert Set to Array for querying
         const uuidArray = Array.from(uniqueUUIDs);
 
-        // Fetch names for all UUIDs
-        const uuidNameMapping = await UserService.getNamesByUUIDs(uuidArray);
+        // Call User MSVC to fetch names for all UUIDs
+        const uuidNameMapping = await UserMSVCNames.getNamesByUUIDs(uuidArray);
 
         // Map UUIDs to names in the matchups
         const matchupsWithNames = matchups.map((matchup) => ({
-            //player1: matchup.player1,
             player1Name: uuidNameMapping[matchup.player1] || 'Unknown',
-            //player2: matchup.player2,
             player2Name: uuidNameMapping[matchup.player2] || 'Unknown',
-            //playerWon: matchup.playerWon,
             playerWonName: uuidNameMapping[matchup.playerWon] || 'Unknown',
             tournamentID: matchup.tournamentID,
             roundNum: matchup.roundNum,
@@ -622,3 +637,5 @@ exports.getPlayerTournamentsByStatus = async (req, res, next) => {
         next(err);  // Pass the error to the middleware
     }
 };
+
+
