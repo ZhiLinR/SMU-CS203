@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.jsonwebtoken.Claims;
-import middleware.dto.JWTRequest;
 import middleware.exception.UserNotFoundException;
 import middleware.exception.UnauthorizedException;
 import middleware.model.JWToken;
@@ -66,12 +65,11 @@ public class MiddlewareService {
      *                               validation process.
      */
     @Async
-    public CompletableFuture<Map<String, String>> checkJwt(JWTRequest jwtRequest) {
+    public CompletableFuture<Map<String, String>> checkJwt(String jwt) {
         System.out.println("Executing in thread: " + Thread.currentThread().getName()); // For diagnostic purposes
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                String jwt = jwtRequest.getJwt();
                 ValidationUtil.validateNotEmpty(jwt, "JWT");
 
                 Claims claims = jwtUtil.decryptToken(jwt);

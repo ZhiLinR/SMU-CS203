@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import middleware.dto.*;
 import middleware.exception.UserNotFoundException;
 import middleware.exception.UnauthorizedException;
 import middleware.service.MiddlewareService;
@@ -79,10 +78,10 @@ public class MiddlewareController {
      * @throws UnauthorizedException if the JWT token is invalid or unauthorized.
      * @throws Exception             for any other unexpected errors.
      */
-    @PostMapping("/jwt")
-    public ResponseEntity<Map<String, Object>> checkJwt(@RequestBody JWTRequest jwtRequest) {
+    @GetMapping("/jwt")
+    public ResponseEntity<Map<String, Object>> checkJwt(@RequestHeader("Authorization") String jwt) {
         // Call the async service method
-        CompletableFuture<Map<String, String>> resultFuture = middlewareService.checkJwt(jwtRequest);
+        CompletableFuture<Map<String, String>> resultFuture = middlewareService.checkJwt(jwt);
 
         return resultFuture
                 .thenApply(result -> ResponseManager.success("JWT validation successful.", result)) // On success
@@ -93,7 +92,7 @@ public class MiddlewareController {
                         return ResponseManager.error(HttpStatus.NOT_FOUND, cause.getMessage());
                     } else if (cause instanceof UnauthorizedException) {
                         // Invalidate token if invalid JWT
-                        tokenValidationService.invalidateJwt(jwtRequest.getJwt());
+                        tokenValidationService.invalidateJwt(jwt);
 
                         return ResponseManager.error(HttpStatus.UNAUTHORIZED, cause.getMessage());
                     } else if (cause instanceof IllegalArgumentException) {

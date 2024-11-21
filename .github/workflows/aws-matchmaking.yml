@@ -24,22 +24,22 @@
 #    See the documentation for each action used below for the recommended IAM policies for this IAM user,
 #    and best practices on handling the access key credentials.
 
-name: Tournament User Microservice - Deploy to Amazon ECS
+name: Matchmaking Service - Deploy to Amazon ECS
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'Backend/Tournament_User/app/**' # Run when there is a push to the path
-      - 'Backend/Tournament_User/Dockerfile'
-  workflow_dispatch:
-
+    push:
+        branches: [ "main" ]
+        paths:
+        - 'Backend/Matchmaking/src/**' # Run when there is a push to the path User/src
+        - 'Backend/Matchmaking/Dockerfile'
+        - 'Backend/Matchmaking/pom.xml'
+    workflow_dispatch:
 env:
   AWS_REGION: ap-southeast-1                  # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: cs203/t-user          # set this to your Amazon ECR repository name
-  ECS_SERVICE: t-user-launch                 # set this to your Amazon ECS service name
-  ECS_CLUSTER: cs203-tournament-user          # set this to your Amazon ECS cluster name
-  CONTAINER_NAME: tournament-user           # set this to the name of the container in the
+  ECR_REPOSITORY: cs203/matchmaking          # set this to your Amazon ECR repository name
+  ECS_SERVICE: matchmaking-launch                 # set this to your Amazon ECS service name
+  ECS_CLUSTER: cs203-matchmaking          # set this to your Amazon ECS cluster name
+  CONTAINER_NAME: matchmaking
 
 permissions:
   contents: read
@@ -67,7 +67,7 @@ jobs:
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
-      working-directory: Backend/Tournament_User/
+      working-directory: Backend/Matchmaking/
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
@@ -81,7 +81,7 @@ jobs:
 
     - name: Download task definition
       run: |
-        aws ecs describe-task-definition --task-definition tournament-user --query taskDefinition > task-definition.json
+        aws ecs describe-task-definition --task-definition matchmaking --query taskDefinition > task-definition.json
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
