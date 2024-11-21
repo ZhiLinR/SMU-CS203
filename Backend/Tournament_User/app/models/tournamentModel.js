@@ -181,20 +181,21 @@ exports.getUserTournamentGameRank = (tournamentID, UUID) => {
  */
 exports.checkTournamentExists = (tournamentId) => {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT COUNT(*) AS count FROM Tournament WHERE tournamentID = ?';
+        const query = 'CALL GetTournamentById(?)';
 
         db.query(query, [tournamentId], (err, result) => {
             if (err) {
                 return reject(err);  // Handle any database error
             }
 
-            // If the tournament exists, resolve with `true`, otherwise `false`
-            const exists = result[0].count > 0;
+            console.log('Result from GetTournamentById:', result);
+
+            // Check if the result contains at least one row
+            const exists = result[0]?.length > 0; // If `result[0]` is an array of rows
             resolve(exists);
         });
     });
 };
-
 
 /**
  * Model to get all tournaments for a player with their status.
@@ -281,5 +282,25 @@ exports.getAllTournamentMatchups = (tournamentId) => {
             }
             resolve(results[0]);  // Return the matchups to the service layer
         });
+    });
+};
+
+
+
+
+
+exports.getPlayersInTournament = (tournamentId) => {
+    return new Promise((resolve, reject) => {
+        const query = 'CALL GetPlayersInTournament(?)';
+
+        db.query(query, [tournamentId], (err, results) => {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Query Results:', results);
+                resolve(results[0]); // Extract the first array if results are nested
+            }
+        });
+        
     });
 };
